@@ -1,0 +1,18 @@
+{
+  "workday:REF081481W": {
+    "status": "applied",
+    "updated_at": "2026-08-24T10:00:00.000Z",
+    "notes": "Applied via Workday portal"
+  },
+  "smartrecruiters:744000144803914": {
+    "status": "saved",
+    "updated_at": "2026-08-24T10:05:00.000Z",
+    "notes": "Review JD and tailor resume"
+  },
+  "greenhouse:8146810": {
+    "status": "not_interested",
+    "updated_at": "2026-08-24T10:10:00.000Z",
+    "notes": "Pass - stack mismatch"
+  }
+}
+

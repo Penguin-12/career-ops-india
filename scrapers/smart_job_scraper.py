@@ -2,24 +2,14 @@
 """
 scrapers/smart_job_scraper.py — Universal job scraper using ScrapeGraphAI
 
-Instead of brittle CSS selectors that break when sites redesign,
-this uses an LLM to read any job page and extract structured data.
-Works with ANY job board — Naukri, LinkedIn, company pages, etc.
-
-Works with: Gemini (free), Claude, OpenAI, Ollama (local/free)
-Provider is auto-detected from environment variables.
-
-Install:
-    pip install scrapegraphai
-    playwright install
-
-Run:
-    python scrapers/smart_job_scraper.py <URL>
-    python scrapers/smart_job_scraper.py https://boards.greenhouse.io/razorpay/jobs/123
+Extracts structured job data from any job page and saves to data/discovery_results.json.
+Does NOT overwrite data/scan_results.json directly.
 """
 import json
 import os
 import sys
+import tempfile
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -68,10 +58,6 @@ Return ONLY the JSON object. If no contacts found, return {"contacts": [], "comp
 
 
 def get_llm_config() -> dict:
-    """
-    Auto-detect available LLM from environment variables.
-    Priority: Gemini (free) → Claude → OpenAI → fail with instructions.
-    """
     gemini_key = os.environ.get("GEMINI_API_KEY")
     claude_key  = os.environ.get("ANTHROPIC_API_KEY")
     openai_key  = os.environ.get("OPENAI_API_KEY")
@@ -104,7 +90,6 @@ def get_llm_config() -> dict:
             "headless": True,
         }
     else:
-        # Try Ollama (local, completely free)
         return {
             "llm": {
                 "model": "ollama/llama3.2",
@@ -116,10 +101,6 @@ def get_llm_config() -> dict:
 
 
 def scrape_job_url(url: str) -> dict:
-    """
-    Scrape any job URL and return structured job data.
-    Uses ScrapeGraphAI — no CSS selectors, works on any site.
-    """
     try:
         from scrapegraphai.graphs import SmartScraperGraph
     except ImportError:
@@ -128,7 +109,6 @@ def scrape_job_url(url: str) -> dict:
         sys.exit(1)
 
     config = get_llm_config()
-    provider = list(config["llm"].values())[1] if "model" in config["llm"] else "unknown"
     print(f"   Using LLM: {config['llm'].get('model', 'unknown')}")
 
     graph = SmartScraperGraph(
@@ -142,10 +122,10 @@ def scrape_job_url(url: str) -> dict:
         if isinstance(result, str):
             result = json.loads(result)
 
-        # Normalize and add metadata
         result["url"] = url
         result["source"] = "smart_scraper"
-        result["scraped_at"] = __import__("datetime").datetime.now().isoformat()
+        result["source_type"] = "aggregator"
+        result["scraped_at"] = datetime.now().isoformat()
         return result
 
     except Exception as e:
@@ -153,98 +133,53 @@ def scrape_job_url(url: str) -> dict:
         return {"url": url, "title": "", "company": "", "error": str(e)}
 
 
-def scrape_company_contacts(company_url: str) -> dict:
-    """
-    Scrape company website for hiring manager / data team contacts.
-    Tries multiple pages: /team, /about, /careers, /people
-    """
-    try:
-        from scrapegraphai.graphs import SmartScraperGraph
-    except ImportError:
-        return {"contacts": []}
-
-    config = get_llm_config()
-
-    # Try different company pages that might have team info
-    candidate_urls = [
-        company_url,
-        company_url.rstrip("/") + "/team",
-        company_url.rstrip("/") + "/about",
-        company_url.rstrip("/") + "/people",
-        company_url.rstrip("/") + "/about-us",
-        company_url.rstrip("/") + "/leadership",
-    ]
-
-    all_contacts = []
-    email_pattern = None
-    careers_email = None
-
-    for url in candidate_urls[:3]:  # Try max 3 pages
+def save_to_discovery_results(raw_job: dict):
+    disc_path = ROOT / "data" / "discovery_results.json"
+    disc_path.parent.mkdir(parents=True, exist_ok=True)
+    existing = {"jobs": []}
+    if disc_path.exists():
         try:
-            graph = SmartScraperGraph(
-                prompt=EMAIL_EXTRACTION_PROMPT,
-                source=url,
-                config=config,
-            )
-            result = graph.run()
-            if isinstance(result, str):
-                result = json.loads(result)
-
-            contacts = result.get("contacts", [])
-            if contacts:
-                all_contacts.extend(contacts)
-            if result.get("company_email_pattern"):
-                email_pattern = result["company_email_pattern"]
-            if result.get("careers_email"):
-                careers_email = result["careers_email"]
-
-            if len(all_contacts) >= 3:
-                break
-
+            existing = json.loads(disc_path.read_text(encoding="utf-8"))
         except Exception:
-            continue
+            existing = {"jobs": []}
 
-    # Deduplicate contacts by name
-    seen_names = set()
-    unique_contacts = []
-    for c in all_contacts:
-        name = (c.get("name") or "").lower().strip()
-        if name and name not in seen_names:
-            seen_names.add(name)
-            unique_contacts.append(c)
-
-    return {
-        "contacts": unique_contacts,
-        "company_email_pattern": email_pattern,
-        "careers_email": careers_email,
+    url = raw_job.get("url") or ""
+    discovery_job = {
+        "source": "smart_scraper",
+        "source_type": "aggregator",
+        "company": raw_job.get("company") or "Unknown",
+        "title": raw_job.get("title") or "Unknown",
+        "location": raw_job.get("location"),
+        "url": url,
+        "apply_url": raw_job.get("apply_url"),
+        "posted_at": raw_job.get("posted_date"),
+        "snippet": (raw_job.get("description") or "")[:500] if raw_job.get("description") else None,
+        "salary": raw_job.get("salary"),
+        "experience": raw_job.get("experience_required"),
+        "source_job_id": None,
+        "source_url": url,
+        "remote": bool(raw_job.get("remote")),
+        "employment_type": raw_job.get("employment_type"),
+        "requirements": raw_job.get("requirements"),
+        "tech_stack": raw_job.get("tech_stack"),
     }
 
+    # Deduplicate by URL
+    jobs_list = [j for j in existing.get("jobs", []) if j.get("url") != url]
+    jobs_list.insert(0, discovery_job)
+    
+    out_data = {
+        "discovered_at": datetime.now().isoformat(),
+        "total": len(jobs_list),
+        "jobs": jobs_list
+    }
 
-def save_to_scan_results(job: dict):
-    """Merge scraped job into data/scan_results.json"""
-    scan_path = ROOT / "data" / "scan_results.json"
-    existing = {"jobs": []}
-    if scan_path.exists():
-        try:
-            existing = json.loads(scan_path.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-
-    # Check for duplicate by URL
-    if any(j.get("url") == job.get("url") for j in existing["jobs"]):
-        print(f"   Already in scan results: {job.get('url')}")
-        return
-
-    existing["jobs"].insert(0, job)
-    existing["total"] = len(existing["jobs"])
-    scan_path.write_text(
-        json.dumps(existing, indent=2, ensure_ascii=False),
-        encoding="utf-8"
-    )
-    print(f"   Added to data/scan_results.json")
+    temp_file = disc_path.with_suffix(".tmp")
+    temp_file.write_text(json.dumps(out_data, indent=2, ensure_ascii=False), encoding="utf-8")
+    os.replace(temp_file, disc_path)
+    print(f"   💾 Added to data/discovery_results.json (Run 'npm run ingest:discovery' to process)")
 
 
-# ── CLI ────────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python scrapers/smart_job_scraper.py <URL>")
@@ -264,7 +199,6 @@ if __name__ == "__main__":
         print(f"   Salary:   {job.get('salary') or 'Not disclosed'}")
         print(f"   Stack:    {', '.join(job.get('tech_stack') or [])}")
 
-        save_to_scan_results(job)
-        print(f"\n💾 Full data saved. Run /evaluate {url} in Claude Code or Gemini CLI.\n")
+        save_to_discovery_results(job)
     else:
         print(f"\n⚠️  Could not extract job data. Error: {job.get('error')}\n")

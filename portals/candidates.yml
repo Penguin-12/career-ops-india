@@ -1,0 +1,2771 @@
+companies:
+  - name: Postman
+    tier: '1'
+    domain: devtools/api
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://postman.greenhouse.io
+    ats: greenhouse
+    ats_slug: postman
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Groww
+    tier: '1'
+    domain: fintech/investing
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://groww.greenhouse.io
+    ats: greenhouse
+    ats_slug: groww
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: InMobi
+    tier: '1'
+    domain: adtech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://inmobi.greenhouse.io
+    ats: greenhouse
+    ats_slug: inmobi
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Slice
+    tier: '1'
+    domain: fintech/banking
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://slice.greenhouse.io
+    ats: greenhouse
+    ats_slug: slice
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Zenoti
+    tier: '1'
+    domain: SaaS/enterprise
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Hyderabad
+      - Pune
+    careers_url: https://zenoti.greenhouse.io
+    ats: greenhouse
+    ats_slug: zenoti
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Druva
+    tier: '1'
+    domain: SaaS/cloud backup
+    hq: Pune
+    india_locations:
+      - Pune
+      - Hyderabad
+      - Pune
+    careers_url: https://druva.greenhouse.io
+    ats: greenhouse
+    ats_slug: druva
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Sigmoid
+    tier: '2'
+    domain: data/AI consulting
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://sigmoid.greenhouse.io
+    ats: greenhouse
+    ats_slug: sigmoid
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Observe.AI
+    tier: '1'
+    domain: voice AI/contact center
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://observeai.greenhouse.io
+    ats: greenhouse
+    ats_slug: observeai
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: CloudSEK
+    tier: '2'
+    domain: cybersecurity/AI
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://cloudsek.greenhouse.io
+    ats: greenhouse
+    ats_slug: cloudsek
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Digit Insurance
+    tier: '1'
+    domain: insurtech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://digit.greenhouse.io
+    ats: greenhouse
+    ats_slug: digit
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Slintel (6sense India)
+    tier: '2'
+    domain: revenue AI/martech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://slintel.greenhouse.io
+    ats: greenhouse
+    ats_slug: slintel
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: HackerRank
+    tier: '2'
+    domain: devtools/recruiting
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://hackerrank.greenhouse.io
+    ats: greenhouse
+    ats_slug: hackerrank
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Razorpay
+    tier: '1'
+    domain: fintech/payments
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://razorpaysoftwareprivatelimited.greenhouse.io
+    ats: greenhouse
+    ats_slug: razorpaysoftwareprivatelimited
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: PhonePe
+    tier: '1'
+    domain: fintech/payments
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://phonepe.greenhouse.io
+    ats: greenhouse
+    ats_slug: phonepe
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Stripe
+    tier: '1'
+    domain: fintech/payments
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://stripe.greenhouse.io
+    ats: greenhouse
+    ats_slug: stripe
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Databricks
+    tier: '1'
+    domain: data/AI
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://databricks.greenhouse.io
+    ats: greenhouse
+    ats_slug: databricks
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Coinbase
+    tier: '1'
+    domain: crypto/fintech
+    hq: Remote/India
+    india_locations:
+      - Remote/India
+      - Hyderabad
+      - Pune
+    careers_url: https://coinbase.greenhouse.io
+    ats: greenhouse
+    ats_slug: coinbase
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Rubrik
+    tier: '1'
+    domain: cloud/cybersecurity
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://rubrik.greenhouse.io
+    ats: greenhouse
+    ats_slug: rubrik
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: MongoDB
+    tier: '1'
+    domain: database/cloud
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://mongodb.greenhouse.io
+    ats: greenhouse
+    ats_slug: mongodb
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Elastic
+    tier: '1'
+    domain: search/data
+    hq: Remote/India
+    india_locations:
+      - Remote/India
+      - Hyderabad
+      - Pune
+    careers_url: https://elastic.greenhouse.io
+    ats: greenhouse
+    ats_slug: elastic
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: GitLab
+    tier: '1'
+    domain: devops/devtools
+    hq: Remote/India
+    india_locations:
+      - Remote/India
+      - Hyderabad
+      - Pune
+    careers_url: https://gitlab.greenhouse.io
+    ats: greenhouse
+    ats_slug: gitlab
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Twilio
+    tier: '1'
+    domain: cloud communications
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://twilio.greenhouse.io
+    ats: greenhouse
+    ats_slug: twilio
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Okta
+    tier: '1'
+    domain: identity/security
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://okta.greenhouse.io
+    ats: greenhouse
+    ats_slug: okta
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: Vercel
+    tier: '1'
+    domain: cloud platform/frontend
+    hq: Remote/India
+    india_locations:
+      - Remote/India
+      - Hyderabad
+      - Pune
+    careers_url: https://vercel.greenhouse.io
+    ats: greenhouse
+    ats_slug: vercel
+    status: verified
+    notes: Verified active greenhouse endpoint
+  - name: CRED
+    tier: '1'
+    domain: fintech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://cred.lever.io
+    ats: lever
+    ats_slug: cred
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Meesho
+    tier: '1'
+    domain: e-commerce
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://meesho.lever.io
+    ats: lever
+    ats_slug: meesho
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Zeta Suite
+    tier: '1'
+    domain: banking tech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://zeta.lever.io
+    ats: lever
+    ats_slug: zeta
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Fi Money
+    tier: '1'
+    domain: neobank/fintech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://epifi.lever.io
+    ats: lever
+    ats_slug: epifi
+    status: verified
+    notes: Verified active lever endpoint
+  - name: FamPay
+    tier: '2'
+    domain: fintech/gen-z
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://fampay.lever.io
+    ats: lever
+    ats_slug: fampay
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Freshworks
+    tier: '1'
+    domain: SaaS/CRM
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Hyderabad
+      - Pune
+    careers_url: https://freshworks.lever.io
+    ats: lever
+    ats_slug: freshworks
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Mindtickle
+    tier: '1'
+    domain: sales enablement/SaaS
+    hq: Pune
+    india_locations:
+      - Pune
+      - Hyderabad
+      - Pune
+    careers_url: https://mindtickle.lever.io
+    ats: lever
+    ats_slug: mindtickle
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Porter
+    tier: '2'
+    domain: logistics
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://porter.lever.io
+    ats: lever
+    ats_slug: porter
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Pocket FM
+    tier: '2'
+    domain: audio/media
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://pocketfm.lever.io
+    ats: lever
+    ats_slug: pocketfm
+    status: verified
+    notes: Verified active lever endpoint
+  - name: Sarvam AI
+    tier: '1'
+    domain: GenAI / foundational models
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://sarvam.ashby.io
+    ats: ashby
+    ats_slug: sarvam
+    status: verified
+    notes: Verified active ashby endpoint
+  - name: Bounce
+    tier: '2'
+    domain: EV/mobility
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://bounce.ashby.io
+    ats: ashby
+    ats_slug: bounce
+    status: verified
+    notes: Verified active ashby endpoint
+  - name: Scaler
+    tier: '2'
+    domain: edtech/upskilling
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://scaler.ashby.io
+    ats: ashby
+    ats_slug: scaler
+    status: verified
+    notes: Verified active ashby endpoint
+  - name: Navi Technologies
+    tier: '1'
+    domain: fintech/lending
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://navi.ashby.io
+    ats: ashby
+    ats_slug: navi
+    status: verified
+    notes: Verified active ashby endpoint
+  - name: Swiggy
+    tier: '1'
+    domain: foodtech/quick-commerce
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://swiggy.mynexthire.io
+    ats: mynexthire
+    ats_slug: swiggy
+    status: verified
+    notes: Verified active mynexthire endpoint
+  - name: Bosch
+    tier: '1'
+    domain: automotive/iot/enterprise tech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://BoschGroup.smartrecruiters.io
+    ats: smartrecruiters
+    ats_slug: BoschGroup
+    status: verified
+    notes: Verified active smartrecruiters endpoint
+  - name: Continental
+    tier: '1'
+    domain: automotive/autonomous/cloud
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://Continental.smartrecruiters.io
+    ats: smartrecruiters
+    ats_slug: Continental
+    status: verified
+    notes: Verified active smartrecruiters endpoint
+  - name: Sandisk
+    tier: '1'
+    domain: storage/systems/data platforms
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://Sandisk.smartrecruiters.io
+    ats: smartrecruiters
+    ats_slug: Sandisk
+    status: verified
+    notes: Verified active smartrecruiters endpoint
+  - name: Google
+    tier: '1'
+    domain: big-tech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Gurgaon
+      - Mumbai
+    careers_url: https://www.google.com/about/careers/applications/jobs/results
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Microsoft
+    tier: '1'
+    domain: big-tech
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+      - Noida
+    careers_url: https://careers.microsoft.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Amazon
+    tier: '1'
+    domain: big-tech/e-commerce/cloud
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Chennai
+      - Delhi NCR
+      - Pune
+    careers_url: https://www.amazon.jobs
+    ats: amazon
+    ats_slug: amazon
+    status: verified
+    notes: Verified public Amazon Jobs REST API (450 India SDE roles)
+  - name: Apple
+    tier: '1'
+    domain: consumer-tech
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+    careers_url: https://jobs.apple.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Meta
+    tier: '1'
+    domain: social/ai
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Gurgaon
+    careers_url: https://www.metacareers.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Adobe
+    tier: '1'
+    domain: enterprise-saas
+    hq: Noida
+    india_locations:
+      - Noida
+      - Bangalore
+    careers_url: https://careers.adobe.com
+    ats: workday
+    ats_slug: adobe
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Salesforce
+    tier: '1'
+    domain: enterprise-cloud
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+      - Mumbai
+      - Pune
+    careers_url: https://salesforce.com/careers
+    ats: workday
+    ats_slug: salesforce
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Uber
+    tier: '1'
+    domain: mobility/marketplace
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+    careers_url: https://www.uber.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Nvidia
+    tier: '1'
+    domain: ai/semiconductors
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+    ats: workday
+    ats_slug: nvidia
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: LinkedIn
+    tier: '1'
+    domain: social/professional
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://careers.linkedin.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Atlassian
+    tier: '1'
+    domain: devtools/saas
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Remote
+    careers_url: https://www.atlassian.com/company/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Intuit
+    tier: '1'
+    domain: fintech/saas
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://jobs.intuit.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: ServiceNow
+    tier: '1'
+    domain: cloud/workflow
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+    careers_url: https://careers.servicenow.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Oracle
+    tier: '1'
+    domain: enterprise-cloud/database
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Noida
+      - Pune
+    careers_url: https://oracle.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: SAP
+    tier: '1'
+    domain: enterprise-erp
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Gurgaon
+      - Pune
+    careers_url: https://jobs.sap.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: PayPal
+    tier: '1'
+    domain: fintech/payments
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Bangalore
+      - Hyderabad
+    careers_url: https://paypal.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Snowflake
+    tier: '1'
+    domain: cloud-data
+    hq: Pune
+    india_locations:
+      - Pune
+      - Bangalore
+    careers_url: https://careers.snowflake.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Cohesity
+    tier: '1'
+    domain: data-management/ai
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+    careers_url: https://cohesity.com/company/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Cisco
+    tier: '1'
+    domain: networking/cloud
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Chennai
+    careers_url: https://jobs.cisco.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: VMware
+    tier: '1'
+    domain: cloud/virtualization
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+    careers_url: https://careers.vmware.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Qualcomm
+    tier: '1'
+    domain: semiconductors/wireless
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+      - Chennai
+    careers_url: https://qualcomm.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Intel
+    tier: '1'
+    domain: semiconductors
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+    careers_url: https://intel.com/jobs
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: AMD
+    tier: '1'
+    domain: semiconductors/ai
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+    careers_url: https://amd.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Broadcom
+    tier: '1'
+    domain: semiconductors/software
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Pune
+    careers_url: https://broadcom.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Nokia
+    tier: '2'
+    domain: telecom/cloud
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Chennai
+      - Noida
+    careers_url: https://nokia.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Ericsson
+    tier: '2'
+    domain: telecom/networks
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+      - Chennai
+      - Noida
+    careers_url: https://ericsson.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Siemens
+    tier: '1'
+    domain: industrial/iot/software
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+      - Gurgaon
+    careers_url: https://jobs.siemens.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Micron
+    tier: '1'
+    domain: semiconductors/memory
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+    careers_url: https://micron.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Applied Materials
+    tier: '1'
+    domain: semiconductors
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://appliedmaterials.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Synopsys
+    tier: '1'
+    domain: eda/silicon
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Noida
+    careers_url: https://synopsys.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Cadence
+    tier: '1'
+    domain: eda/system-design
+    hq: Noida
+    india_locations:
+      - Noida
+      - Bangalore
+      - Pune
+      - Hyderabad
+    careers_url: https://cadence.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Arm
+    tier: '1'
+    domain: ip/semiconductors
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Noida
+    careers_url: https://arm.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Texas Instruments
+    tier: '1'
+    domain: semiconductors
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://ti.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Flipkart
+    tier: '1'
+    domain: e-commerce
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://www.flipkartcareers.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Myntra
+    tier: '1'
+    domain: fashion/e-commerce
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://careers.myntra.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Zomato
+    tier: '1'
+    domain: foodtech/quick-commerce
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://eternal.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Zepto
+    tier: '1'
+    domain: quick-commerce
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+    careers_url: https://careers.zepto.co
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Blinkit
+    tier: '1'
+    domain: quick-commerce
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://blinkit.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Navi
+    tier: '1'
+    domain: fintech/lending
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://navi.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Jupiter
+    tier: '1'
+    domain: fintech/neobank
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Mumbai
+    careers_url: https://jupiter.money/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Pine Labs
+    tier: '1'
+    domain: fintech/pos
+    hq: Noida
+    india_locations:
+      - Noida
+      - Bangalore
+    careers_url: https://pinelabs.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Juspay
+    tier: '1'
+    domain: fintech/payments
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://juspay.in/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Zerodha
+    tier: '1'
+    domain: fintech/brokerage
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://zerodha.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: CoinDCX
+    tier: '1'
+    domain: crypto/web3
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Mumbai
+    careers_url: https://coindcx.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Cashfree
+    tier: '1'
+    domain: fintech/payments
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://cashfree.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Dream11
+    tier: '1'
+    domain: gaming/sports-tech
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+    careers_url: https://careers.dream11.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Zoho
+    tier: '1'
+    domain: enterprise-saas
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Tenkasi
+      - Remote
+    careers_url: https://zoho.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Chargebee
+    tier: '1'
+    domain: subscription/billing
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Bangalore
+    careers_url: https://chargebee.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BrowserStack
+    tier: '1'
+    domain: devtools/cloud
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+      - Remote
+    careers_url: https://browserstack.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: OfBusiness
+    tier: '1'
+    domain: b2b-commerce/fintech
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+    careers_url: https://ofbusiness.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Policybazaar
+    tier: '1'
+    domain: insurtech
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+    careers_url: https://policybazaar.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: ACKO
+    tier: '1'
+    domain: insurtech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://acko.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BharatPe
+    tier: '1'
+    domain: fintech/merchant-payments
+    hq: Delhi NCR
+    india_locations:
+      - Delhi NCR
+      - Bangalore
+    careers_url: https://bharatpe.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Paytm
+    tier: '1'
+    domain: fintech
+    hq: Noida
+    india_locations:
+      - Noida
+      - Bangalore
+    careers_url: https://paytm.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Upstox
+    tier: '1'
+    domain: fintech/trading
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+    careers_url: https://upstox.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Urban Company
+    tier: '1'
+    domain: gig-services/marketplace
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://urbancompany.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Delhivery
+    tier: '1'
+    domain: logistics/supply-chain
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+      - Hyderabad
+    careers_url: https://delhivery.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BlackBuck
+    tier: '1'
+    domain: trucking/logistics
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://blackbuck.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Cars24
+    tier: '1'
+    domain: auto-tech
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://cars24.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Spinny
+    tier: '1'
+    domain: auto-tech
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://spinny.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Lenskart
+    tier: '1'
+    domain: omnichannel-retail
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://lenskart.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Ather Energy
+    tier: '1'
+    domain: ev/automotive-iot
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://atherenergy.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Yulu
+    tier: '2'
+    domain: ev-mobility
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://yulu.bike/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Rapido
+    tier: '1'
+    domain: mobility
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://rapido.bike/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Ola
+    tier: '1'
+    domain: mobility/ev
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://olacabs.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Glance
+    tier: '1'
+    domain: content/lockscreen
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://glance.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Cult.fit
+    tier: '1'
+    domain: healthtech/fitness
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://cult.fit/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Practo
+    tier: '1'
+    domain: healthtech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://practo.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: HealthifyMe
+    tier: '2'
+    domain: healthtech/ai
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://healthifyme.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Khatabook
+    tier: '1'
+    domain: fintech/msme
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://khatabook.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Dukaan
+    tier: '2'
+    domain: e-commerce-enablement
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://mydukaan.io/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: ShareChat
+    tier: '1'
+    domain: social-media/content
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://sharechat.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: MPL
+    tier: '1'
+    domain: gaming
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://mpl.live/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Games24x7
+    tier: '1'
+    domain: gaming
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+    careers_url: https://games24x7.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: WinZO
+    tier: '2'
+    domain: gaming
+    hq: Delhi NCR
+    india_locations:
+      - Delhi NCR
+      - Bangalore
+    careers_url: https://winzogames.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: InCred
+    tier: '2'
+    domain: fintech/nbfc
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+    careers_url: https://incred.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: KreditBee
+    tier: '2'
+    domain: fintech/lending
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://kreditbee.in/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Rupeek
+    tier: '2'
+    domain: fintech/gold-loans
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://rupeek.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Uni Cards
+    tier: '2'
+    domain: fintech/cards
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://uni.cards/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Jar
+    tier: '2'
+    domain: fintech/savings
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://myjar.app/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: INDmoney
+    tier: '1'
+    domain: fintech/investment
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://indmoney.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Smallcase
+    tier: '1'
+    domain: fintech/investing
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://smallcase.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Dunzo
+    tier: '2'
+    domain: hyperlocal-delivery
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://dunzo.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BigBasket
+    tier: '1'
+    domain: e-grocery
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://bigbasket.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Nykaa
+    tier: '1'
+    domain: beauty/e-commerce
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Gurgaon
+    careers_url: https://nykaa.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Purplle
+    tier: '2'
+    domain: beauty/e-commerce
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+    careers_url: https://purplle.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Mamaearth
+    tier: '2'
+    domain: d2c
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+    careers_url: https://honasa.in/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Livspace
+    tier: '1'
+    domain: home-interiors
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://livspace.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: HomeLane
+    tier: '2'
+    domain: home-interiors
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://homelane.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Oyo
+    tier: '1'
+    domain: hospitality-tech
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+      - Hyderabad
+    careers_url: https://oyorooms.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: MakeMyTrip
+    tier: '1'
+    domain: travel-tech
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://makemytrip.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Yatra
+    tier: '2'
+    domain: travel-tech
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+    careers_url: https://yatra.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Cleartrip
+    tier: '1'
+    domain: travel-tech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://cleartrip.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: EaseMyTrip
+    tier: '2'
+    domain: travel-tech
+    hq: Delhi NCR
+    india_locations:
+      - Delhi NCR
+    careers_url: https://easemytrip.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Ixigo
+    tier: '1'
+    domain: travel-tech/ai
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://ixigo.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: redBus
+    tier: '1'
+    domain: travel-tech/ticketing
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://redbus.in/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BluSmart
+    tier: '1'
+    domain: ev-mobility
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://blu-smart.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Zypp Electric
+    tier: '2'
+    domain: ev-logistics
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://zypp.app/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Krutrim
+    tier: '1'
+    domain: foundational-ai/cloud
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://krutrim.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Uniphore
+    tier: '1'
+    domain: conversational-ai
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Bangalore
+    careers_url: https://uniphore.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Yellow.ai
+    tier: '1'
+    domain: conversational-ai
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://yellow.ai/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Fractal
+    tier: '1'
+    domain: ai/analytics
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+      - Gurgaon
+      - Pune
+    careers_url: https://fractal.ai/careers
+    ats: workday
+    ats_slug: fractal
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Tiger Analytics
+    tier: '1'
+    domain: ai/data-engineering
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Bangalore
+      - Hyderabad
+    careers_url: https://tigeranalytics.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Tredence
+    tier: '1'
+    domain: data-ai/solutions
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Gurgaon
+    careers_url: https://tredence.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Quantiphi
+    tier: '1'
+    domain: ai/cloud-analytics
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+      - Hyderabad
+    careers_url: https://quantiphi.com/careers
+    ats: workday
+    ats_slug: quantiphi
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Glean
+    tier: '1'
+    domain: enterprise-search/ai
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://glean.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Hasura
+    tier: '1'
+    domain: graphql/devtools
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Remote
+    careers_url: https://hasura.io/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Whatfix
+    tier: '1'
+    domain: digital-adoption/saas
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://whatfix.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: ThoughtSpot
+    tier: '1'
+    domain: analytics/ai-bi
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+    careers_url: https://thoughtspot.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: MoEngage
+    tier: '1'
+    domain: martech/customer-engagement
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://moengage.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: CleverTap
+    tier: '1'
+    domain: martech/analytics
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+    careers_url: https://clevertap.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Amplitude
+    tier: '1'
+    domain: product-analytics
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Remote
+    careers_url: https://amplitude.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Sprinklr
+    tier: '1'
+    domain: cxm/enterprise-saas
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://sprinklr.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Appsmith
+    tier: '1'
+    domain: lowcode/devtools
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Remote
+    careers_url: https://appsmith.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Harness
+    tier: '1'
+    domain: devops/ci-cd
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://harness.io/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Devtron
+    tier: '2'
+    domain: kubernetes/devops
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://devtron.ai/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Signoz
+    tier: '2'
+    domain: observability/open-source
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Remote
+    careers_url: https://signoz.io/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Keploy
+    tier: '2'
+    domain: testing/devtools
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Remote
+    careers_url: https://keploy.io/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Securonix
+    tier: '1'
+    domain: siem/cybersecurity
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+    careers_url: https://securonix.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Safe Security
+    tier: '1'
+    domain: cybersecurity/risk
+    hq: Delhi NCR
+    india_locations:
+      - Delhi NCR
+      - Bangalore
+    careers_url: https://safe.security/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Indusface
+    tier: '2'
+    domain: application-security
+    hq: Vadodara
+    india_locations:
+      - Vadodara
+      - Bangalore
+    careers_url: https://indusface.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Quick Heal
+    tier: '2'
+    domain: endpoint-security
+    hq: Pune
+    india_locations:
+      - Pune
+    careers_url: https://quickheal.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Confluent
+    tier: '1'
+    domain: kafka/data-streaming
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://confluent.io/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Kroll
+    tier: '2'
+    domain: risk/cybersecurity
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Hyderabad
+    careers_url: https://kroll.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: JPMorgan Chase
+    tier: '1'
+    domain: investment-banking/gcc
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+      - Hyderabad
+    careers_url: https://careers.jpmorgan.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Goldman Sachs
+    tier: '1'
+    domain: investment-banking/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+    careers_url: https://goldmansachs.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Morgan Stanley
+    tier: '1'
+    domain: investment-banking/gcc
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+      - Bangalore
+    careers_url: https://morganstanley.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Wells Fargo
+    tier: '1'
+    domain: banking/gcc
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+      - Chennai
+    careers_url: https://wellsfargo.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: American Express
+    tier: '1'
+    domain: fintech/payments/gcc
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://americanexpress.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Visa
+    tier: '1'
+    domain: payments-network
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Mumbai
+    careers_url: https://visa.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Mastercard
+    tier: '1'
+    domain: payments-network
+    hq: Pune
+    india_locations:
+      - Pune
+      - Gurgaon
+      - Bangalore
+    careers_url: https://mastercard.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Citi
+    tier: '1'
+    domain: banking/gcc
+    hq: Pune
+    india_locations:
+      - Pune
+      - Chennai
+      - Mumbai
+      - Bangalore
+    careers_url: https://careers.citigroup.com
+    ats: workday
+    ats_slug: citi
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Barclays
+    tier: '1'
+    domain: banking/gcc
+    hq: Pune
+    india_locations:
+      - Pune
+      - Noida
+      - Chennai
+    careers_url: https://home.barclays/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: HSBC
+    tier: '1'
+    domain: banking/gcc
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+      - Pune
+    careers_url: https://hsbc.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Deutsche Bank
+    tier: '1'
+    domain: investment-banking/gcc
+    hq: Pune
+    india_locations:
+      - Pune
+      - Bangalore
+      - Mumbai
+    careers_url: https://careers.db.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: UBS
+    tier: '1'
+    domain: wealth-management/gcc
+    hq: Pune
+    india_locations:
+      - Pune
+      - Hyderabad
+      - Mumbai
+    careers_url: https://ubs.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: S&P Global
+    tier: '1'
+    domain: financial-data/gcc
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Gurgaon
+      - Bangalore
+    careers_url: https://spglobal.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Bloomberg
+    tier: '1'
+    domain: financial-media/tech
+    hq: Mumbai
+    india_locations:
+      - Mumbai
+    careers_url: https://bloomberg.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Walmart Global Tech
+    tier: '1'
+    domain: retail-tech/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Chennai
+      - Gurgaon
+    careers_url: https://careers.walmart.com/global-tech
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Target
+    tier: '1'
+    domain: retail-tech/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://corporate.target.com/careers/india
+    ats: workday
+    ats_slug: target
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Dell
+    tier: '1'
+    domain: hardware/cloud/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Gurgaon
+    careers_url: https://jobs.dell.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Expedia Group
+    tier: '1'
+    domain: travel-tech/gcc
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+    careers_url: https://expediagroup.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Booking.com
+    tier: '1'
+    domain: travel-tech/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Mumbai
+    careers_url: https://careers.booking.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Fidelity Investments
+    tier: '1'
+    domain: wealth-management/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Chennai
+    careers_url: https://india.fidelity.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: FIS
+    tier: '1'
+    domain: fintech/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+      - Gurgaon
+      - Chennai
+    careers_url: https://careers.fisglobal.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: State Street
+    tier: '1'
+    domain: custody-banking/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+    careers_url: https://statestreet.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Northern Trust
+    tier: '1'
+    domain: asset-management/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+    careers_url: https://northerntrust.com/careers
+    ats: workday
+    ats_slug: ntrs
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Capital One
+    tier: '1'
+    domain: fintech/banking
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://capitalonecareers.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BNY Mellon
+    tier: '1'
+    domain: investment-services/gcc
+    hq: Pune
+    india_locations:
+      - Pune
+      - Chennai
+    careers_url: https://bnymellon.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BlackRock
+    tier: '1'
+    domain: asset-management/gcc
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Mumbai
+      - Bangalore
+    careers_url: https://blackrock.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Societe Generale
+    tier: '1'
+    domain: banking/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Chennai
+    careers_url: https://careers.societegenerale.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Standard Chartered
+    tier: '1'
+    domain: banking/gcc
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Bangalore
+    careers_url: https://sc.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: NatWest Group
+    tier: '1'
+    domain: banking/gcc
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+      - Chennai
+    careers_url: https://jobs.natwestgroup.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: LSEG (London Stock Exchange Group)
+    tier: '1'
+    domain: financial-markets/gcc
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+    careers_url: https://lseg.com/careers
+    ats: workday
+    ats_slug: lseg
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Optum
+    tier: '1'
+    domain: healthtech/gcc
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+      - Gurgaon
+      - Noida
+    careers_url: https://optum.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Novartis
+    tier: '1'
+    domain: pharma/tech/gcc
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+    careers_url: https://novartis.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Pfizer
+    tier: '1'
+    domain: pharma/tech/gcc
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Mumbai
+    careers_url: https://pfizer.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: AstraZeneca
+    tier: '1'
+    domain: biopharma/tech/gcc
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Bangalore
+    careers_url: https://astrazeneca.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Philips
+    tier: '1'
+    domain: healthtech/software
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://careers.philips.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: GE Healthcare
+    tier: '1'
+    domain: medtech/software
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://jobs.gecareers.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Honeywell
+    tier: '1'
+    domain: aerospace/industrial-iot
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Hyderabad
+      - Gurgaon
+      - Pune
+    careers_url: https://careers.honeywell.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Schneider Electric
+    tier: '1'
+    domain: energy-management/iot
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Gurgaon
+      - Hyderabad
+    careers_url: https://se.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: ABB
+    tier: '1'
+    domain: robotics/automation
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://abb.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Eaton
+    tier: '1'
+    domain: power-management/iot
+    hq: Pune
+    india_locations:
+      - Pune
+    careers_url: https://eaton.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: John Deere
+    tier: '1'
+    domain: agtech/autonomous
+    hq: Pune
+    india_locations:
+      - Pune
+    careers_url: https://deere.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Caterpillar
+    tier: '1'
+    domain: heavy-machinery/iot
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Bangalore
+    careers_url: https://caterpillar.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Boeing
+    tier: '1'
+    domain: aerospace/software
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Chennai
+    careers_url: https://boeing.com/careers
+    ats: workday
+    ats_slug: boeing
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Airbus
+    tier: '1'
+    domain: aerospace/digital
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://airbus.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Rolls-Royce
+    tier: '1'
+    domain: aerospace/engineering
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+    careers_url: https://rolls-royce.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Ford
+    tier: '1'
+    domain: automotive/connected-cars
+    hq: Chennai
+    india_locations:
+      - Chennai
+    careers_url: https://ford.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Mercedes-Benz R&D
+    tier: '1'
+    domain: automotive/autonomous
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+    careers_url: https://mbrdi.co.in/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BMW Tech
+    tier: '1'
+    domain: automotive/software
+    hq: Pune
+    india_locations:
+      - Pune
+      - Bangalore
+      - Chennai
+    careers_url: https://bmwgroup.jobs
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Volvo Group
+    tier: '1'
+    domain: automotive/software
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://volvogroup.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Shell Tech
+    tier: '1'
+    domain: energy-tech/data
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Chennai
+    careers_url: https://shell.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BP
+    tier: '1'
+    domain: energy-digital
+    hq: Pune
+    india_locations:
+      - Pune
+    careers_url: https://bp.com/careers
+    ats: workday
+    ats_slug: bpinternational
+    status: verified
+    notes: Verified public Workday CXS board
+  - name: Chevron
+    tier: '1'
+    domain: energy-cloud
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://chevron.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: ExxonMobil
+    tier: '1'
+    domain: energy-data
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://exxonmobil.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: BHP
+    tier: '1'
+    domain: mining-tech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+    careers_url: https://bhp.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Maersk
+    tier: '1'
+    domain: supply-chain/logistics-tech
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+      - Mumbai
+    careers_url: https://maersk.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: DHL
+    tier: '1'
+    domain: logistics/digital-supply-chain
+    hq: Chennai
+    india_locations:
+      - Chennai
+      - Mumbai
+      - Bangalore
+    careers_url: https://dhl.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: FedEx
+    tier: '1'
+    domain: logistics-tech
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+    careers_url: https://fedex.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Publicis Sapient
+    tier: '1'
+    domain: digital-consulting/engineering
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Gurgaon
+      - Noida
+      - Hyderabad
+      - Pune
+    careers_url: https://careers.publicissapient.com
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Thoughtworks
+    tier: '1'
+    domain: software-consultancy
+    hq: Bangalore
+    india_locations:
+      - Bangalore
+      - Pune
+      - Hyderabad
+      - Gurgaon
+      - Chennai
+      - Coimbatore
+    careers_url: https://thoughtworks.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: EPAM Systems
+    tier: '1'
+    domain: software-engineering
+    hq: Hyderabad
+    india_locations:
+      - Hyderabad
+      - Bangalore
+      - Pune
+      - Gurgaon
+      - Chennai
+    careers_url: https://epam.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: Nagarro
+    tier: '1'
+    domain: digital-engineering
+    hq: Gurgaon
+    india_locations:
+      - Gurgaon
+      - Bangalore
+      - Hyderabad
+      - Pune
+      - Jaipur
+    careers_url: https://nagarro.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''
+  - name: GlobalLogic
+    tier: '1'
+    domain: digital-product-engineering
+    hq: Noida
+    india_locations:
+      - Noida
+      - Bangalore
+      - Hyderabad
+      - Gurgaon
+      - Pune
+      - Chennai
+    careers_url: https://globallogic.com/careers
+    ats: null
+    ats_slug: null
+    status: needs_verification
+    notes: ''

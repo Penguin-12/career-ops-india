@@ -1,0 +1,15 @@
+{
+  "workday:REF081481W": {
+    "status": "expired",
+    "updated_at": "2026-08-24T10:00:00.000Z",
+    "source": "manual",
+    "notes": "Position closed on Workday"
+  },
+  "greenhouse:8146810": {
+    "status": "stale",
+    "updated_at": "2026-08-24T10:05:00.000Z",
+    "source": "scanner",
+    "notes": "Absent from latest scan"
+  }
+}
+

@@ -111,30 +111,35 @@ if (fs.existsSync(cvPath)) {
 
 // ── AI CLI check ──────────────────────────────────────────────────────────────
 section("AI CLI");
-let claudeFound = false, geminiFound = false;
-
+let claudeFound = false, geminiFound = false, agyFound = false;
+try {
+  execSync("agy --version", { stdio: "pipe" });
+  agyFound = true;
+  ok("Antigravity CLI (agy) is installed");
+} catch {
+  // agy not found
+}
 try {
   execSync("claude --version", { stdio: "pipe" });
   claudeFound = true;
   ok("Claude Code CLI is installed");
 } catch {
-  warn("Claude Code CLI not found", "Install from: https://claude.ai/code  (optional if using Gemini)");
+  // claude not found
 }
-
 try {
   execSync("gemini --version", { stdio: "pipe" });
   geminiFound = true;
   ok("Gemini CLI is installed");
 } catch {
-  warn("Gemini CLI not found", "Install from: https://github.com/google-gemini/gemini-cli  (optional if using Claude)");
+  // gemini not found
 }
 
-if (!claudeFound && !geminiFound) {
-  fail("No AI CLI found — you need at least one: Claude Code or Gemini CLI");
+if (!agyFound && !claudeFound && !geminiFound) {
+  fail("No AI CLI found — you need at least one: Antigravity CLI (agy), Claude Code, or Gemini CLI");
 }
 
-// ── Puppeteer (PDF generation) ────────────────────────────────────────────────
-section("PDF generation (Puppeteer)");
+// ── Dependencies check ────────────────────────────────────────────────────────
+section("Dependencies");
 try {
   const { execSync: es } = await import("child_process");
   execSync("node -e \"import('puppeteer').then(m => process.exit(0)).catch(() => process.exit(1))\"", 
@@ -145,6 +150,23 @@ try {
     "Puppeteer not installed — PDF generation will not work",
     "Run: npm install  (then npm run pdf will work)"
   );
+}
+
+// ── Python check ──────────────────────────────────────────────────────────────
+section("Python environment");
+const venvPy = path.join(ROOT, ".venv/bin/python");
+const pyBin = fs.existsSync(venvPy) ? venvPy : "python3";
+try {
+  const pyVer = execSync(`${pyBin} -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')"`, { stdio: "pipe" }).toString().trim();
+  ok(`Python ${pyVer} detected (${pyBin})`);
+  try {
+    execSync(`${pyBin} -c "import scrapling, scrapegraphai, textual, rich, playwright"`, { stdio: "pipe" });
+    ok("Python scraper & TUI packages are installed ✓");
+  } catch {
+    warn("Some Python dependencies are missing", "Run: source .venv/bin/activate && pip install -r requirements.txt");
+  }
+} catch {
+  warn("Python 3.10+ not found or not configured", "Install Python >= 3.10 and run: python3 -m venv .venv && pip install -r requirements.txt");
 }
 
 // ── Data directory ────────────────────────────────────────────────────────────

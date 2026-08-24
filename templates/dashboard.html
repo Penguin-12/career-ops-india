@@ -3,329 +3,1232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>career-ops-india — Pipeline Dashboard</title>
+<title>Career-Ops India — Job Application Dashboard</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --border: #2d3148;
-    --text: #e8eaf0;
-    --muted: #7b82a0;
-    --green: #22c55e;
+    --bg: #0b0f19;
+    --surface: #121826;
+    --surface2: #1a2236;
+    --surface3: #222d46;
+    --border: #2a3652;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --green: #10b981;
+    --green-bg: rgba(16, 185, 129, 0.15);
     --yellow: #f59e0b;
+    --yellow-bg: rgba(245, 158, 11, 0.15);
     --red: #ef4444;
+    --red-bg: rgba(239, 68, 68, 0.15);
     --blue: #3b82f6;
-    --purple: #a855f7;
+    --blue-bg: rgba(59, 130, 246, 0.15);
+    --purple: #8b5cf6;
+    --purple-bg: rgba(139, 92, 246, 0.15);
     --orange: #f97316;
+    --orange-bg: rgba(249, 115, 22, 0.15);
+    --cyan: #06b6d4;
+    --cyan-bg: rgba(6, 182, 212, 0.15);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* Header */
   header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 18px 32px;
+    padding: 14px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  header h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
-  header h1 span { color: var(--blue); }
-  header .meta { font-size: 12px; color: var(--muted); }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-logo { font-size: 20px; }
+  .brand-title { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .brand-title span { color: var(--blue); }
+  .header-actions { display: flex; gap: 12px; align-items: center; }
+  .header-meta { font-size: 12px; color: var(--text-muted); }
 
-  .container { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
-
-  /* Stats row */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 28px;
+  /* Primary Action Button */
+  .btn-daily-hunt {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    transition: all 0.2s ease;
   }
-  .stat {
+  .btn-daily-hunt:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
+    transform: translateY(-1px);
+  }
+  .btn-daily-hunt:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Container */
+  .container { max-width: 1380px; margin: 0 auto; padding: 24px; }
+
+  /* Pipeline Progress Banner */
+  .pipeline-banner {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: none;
+    animation: fadeIn 0.2s ease-in-out;
   }
-  .stat .num { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-  .stat .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
-
-  /* Pipeline stages */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
   .pipeline-header {
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 12px;
   }
-  .kanban {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-  .column {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-  }
-  .column-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.7px;
-    margin-bottom: 10px;
+  .pipeline-title {
+    font-size: 14px;
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
   }
-  .column-title .dot { width: 7px; height: 7px; border-radius: 50%; }
-  .card {
+  .pipeline-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .step-item {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 7px;
+    border-radius: 6px;
     padding: 10px 12px;
-    margin-bottom: 8px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .step-item.active { border-color: var(--blue); background: rgba(59, 130, 246, 0.1); font-weight: 600; color: #fff; }
+  .step-item.done { border-color: var(--green); color: #cbd5e1; }
+  .step-item.pending { opacity: 0.5; }
+
+  .pipeline-metrics-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .pipeline-metrics-summary strong { color: var(--text); }
+
+  /* Stats Row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-val { font-size: 24px; font-weight: 800; line-height: 1.1; }
+  .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); }
+
+  /* Navigation Tabs */
+  .tabs-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+  }
+  .tab-btn:hover { background: var(--surface2); color: var(--text); }
+  .tab-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--border);
+  }
+  .tab-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--surface3);
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+  .tab-btn.active .tab-badge {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  /* Filters Bar */
+  .filters-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .search-box {
+    flex: 1 1 240px;
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px 8px 32px;
+    border-radius: 6px;
+    font-size: 12px;
+    outline: none;
+  }
+  .search-box input:focus { border-color: var(--blue); }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
     font-size: 12px;
   }
-  .card .company { font-weight: 600; color: var(--text); margin-bottom: 2px; }
-  .card .role    { color: var(--muted); font-size: 11px; }
-  .card .score   { margin-top: 6px; }
-  .card .date    { font-size: 10px; color: var(--muted); margin-top: 4px; }
-  .card a { color: var(--blue); text-decoration: none; font-size: 10px; }
-  .card a:hover { text-decoration: underline; }
-
-  /* Grade badges */
-  .grade {
-    display: inline-block;
-    padding: 1px 7px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
+  .filter-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
   }
-  .grade-A { background: #14532d; color: #86efac; }
-  .grade-B { background: #1c3a5e; color: #93c5fd; }
-  .grade-C { background: #3d2f00; color: #fcd34d; }
-  .grade-D { background: #3d1212; color: #fca5a5; }
-  .grade-F { background: #2d1f2d; color: #d8b4fe; }
+  .filter-select:focus { border-color: var(--blue); }
+  .btn-reset-filters {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .btn-reset-filters:hover { background: var(--surface2); color: var(--text); }
 
-  /* Full list table */
-  .section-title {
-    font-size: 14px;
-    font-weight: 600;
+  /* Queue Sections */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 14px;
-    padding-top: 8px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(410px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  /* Job Card */
+  .job-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .job-card:hover {
+    border-color: var(--blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-top { margin-bottom: 12px; }
+  .card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .company-title-wrap { flex: 1; }
+  .company-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .job-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin-top: 2px;
+    line-height: 1.35;
+  }
+
+  /* Badges */
+  .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .badge-tier0 { background: rgba(236, 72, 153, 0.18); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.35); }
+  .badge-tier1 { background: rgba(59, 130, 246, 0.18); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35); }
+  .badge-tier2 { background: rgba(100, 116, 139, 0.18); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.35); }
+  .badge-prio-go { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+  .badge-prio-good { background: rgba(59, 130, 246, 0.18); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35); }
+  
+  .badge-ai-apply { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.4); font-weight: 800; }
+  .badge-ai-consider { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 800; }
+  .badge-ai-skip { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+  .badge-hot { background: var(--green-bg); color: var(--green); }
+  .badge-fresh { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-active { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+  .badge-stale { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .badge-expired { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+  .badge-stretch { background: var(--red-bg); color: #f87171; }
+  .badge-primary { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+  .badge-risk { background: var(--red-bg); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+  .meta-chips {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .meta-chips span { display: inline-flex; align-items: center; gap: 3px; }
+
+  /* Match & AI Rationale Box */
+  .card-rationale {
+    font-size: 11px;
+    color: #94a3b8;
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin: 8px 0;
+    border-left: 3px solid var(--blue);
+  }
+  .card-rationale.ai-box { border-left-color: var(--green); }
+  .card-rationale .r-title { font-weight: 700; color: #cbd5e1; margin-bottom: 2px; }
+
+  /* Card Actions Footer */
+  .card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    justify-content: space-between;
     border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 10px;
+  }
+  .btn-group-left { display: flex; gap: 6px; align-items: center; }
+  .btn-group-right { display: flex; gap: 6px; align-items: center; }
+
+  .btn {
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .btn-apply-link {
+    background: var(--blue);
+    color: #fff;
+  }
+  .btn-apply-link:hover { background: #2563eb; }
+
+  .btn-mark-applied {
+    background: var(--green-bg);
+    color: var(--green);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+  }
+  .btn-mark-applied:hover { background: rgba(16, 185, 129, 0.25); }
+
+  .btn-save {
+    background: var(--surface2);
+    color: #cbd5e1;
+    border: 1px solid var(--border);
+  }
+  .btn-save:hover { background: var(--surface3); color: #fff; }
+
+  .btn-not-interested {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid transparent;
+  }
+  .btn-not-interested:hover { background: var(--red-bg); color: #f87171; }
+
+  .btn-reset {
+    background: var(--surface2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-reset:hover { background: var(--surface3); color: #fff; }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 48px 16px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    margin: 16px 0;
+  }
+  .empty-state h3 { color: var(--text); font-size: 15px; margin-bottom: 6px; }
+
+  /* All Jobs Table */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
   }
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
   th {
+    background: var(--surface2);
+    color: var(--text-muted);
     text-align: left;
-    font-size: 10px;
-    font-weight: 600;
+    padding: 10px 14px;
+    font-weight: 700;
     text-transform: uppercase;
+    font-size: 10px;
     letter-spacing: 0.6px;
-    color: var(--muted);
-    padding: 8px 12px;
     border-bottom: 1px solid var(--border);
   }
-  td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-  }
-  tr:hover td { background: var(--surface); }
-  .status-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 10px;
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:hover td { background: var(--surface2); }
+
+  /* Toast Notification */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    display: none;
+    z-index: 999;
+    align-items: center;
+    gap: 8px;
   }
-  .s-to_apply    { background: #1e2540; color: var(--muted); }
-  .s-applied     { background: #1c3a5e; color: #93c5fd; }
-  .s-hr_screen   { background: #3d2f00; color: #fcd34d; }
-  .s-technical   { background: #3d1f00; color: #fed7aa; }
-  .s-final_round { background: #2d1f00; color: #fdba74; }
-  .s-offer       { background: #14532d; color: #86efac; }
-  .s-accepted    { background: #064e3b; color: #6ee7b7; }
-  .s-rejected    { background: #3d1212; color: #fca5a5; }
-  .s-withdrawn   { background: #2d2d2d; color: var(--muted); }
-  .s-expired     { background: #2d1f2d; color: #d8b4fe; }
-
-  .empty { text-align: center; padding: 60px; color: var(--muted); font-size: 14px; }
-  .empty a { color: var(--blue); }
-
-  footer { text-align: center; padding: 32px; font-size: 11px; color: var(--muted); }
-  footer a { color: var(--blue); text-decoration: none; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>career-ops<span>-india</span> &nbsp;/&nbsp; Pipeline Dashboard</h1>
-  <span class="meta" id="meta"></span>
+  <div class="brand">
+    <span class="brand-logo">🎯</span>
+    <div class="brand-title">Career-Ops <span>Dashboard</span></div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-daily-hunt" id="btn-daily-hunt" onclick="triggerDailyHunt()">
+      🚀 Run Daily Job Hunt
+    </button>
+    <button class="btn btn-save" onclick="loadData(true)" style="padding:6px 12px;font-size:12px;">
+      🔄 Refresh
+    </button>
+  </div>
 </header>
 
 <div class="container">
-  <div id="app"></div>
-</div>
-
-<footer>
-  career-ops-india by <a href="https://github.com/AnojSKunte">Anoj S K</a> &nbsp;·&nbsp;
-  <a href="https://github.com/AnojSKunte/career-ops-india">GitHub</a>
-</footer>
-
-<script>
-const PIPELINE = {{PIPELINE_DATA}};
-
-const STATUS_ORDER = [
-  "offer", "final_round", "technical", "hr_screen",
-  "applied", "to_apply", "accepted", "rejected", "withdrawn", "expired"
-];
-
-const STATUS_COLORS = {
-  to_apply:    "#4b5563",
-  applied:     "#3b82f6",
-  hr_screen:   "#f59e0b",
-  technical:   "#f97316",
-  final_round: "#f97316",
-  offer:       "#22c55e",
-  accepted:    "#10b981",
-  rejected:    "#ef4444",
-  withdrawn:   "#6b7280",
-  expired:     "#a855f7",
-};
-
-const ACTIVE = ["to_apply","applied","hr_screen","technical","final_round","offer"];
-
-function gradeFromScore(score) {
-  if (!score) return null;
-  if (score >= 4.5) return "A";
-  if (score >= 4.0) return "B";
-  if (score >= 3.5) return "C";
-  if (score >= 3.0) return "D";
-  return "F";
-}
-
-function daysAgo(dateStr) {
-  if (!dateStr) return "";
-  const d = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
-  return d === 0 ? "today" : d === 1 ? "yesterday" : `${d}d ago`;
-}
-
-function render() {
-  const app = document.getElementById("app");
-  document.getElementById("meta").textContent =
-    `${PIPELINE.length} applications · Updated ${new Date().toLocaleDateString("en-IN")}`;
-
-  if (PIPELINE.length === 0) {
-    app.innerHTML = `<div class="empty">
-      <p>No applications tracked yet.</p>
-      <p style="margin-top:8px">Open Claude Code or Gemini CLI and run <code>/tracker</code> to start logging.</p>
-    </div>`;
-    return;
-  }
-
-  // Stats
-  const active    = PIPELINE.filter(j => ACTIVE.includes(j.status)).length;
-  const offers    = PIPELINE.filter(j => j.status === "offer" || j.status === "accepted").length;
-  const rejected  = PIPELINE.filter(j => j.status === "rejected").length;
-  const toApply   = PIPELINE.filter(j => j.status === "to_apply").length;
-  const applied   = PIPELINE.filter(j => j.status !== "to_apply").length;
-
-  const scores    = PIPELINE.map(j => j.score).filter(Boolean);
-  const avgScore  = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : "—";
-
-  // Conversion
-  const appCount  = PIPELINE.filter(j => j.status !== "to_apply").length;
-  const hrCount   = PIPELINE.filter(j => ["hr_screen","technical","final_round","offer","accepted"].includes(j.status)).length;
-  const convRate  = appCount > 0 ? Math.round(hrCount / appCount * 100) : 0;
-
-  app.innerHTML = `
-  <div class="stats">
-    <div class="stat"><div class="num" style="color:var(--blue)">${active}</div><div class="label">Active</div></div>
-    <div class="stat"><div class="num" style="color:var(--yellow)">${toApply}</div><div class="label">To Apply</div></div>
-    <div class="stat"><div class="num" style="color:var(--green)">${offers}</div><div class="label">Offers</div></div>
-    <div class="stat"><div class="num" style="color:var(--red)">${rejected}</div><div class="label">Rejected</div></div>
-    <div class="stat"><div class="num">${avgScore}</div><div class="label">Avg Score</div></div>
-    <div class="stat"><div class="num" style="color:var(--purple)">${convRate}%</div><div class="label">→ Interview</div></div>
+  <!-- Live Pipeline Banner -->
+  <div class="pipeline-banner" id="pipeline-banner">
+    <div class="pipeline-header">
+      <div class="pipeline-title" id="pipeline-title">
+        <span id="pipeline-spinner">⟳</span>
+        <span id="pipeline-status-text">Running Daily Job Hunt Pipeline...</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);" id="pipeline-time">Elapsed: 0s</div>
+    </div>
+    <div class="pipeline-steps">
+      <div class="step-item" id="step-scan"><span>○</span> 1. Scanning Portals</div>
+      <div class="step-item" id="step-select"><span>○</span> 2. Selecting Candidates</div>
+      <div class="step-item" id="step-eval-official"><span>○</span> 3. Evaluating Official ATS</div>
+      <div class="step-item" id="step-eval-discovery"><span>○</span> 4. Evaluating Discovery</div>
+      <div class="step-item" id="step-rebuild"><span>○</span> 5. Rebuilding Queue</div>
+    </div>
+    <div class="pipeline-metrics-summary" id="pipeline-metrics" style="display:none;"></div>
   </div>
 
-  <div class="pipeline-header">Pipeline Stages</div>
-  <div class="kanban" id="kanban"></div>
+  <!-- Stats Row -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-active" style="color:var(--blue)">-</div>
+      <div class="stat-label">Active Queue</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-saved" style="color:var(--yellow)">-</div>
+      <div class="stat-label">Saved for Later</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-applied" style="color:var(--green)">-</div>
+      <div class="stat-label">Applied</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-not-interested" style="color:var(--text-muted)">-</div>
+      <div class="stat-label">Not Interested</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-expired" style="color:var(--red)">-</div>
+      <div class="stat-label">Expired</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-total" style="color:var(--purple)">-</div>
+      <div class="stat-label">Total Scanned</div>
+    </div>
+  </div>
 
-  <div class="section-title">All Applications</div>
-  <table>
-    <thead><tr>
-      <th>Score</th><th>Company</th><th>Role</th><th>Status</th>
-      <th>Location</th><th>Salary</th><th>Found</th><th>Link</th>
-    </tr></thead>
-    <tbody id="table-body"></tbody>
-  </table>`;
+  <!-- Navigation Tabs -->
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab('queue')">
+      🎯 Daily Queue <span class="tab-badge" id="badge-queue">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('saved')">
+      💾 Saved <span class="tab-badge" id="badge-saved">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('applied')">
+      ✓ Applied <span class="tab-badge" id="badge-applied">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('not-interested')">
+      ✕ Not Interested <span class="tab-badge" id="badge-not-interested">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('expired')">
+      ✕ Expired <span class="tab-badge" id="badge-expired">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('all-jobs')">
+      🔍 All Scanned Jobs <span class="tab-badge" id="badge-all">0</span>
+    </button>
+  </div>
 
-  // Kanban
-  const kanban = document.getElementById("kanban");
-  const stages = ["offer", "final_round", "technical", "hr_screen", "applied", "to_apply"];
-  const stageLabels = {
-    offer: "🎉 Offer", final_round: "🔥 Final", technical: "💻 Technical",
-    hr_screen: "📞 HR Screen", applied: "✉️ Applied", to_apply: "📋 To Apply"
-  };
+  <!-- Filters Bar -->
+  <div class="filters-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="filter-search" placeholder="Search company, title, keywords..." oninput="applyFilters()">
+    </div>
+    <select class="filter-select" id="filter-role-family" onchange="applyFilters()">
+      <option value="">All Role Families</option>
+      <option value="backend">Backend</option>
+      <option value="platform_infra">Platform / Infra</option>
+      <option value="distributed_systems">Distributed Systems</option>
+      <option value="ai_ml">AI / ML</option>
+      <option value="fullstack">Fullstack</option>
+      <option value="general_sde">General SDE</option>
+      <option value="data_engineering">Data Engineering</option>
+    </select>
+    <select class="filter-select" id="filter-fit" onchange="applyFilters()">
+      <option value="">Primary & Stretch</option>
+      <option value="primary">Primary Matches Only</option>
+      <option value="stretch">Stretch Matches Only</option>
+    </select>
+    <select class="filter-select" id="filter-ai" onchange="applyFilters()">
+      <option value="">All AI Verdicts</option>
+      <option value="APPLY">AI APPLY Only</option>
+      <option value="CONSIDER">AI CONSIDER Only</option>
+      <option value="SKIP">AI SKIP Only</option>
+      <option value="unevaluated">Unevaluated Only</option>
+    </select>
+    <select class="filter-select" id="filter-location" onchange="applyFilters()">
+      <option value="">All Locations</option>
+      <option value="bengaluru">Bangalore / Bengaluru</option>
+      <option value="hyderabad">Hyderabad</option>
+      <option value="pune">Pune</option>
+      <option value="delhi">Delhi NCR / Gurgaon / Noida</option>
+      <option value="mumbai">Mumbai</option>
+      <option value="remote">Remote Only</option>
+    </select>
+    <button class="btn-reset-filters" onclick="resetFilters()">Reset Filters</button>
+  </div>
 
-  for (const stage of stages) {
-    const jobs = PIPELINE.filter(j => j.status === stage);
-    if (jobs.length === 0 && stage !== "to_apply" && stage !== "applied") continue;
-    const col = document.createElement("div");
-    col.className = "column";
-    col.innerHTML = `<div class="column-title">
-      <span class="dot" style="background:${STATUS_COLORS[stage]}"></span>
-      ${stageLabels[stage]} <span style="color:var(--muted);font-weight:400">(${jobs.length})</span>
-    </div>`;
-    for (const j of jobs.slice(0, 8)) {
-      const grade = gradeFromScore(j.score);
-      col.innerHTML += `<div class="card">
-        <div class="company">${j.company || "—"}</div>
-        <div class="role">${j.role || "—"}</div>
-        ${grade ? `<div class="score"><span class="grade grade-${grade}">${grade}</span></div>` : ""}
-        <div class="date">${daysAgo(j.date_found)}</div>
-        ${j.url ? `<div><a href="${j.url}" target="_blank">↗ View job</a></div>` : ""}
-      </div>`;
-    }
-    if (jobs.length > 8) {
-      col.innerHTML += `<div style="font-size:11px;color:var(--muted);text-align:center;padding:6px">+${jobs.length - 8} more</div>`;
-    }
-    kanban.appendChild(col);
-  }
+  <!-- Views -->
+  <!-- 1. Daily Queue Tab -->
+  <div id="view-queue">
+    <div class="section-header">
+      <div class="section-title" style="color:var(--orange)">🔥 1. AI Verified — Apply Now</div>
+      <div class="section-count" id="count-apply-now">0 opportunities</div>
+    </div>
+    <div class="jobs-grid" id="grid-apply-now"></div>
 
-  // Table — sorted by score desc, then by status priority
-  const sorted = [...PIPELINE].sort((a, b) => {
-    if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
-    return STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
-  });
+    <div class="section-header">
+      <div class="section-title" style="color:var(--yellow)">🟡 2. AI Evaluated — Consider / Backup</div>
+      <div class="section-count" id="count-consider">0 opportunities</div>
+    </div>
+    <div class="jobs-grid" id="grid-consider"></div>
 
-  const tbody = document.getElementById("table-body");
-  for (const j of sorted) {
-    const grade = gradeFromScore(j.score);
-    tbody.innerHTML += `<tr>
-      <td>${grade ? `<span class="grade grade-${grade}">${grade} ${j.score ? j.score.toFixed(1) : ""}</span>` : "—"}</td>
-      <td style="font-weight:600">${j.company || "—"}</td>
-      <td style="color:var(--muted)">${j.role || "—"}</td>
-      <td><span class="status-badge s-${j.status}">${j.status?.replace("_"," ") || "—"}</span></td>
-      <td style="color:var(--muted)">${j.location || "—"}</td>
-      <td style="color:var(--muted)">${j.salary_listed || "—"}</td>
-      <td style="color:var(--muted)">${daysAgo(j.date_found)}</td>
-      <td>${j.url ? `<a href="${j.url}" target="_blank" style="color:var(--blue)">↗</a>` : "—"}</td>
-    </tr>`;
+    <div class="section-header">
+      <div class="section-title" style="color:var(--blue)">📋 3. New / Not Yet AI Evaluated (Top Deterministic)</div>
+      <div class="section-count" id="count-unevaluated">0 opportunities</div>
+    </div>
+    <div class="jobs-grid" id="grid-unevaluated"></div>
+  </div>
+
+  <!-- 2. Saved Jobs Tab -->
+  <div id="view-saved" style="display:none">
+    <div class="section-header">
+      <div class="section-title" style="color:var(--yellow)">💾 Saved Opportunities</div>
+      <div class="section-count" id="count-saved-view">0 saved</div>
+    </div>
+    <div class="jobs-grid" id="grid-saved"></div>
+  </div>
+
+  <!-- 3. Applied Tab -->
+  <div id="view-applied" style="display:none">
+    <div class="section-header">
+      <div class="section-title" style="color:var(--green)">✓ Tracked Applications</div>
+      <div class="section-count" id="count-applied-view">0 applied</div>
+    </div>
+    <div class="jobs-grid" id="grid-applied"></div>
+  </div>
+
+  <!-- 4. Not Interested Tab -->
+  <div id="view-not-interested" style="display:none">
+    <div class="section-header">
+      <div class="section-title" style="color:var(--text-muted)">✕ Excluded / Not Interested</div>
+      <div class="section-count" id="count-not-interested-view">0 excluded</div>
+    </div>
+    <div class="jobs-grid" id="grid-not-interested"></div>
+  </div>
+
+  <!-- 5. Expired Jobs Tab -->
+  <div id="view-expired" style="display:none">
+    <div class="section-header">
+      <div class="section-title" style="color:var(--red)">✕ Expired Job Postings</div>
+      <div class="section-count" id="count-expired-view">0 expired</div>
+    </div>
+    <div class="jobs-grid" id="grid-expired"></div>
+  </div>
+
+  <!-- 6. All Jobs Table View -->
+  <div id="view-all-jobs" style="display:none">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Title</th>
+            <th>Role & Seniority</th>
+            <th>Location</th>
+            <th>Scores</th>
+            <th>Freshness</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-all-jobs"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+let DASHBOARD_DATA = null;
+let CURRENT_TAB = "queue";
+let PIPELINE_POLL_TIMER = null;
+let PIPELINE_START_TIME = null;
+
+async function loadData(showToastMsg = false) {
+  try {
+    const res = await fetch("/api/jobs");
+    if (!res.ok) throw new Error("Failed to fetch dashboard jobs data");
+    DASHBOARD_DATA = await res.json();
+    renderAll();
+    if (showToastMsg) showToast("Data refreshed successfully");
+  } catch (err) {
+    console.error(err);
+    showToast("Error loading data: " + err.message);
   }
 }
 
-render();
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.display = "flex";
+  setTimeout(() => { t.style.display = "none"; }, 3000);
+}
+
+// ── Daily Pipeline Trigger & Polling ──────────────────────────────────────────
+async function triggerDailyHunt() {
+  const btn = document.getElementById("btn-daily-hunt");
+  btn.disabled = true;
+  btn.textContent = "⏳ Starting Pipeline...";
+
+  try {
+    const res = await fetch("/api/pipeline/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    if (res.status === 409) {
+      showToast("Daily pipeline is already running in background.");
+    } else if (!res.ok) {
+      throw new Error(`Server returned HTTP ${res.status}`);
+    }
+
+    startPipelineMonitoring();
+  } catch (err) {
+    console.error(err);
+    showToast(`Failed to start pipeline: ${err.message}`);
+    btn.disabled = false;
+    btn.textContent = "🚀 Run Daily Job Hunt";
+  }
+}
+
+function startPipelineMonitoring() {
+  const banner = document.getElementById("pipeline-banner");
+  banner.style.display = "block";
+  PIPELINE_START_TIME = Date.now();
+
+  if (PIPELINE_POLL_TIMER) clearInterval(PIPELINE_POLL_TIMER);
+  PIPELINE_POLL_TIMER = setInterval(pollPipelineStatus, 1200);
+  pollPipelineStatus();
+}
+
+async function pollPipelineStatus() {
+  try {
+    const res = await fetch("/api/pipeline/status");
+    if (!res.ok) return;
+    const status = await res.json();
+
+    const btn = document.getElementById("btn-daily-hunt");
+    const banner = document.getElementById("pipeline-banner");
+    const title = document.getElementById("pipeline-title");
+    const timeEl = document.getElementById("pipeline-time");
+    const metricsEl = document.getElementById("pipeline-metrics");
+
+    const elapsed = Math.round((Date.now() - (Date.parse(status.started_at || "") || PIPELINE_START_TIME || Date.now())) / 1000);
+    timeEl.textContent = `Elapsed: ${Math.max(0, elapsed)}s`;
+
+    if (status.status === "running") {
+      banner.style.display = "block";
+      btn.disabled = true;
+      btn.textContent = "⟳ Pipeline Running...";
+
+      updateStep("step-scan", status.phase === "scanning" ? "active" : (status.phase ? "done" : "pending"), "1. Scanning Portals");
+      updateStep("step-select", status.phase === "selecting" ? "active" : (["evaluating_official", "evaluating_discovery", "rebuilding_queue", "complete"].includes(status.phase) ? "done" : "pending"), "2. Selecting Candidates");
+      updateStep("step-eval-official", status.phase === "evaluating_official" ? "active" : (["evaluating_discovery", "rebuilding_queue", "complete"].includes(status.phase) ? "done" : "pending"), `3. Evaluating ATS (${status.evaluation?.official_evaluated || 0}/${status.evaluation?.official_selected || 0})`);
+      updateStep("step-eval-discovery", status.phase === "evaluating_discovery" ? "active" : (["rebuilding_queue", "complete"].includes(status.phase) ? "done" : "pending"), `4. Evaluating Discovery (${status.evaluation?.aggregator_evaluated || 0}/${status.evaluation?.aggregator_selected || 0})`);
+      updateStep("step-rebuild", status.phase === "rebuilding_queue" ? "active" : "pending", "5. Rebuilding Queue");
+    } else if (status.status === "complete" || status.status === "completed_with_warnings") {
+      clearInterval(PIPELINE_POLL_TIMER);
+      PIPELINE_POLL_TIMER = null;
+      btn.disabled = false;
+      btn.textContent = "🚀 Run Daily Job Hunt";
+
+      document.querySelectorAll(".step-item").forEach(el => {
+        el.className = "step-item done";
+        el.querySelector("span").textContent = "✓";
+      });
+
+      title.innerHTML = `<span style="color:var(--green)">✅</span> Daily Job Hunt Complete (${status.duration_sec || elapsed}s)`;
+      metricsEl.style.display = "flex";
+      metricsEl.innerHTML = `
+        <div>🔥 <strong>${status.queue?.apply ?? 0}</strong> Apply Now</div>
+        <div>🟡 <strong>${status.queue?.consider ?? 0}</strong> Consider</div>
+        <div>📋 <strong>${status.queue?.new ?? 0}</strong> New Matches</div>
+        <div>🤖 AI Calls: <strong>${status.evaluation?.ai_calls_made ?? 0}</strong></div>
+        <div>⚡ Cached Used: <strong>${status.evaluation?.cached_reused ?? 0}</strong></div>
+        <div>⚠️ Errors: <strong>${(status.errors || []).length}</strong></div>
+      `;
+
+      showToast("Daily job hunt completed!");
+      await loadData(false);
+    } else if (status.status === "failed") {
+      clearInterval(PIPELINE_POLL_TIMER);
+      PIPELINE_POLL_TIMER = null;
+      btn.disabled = false;
+      btn.textContent = "🚀 Run Daily Job Hunt";
+      title.innerHTML = `<span style="color:var(--red)">❌</span> Pipeline Failed`;
+      showToast("Daily pipeline failed: " + (status.errors?.[0] || "Unknown error"));
+    }
+  } catch (err) {
+    console.error("Polling error:", err);
+  }
+}
+
+function updateStep(stepId, state, label) {
+  const el = document.getElementById(stepId);
+  if (!el) return;
+  el.className = `step-item ${state}`;
+  const icon = state === "done" ? "✓" : (state === "active" ? "⟳" : "○");
+  el.innerHTML = `<span>${icon}</span> ${label}`;
+}
+
+function switchTab(tabName) {
+  CURRENT_TAB = tabName;
+  document.getElementById("view-queue").style.display = tabName === "queue" ? "block" : "none";
+  document.getElementById("view-saved").style.display = tabName === "saved" ? "block" : "none";
+  document.getElementById("view-applied").style.display = tabName === "applied" ? "block" : "none";
+  document.getElementById("view-not-interested").style.display = tabName === "not-interested" ? "block" : "none";
+  document.getElementById("view-expired").style.display = tabName === "expired" ? "block" : "none";
+  document.getElementById("view-all-jobs").style.display = tabName === "all-jobs" ? "block" : "none";
+
+  const tabs = ["queue", "saved", "applied", "not-interested", "expired", "all-jobs"];
+  document.querySelectorAll(".tab-btn").forEach((btn, idx) => {
+    btn.classList.toggle("active", tabs[idx] === tabName);
+  });
+
+  applyFilters();
+}
+
+async function updateJobState(jobId, status, notes = "") {
+  try {
+    const res = await fetch("/api/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jobId, status, notes })
+    });
+    if (!res.ok) throw new Error("Failed to update status");
+    showToast(`Job status updated to ${status}`);
+    await loadData(false);
+  } catch (err) {
+    console.error(err);
+    showToast("Error updating job: " + err.message);
+  }
+}
+
+async function setLifecycleStatus(jobId, status, notes = "") {
+  try {
+    const res = await fetch("/api/lifecycle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jobId, status, notes })
+    });
+    if (!res.ok) throw new Error("Failed to update lifecycle");
+    showToast(`Job lifecycle marked as ${status}`);
+    await loadData(false);
+  } catch (err) {
+    console.error(err);
+    showToast("Error updating lifecycle: " + err.message);
+  }
+}
+
+function matchesFilters(job) {
+  const query = (document.getElementById("filter-search").value || "").toLowerCase().trim();
+  const roleFamily = document.getElementById("filter-role-family").value;
+  const fit = document.getElementById("filter-fit").value;
+  const ai = document.getElementById("filter-ai").value;
+  const loc = (document.getElementById("filter-location").value || "").toLowerCase();
+
+  if (query) {
+    const searchTarget = `${job.company || ""} ${job.title || ""} ${job.location || ""} ${job.function || ""} ${job.role_family || ""}`.toLowerCase();
+    if (!searchTarget.includes(query)) return false;
+  }
+
+  if (roleFamily) {
+    const jobFam = (job.role_family || job.function || "").toLowerCase();
+    if (jobFam !== roleFamily.toLowerCase()) return false;
+  }
+
+  if (fit === "primary" && job.is_stretch) return false;
+  if (fit === "stretch" && !job.is_stretch) return false;
+
+  if (ai) {
+    if (ai === "unevaluated") {
+      if (job.ai_evaluation) return false;
+    } else {
+      if (!job.ai_evaluation || job.ai_evaluation.recommendation !== ai) return false;
+    }
+  }
+
+  if (loc) {
+    const jobLoc = (job.location || "").toLowerCase();
+    if (loc === "remote") {
+      if (!job.remote && !jobLoc.includes("remote")) return false;
+    } else {
+      if (!jobLoc.includes(loc)) return false;
+    }
+  }
+
+  return true;
+}
+
+function resetFilters() {
+  document.getElementById("filter-search").value = "";
+  document.getElementById("filter-role-family").value = "";
+  document.getElementById("filter-fit").value = "";
+  document.getElementById("filter-ai").value = "";
+  document.getElementById("filter-location").value = "";
+  applyFilters();
+}
+
+function formatLabel(str) {
+  return String(str || "unknown").replace(/_/g, " ").toUpperCase();
+}
+
+function renderJobCard(j, currentContext = "queue") {
+  const ai = j.ai_evaluation;
+  const isStretch = Boolean(j.is_stretch);
+  const freshClass = j.freshness_tier === "hot" ? "badge-hot" : (j.freshness_tier === "fresh" ? "badge-fresh" : "badge-active");
+  const freshText = j.freshness_tier === "hot" ? "🟢 Hot (0-7d)" : (j.freshness_tier === "fresh" ? "🟡 Fresh (8-14d)" : "⚪ Active");
+  const prioClass = (j.priority === "GO" ? "badge-prio-go" : "badge-prio-good");
+  const tierClass = j.tier === "0" ? "badge-tier0" : (j.tier === "1" ? "badge-tier1" : "badge-tier2");
+  
+  const roleLabel = formatLabel(j.role_family || j.function || "general_sde");
+  const seniorityLabel = formatLabel(j.job_seniority || j.seniority || j.level || "sde_2");
+  const fitLabel = isStretch ? "STRETCH (5-7 YOE)" : "PRIMARY (2-4 YOE)";
+
+  // Target application URL (apply_url > url > source_url)
+  const targetUrl = j.apply_url || j.url || j.source_url || "#";
+  const isAggregator = j.source_type === "aggregator" || j.source === "naukri" || j.source === "discovery";
+
+  let aiBadgeHtml = "";
+  if (ai) {
+    const aiRecClass = ai.recommendation === "APPLY" ? "badge-ai-apply" : (ai.recommendation === "CONSIDER" ? "badge-ai-consider" : "badge-ai-skip");
+    aiBadgeHtml = `<span class="badge ${aiRecClass}">🤖 AI: ${ai.recommendation} (${ai.ai_score}/100)</span>`;
+  }
+
+  let lifecycleBadgeHtml = "";
+  if (j.lifecycle?.status === "expired") {
+    lifecycleBadgeHtml = `<span class="badge badge-expired">✕ EXPIRED</span>`;
+  } else if (j.lifecycle?.status === "stale") {
+    lifecycleBadgeHtml = `<span class="badge badge-stale">⚠ STALE</span>`;
+  }
+
+  let rationaleHtml = "";
+  if (ai) {
+    rationaleHtml = `
+      <div class="card-rationale ai-box">
+        ${ai.why_apply ? `<div style="color:#34d399;font-weight:600;margin-bottom:3px;">💡 Why Apply: ${ai.why_apply}</div>` : ""}
+        ${ai.why_not ? `<div style="color:#f87171;font-weight:600;margin-bottom:3px;">⚠️ Why Not: ${ai.why_not}</div>` : ""}
+        ${ai.strengths && ai.strengths.length ? `<div style="margin-top:2px;">✨ Strengths: ${ai.strengths.slice(0, 2).join(" | ")}</div>` : ""}
+      </div>
+    `;
+  } else if (j.score_reasons && j.score_reasons.length) {
+    rationaleHtml = `
+      <div class="card-rationale">
+        <div class="r-title">Match Rationale (${j.score || "N/A"}/100 Det Score):</div>
+        <div>${j.score_reasons.slice(0, 2).join("; ")}</div>
+      </div>
+    `;
+  }
+
+  const staffingAlert = (j.discovery_risk === "staffing_agency_risk") ?
+    `<span class="badge badge-risk" title="Staffing agency or consultancy">⚠️ Staffing Risk</span>` : "";
+
+  const aggregatorTag = isAggregator ?
+    `<span class="badge badge-tier2" title="Source aggregator: ${j.source}">Aggregator: ${j.source}</span>` :
+    `<span class="badge badge-prio-good">Direct ATS</span>`;
+
+  // Action Buttons
+  let actionBtnsHtml = "";
+  if (currentContext === "queue") {
+    actionBtnsHtml = `
+      <div class="btn-group-left">
+        <a href="${targetUrl}" target="_blank" rel="noopener" class="btn btn-apply-link">Apply ↗</a>
+        <button class="btn btn-mark-applied" onclick="updateJobState('${j.job_id}', 'applied')">✓ Mark Applied</button>
+      </div>
+      <div class="btn-group-right">
+        <button class="btn btn-save" onclick="updateJobState('${j.job_id}', 'saved')">💾 Save</button>
+        <button class="btn btn-not-interested" onclick="updateJobState('${j.job_id}', 'not_interested')">✕ Pass</button>
+        <button class="btn btn-not-interested" onclick="setLifecycleStatus('${j.job_id}', 'expired')" title="Mark job as closed/expired">✕ Expired</button>
+      </div>
+    `;
+  } else if (currentContext === "saved") {
+    actionBtnsHtml = `
+      <div class="btn-group-left">
+        <a href="${targetUrl}" target="_blank" rel="noopener" class="btn btn-apply-link">Apply ↗</a>
+        <button class="btn btn-mark-applied" onclick="updateJobState('${j.job_id}', 'applied')">✓ Mark Applied</button>
+      </div>
+      <div class="btn-group-right">
+        <button class="btn btn-reset" onclick="updateJobState('${j.job_id}', 'new')">↩ Unsave</button>
+        <button class="btn btn-not-interested" onclick="updateJobState('${j.job_id}', 'not_interested')">✕ Pass</button>
+        <button class="btn btn-not-interested" onclick="setLifecycleStatus('${j.job_id}', 'expired')" title="Mark job as closed/expired">✕ Expired</button>
+      </div>
+    `;
+  } else if (currentContext === "applied") {
+    actionBtnsHtml = `
+      <div class="btn-group-left">
+        <a href="${targetUrl}" target="_blank" rel="noopener" class="btn btn-apply-link">View Job ↗</a>
+        <span style="font-size:11px;color:var(--green);font-weight:600;">✓ Applied (${j.application_state?.updated_at ? new Date(j.application_state.updated_at).toLocaleDateString() : "Tracked"})</span>
+      </div>
+      <div class="btn-group-right">
+        <button class="btn btn-reset" onclick="updateJobState('${j.job_id}', 'new')">↩ Reset</button>
+        <button class="btn btn-not-interested" onclick="setLifecycleStatus('${j.job_id}', 'expired')" title="Mark job as closed/expired">✕ Expired</button>
+      </div>
+    `;
+  } else if (currentContext === "not_interested") {
+    actionBtnsHtml = `
+      <div class="btn-group-left">
+        <a href="${targetUrl}" target="_blank" rel="noopener" class="btn btn-save">View Link ↗</a>
+      </div>
+      <div class="btn-group-right">
+        <button class="btn btn-mark-applied" onclick="updateJobState('${j.job_id}', 'applied')">✓ Move to Applied</button>
+        <button class="btn btn-reset" onclick="updateJobState('${j.job_id}', 'new')">↩ Restore to Queue</button>
+      </div>
+    `;
+  } else if (currentContext === "expired") {
+    actionBtnsHtml = `
+      <div class="btn-group-left">
+        <a href="${targetUrl}" target="_blank" rel="noopener" class="btn btn-save">View Link ↗</a>
+      </div>
+      <div class="btn-group-right">
+        <button class="btn btn-mark-applied" onclick="setLifecycleStatus('${j.job_id}', 'active')">↩ Restore Active</button>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="job-card" id="card-${j.job_id}">
+      <div class="card-top">
+        <div class="card-header-row">
+          <div class="company-title-wrap">
+            <div class="company-name">
+              ${j.company}
+              <span class="badge ${tierClass}">Tier ${j.tier || 2}</span>
+              <span class="badge ${prioClass}">${j.priority || "GOOD"}</span>
+            </div>
+            <div class="job-title">${j.title}</div>
+          </div>
+        </div>
+
+        <div class="meta-chips">
+          <span>📍 ${j.location || "India"}</span>
+          <span>🕒 ${freshText} (${j.age_days ?? 0}d)</span>
+          ${j.remote ? `<span>🌐 Remote</span>` : ""}
+        </div>
+
+        <div class="badge-row">
+          <span class="badge ${isStretch ? 'badge-stretch' : 'badge-primary'}">${fitLabel}</span>
+          <span class="badge badge-tier2">${roleLabel}</span>
+          <span class="badge badge-tier2">${seniorityLabel}</span>
+          ${aiBadgeHtml}
+          ${lifecycleBadgeHtml}
+          ${staffingAlert}
+          ${aggregatorTag}
+        </div>
+
+        ${rationaleHtml}
+      </div>
+
+      <div class="card-footer">
+        ${actionBtnsHtml}
+      </div>
+    </div>
+  `;
+}
+
+function renderGrid(containerId, jobs, context) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const filtered = (jobs || []).filter(matchesFilters);
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3>No matching opportunities in this section</h3><p>Try clearing filters or running the daily hunt.</p></div>`;
+  } else {
+    container.innerHTML = filtered.map(j => renderJobCard(j, context)).join("");
+  }
+}
+
+function renderAll() {
+  if (!DASHBOARD_DATA) return;
+
+  const counts = DASHBOARD_DATA.counts || {};
+  document.getElementById("stat-active").textContent = counts.active ?? 0;
+  document.getElementById("stat-saved").textContent = counts.saved ?? 0;
+  document.getElementById("stat-applied").textContent = counts.applied ?? 0;
+  document.getElementById("stat-not-interested").textContent = counts.not_interested ?? 0;
+  document.getElementById("stat-expired").textContent = counts.expired ?? 0;
+  document.getElementById("stat-total").textContent = counts.total ?? 0;
+
+  document.getElementById("badge-queue").textContent = counts.active ?? 0;
+  document.getElementById("badge-saved").textContent = counts.saved ?? 0;
+  document.getElementById("badge-applied").textContent = counts.applied ?? 0;
+  document.getElementById("badge-not-interested").textContent = counts.not_interested ?? 0;
+  document.getElementById("badge-expired").textContent = counts.expired ?? 0;
+  document.getElementById("badge-all").textContent = counts.total ?? 0;
+
+  applyFilters();
+}
+
+function applyFilters() {
+  if (!DASHBOARD_DATA) return;
+
+  const q = DASHBOARD_DATA.queue || {};
+  const applyList = q.apply || [];
+  const considerList = q.consider || [];
+  const unevalList = (q.unevaluated || []).slice(0, 30);
+
+  // 1. Queue Tab
+  renderGrid("grid-apply-now", applyList, "queue");
+  document.getElementById("count-apply-now").textContent = `${applyList.filter(matchesFilters).length} opportunities`;
+
+  renderGrid("grid-consider", considerList, "queue");
+  document.getElementById("count-consider").textContent = `${considerList.filter(matchesFilters).length} opportunities`;
+
+  renderGrid("grid-unevaluated", unevalList, "queue");
+  document.getElementById("count-unevaluated").textContent = `${unevalList.filter(matchesFilters).length} opportunities`;
+
+  // 2. Saved Tab
+  const savedList = DASHBOARD_DATA.saved || [];
+  renderGrid("grid-saved", savedList, "saved");
+  document.getElementById("count-saved-view").textContent = `${savedList.filter(matchesFilters).length} saved`;
+
+  // 3. Applied Tab
+  const appliedList = DASHBOARD_DATA.applied || [];
+  renderGrid("grid-applied", appliedList, "applied");
+  document.getElementById("count-applied-view").textContent = `${appliedList.filter(matchesFilters).length} applied`;
+
+  // 4. Not Interested Tab
+  const notIntList = DASHBOARD_DATA.not_interested || [];
+  renderGrid("grid-not-interested", notIntList, "not_interested");
+  document.getElementById("count-not-interested-view").textContent = `${notIntList.filter(matchesFilters).length} excluded`;
+
+  // 5. Expired Tab
+  const expiredList = DASHBOARD_DATA.expired || [];
+  renderGrid("grid-expired", expiredList, "expired");
+  document.getElementById("count-expired-view").textContent = `${expiredList.filter(matchesFilters).length} expired`;
+
+  // 6. All Jobs Table
+  const allList = (DASHBOARD_DATA.all || []).filter(matchesFilters);
+  const tbody = document.getElementById("tbody-all-jobs");
+  if (tbody) {
+    if (allList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);">No matching jobs found.</td></tr>`;
+    } else {
+      tbody.innerHTML = allList.map(j => {
+        const st = j.application_state?.status || "new";
+        const lc = j.lifecycle?.status || "active";
+        let badgeHtml = "";
+        if (lc === "expired") {
+          badgeHtml = `<span class="badge badge-expired">Expired</span>`;
+        } else if (lc === "stale") {
+          badgeHtml = `<span class="badge badge-stale">Stale</span>`;
+        } else if (st === "applied") {
+          badgeHtml = `<span class="badge badge-ai-apply">Applied</span>`;
+        } else if (st === "saved") {
+          badgeHtml = `<span class="badge badge-ai-consider">Saved</span>`;
+        } else if (st === "not_interested") {
+          badgeHtml = `<span class="badge badge-ai-skip">Not Interested</span>`;
+        } else {
+          badgeHtml = `<span class="badge badge-primary">New</span>`;
+        }
+
+        const targetUrl = j.apply_url || j.url || j.source_url || "#";
+        return `
+          <tr>
+            <td><strong>${j.company}</strong> <span class="badge badge-tier${j.tier || 2}">T${j.tier || 2}</span></td>
+            <td><strong>${j.title}</strong></td>
+            <td>${formatLabel(j.role_family || j.function)} <span style="color:var(--text-muted)">(${j.job_seniority || j.seniority || "mid"})</span></td>
+            <td>${j.location || "India"}</td>
+            <td>Det: ${j.score || "N/A"}${j.ai_evaluation ? ` | AI: ${j.ai_evaluation.ai_score}` : ""}</td>
+            <td>${j.freshness_tier || "active"} (${j.age_days ?? 0}d)</td>
+            <td>${badgeHtml}</td>
+            <td>
+              <a href="${targetUrl}" target="_blank" rel="noopener" class="btn btn-apply-link" style="padding:3px 8px;font-size:10px;">Apply ↗</a>
+              <button class="btn btn-save" onclick="updateJobState('${j.job_id}', 'saved')" style="padding:3px 8px;font-size:10px;">Save</button>
+              <button class="btn btn-mark-applied" onclick="updateJobState('${j.job_id}', 'applied')" style="padding:3px 8px;font-size:10px;">✓</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+  }
+}
+
+// Initial Load & Pipeline Status Check
+window.addEventListener("DOMContentLoaded", () => {
+  loadData(false);
+  // Check if pipeline is running already
+  fetch("/api/pipeline/status")
+    .then(r => r.json())
+    .then(st => {
+      if (st.status === "running") {
+        startPipelineMonitoring();
+      }
+    })
+    .catch(() => {});
+});
 </script>
 </body>
 </html>

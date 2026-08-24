@@ -9,10 +9,17 @@ Run the actual scan: `node scripts/scan.mjs`
 Then interpret `data/scan_results.json` and present results.
 
 ## Filtering Logic (from profile.yml)
-- Title match: job title contains any target role keyword
-- Keyword fallback: JD contains 3+ analytics/data keywords
-- Location: matches preference OR remote
-- Experience: skip if required > candidate years + 1
+- Title: job title contains a complete configured target-role phrase; broad
+  single-word matches are not accepted.
+- Level: manager, director, staff, lead, architect, and explicitly out-of-scope
+  support/test titles are excluded.
+- Location: matches a configured location (including Delhi NCR and Bangalore
+  aliases), or is remote only when `Remote` is configured.
+- Freshness: excludes postings without a valid date and postings older than
+  `search.freshness_days`.
+- Experience: when a JD explicitly states a years-of-experience range, it must
+  overlap `search.experience_filter`; postings with no stated requirement remain
+  available for evaluation.
 
 ## Output Format
 ```

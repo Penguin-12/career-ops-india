@@ -1,0 +1,327 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# PRIORITY TARGETS REGISTRY (OG & High-Value Engineering Employers)
+# ─────────────────────────────────────────────────────────────────────────────
+
+priority_targets:
+  # ── Big Tech ───────────────────────────────────────────────────────────────
+  - name: NVIDIA
+    tier: "1"
+    category: big-tech
+    india_presence: "Bangalore, Hyderabad, Pune (Core GPU, CUDA, AI Systems, Deep Learning)"
+    job_source: Workday
+    cxs_endpoint: "https://nvidia.wd5.myworkdayjobs.com/wday/cxs/nvidia/NVIDIAExternalCareerSite/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Workday Adapter)"
+    expected_value: "Tier 1 AI / Systems Sweet Spot (260+ India roles)"
+
+  - name: Amazon
+    tier: "1"
+    category: big-tech
+    india_presence: "Bangalore, Hyderabad, Chennai, Pune, Delhi NCR (AWS, Core Retail, Kindle, Ads)"
+    job_source: Amazon Jobs Public REST API
+    cxs_endpoint: "https://www.amazon.jobs/en/search.json?country=IND&category[]=software-development"
+    adapter_status: "API_AVAILABLE_READY"
+    adapter_difficulty: "Low (Standard Public JSON GET API)"
+    expected_value: "Massive (~450 active India SDE I/II/III & ML openings)"
+
+  - name: Microsoft
+    tier: "1"
+    category: big-tech
+    india_presence: "Hyderabad, Bangalore, Noida (Azure, Office 365, Developer Division, Bing/AI)"
+    job_source: Microsoft GCS Careers API / Custom
+    cxs_endpoint: "https://gcsservices.careers.microsoft.com/search/api/v1/search?lc=India"
+    adapter_status: "API_DISCOVERED"
+    adapter_difficulty: "Medium (Custom GCS JSON API with header formatting)"
+    expected_value: "Extremely High (Hundreds of Azure/SDE roles in IDC)"
+
+  - name: Google
+    tier: "1"
+    category: big-tech
+    india_presence: "Bangalore, Hyderabad, Gurgaon, Mumbai (Google Cloud, Search, Android, Ads, AI)"
+    job_source: Google Careers Internal API / Custom
+    cxs_endpoint: "https://careers.google.com/api/v3/search/"
+    adapter_status: "NEEDS_CUSTOM_CONNECTOR"
+    adapter_difficulty: "Medium-High (Proprietary schema / pagination)"
+    expected_value: "Top-Tier SDE & Cloud Infrastructure"
+
+  - name: Meta
+    tier: "1"
+    category: big-tech
+    india_presence: "Bangalore, Gurgaon (Enterprise Tech, AI Research, WhatsApp Business)"
+    job_source: Meta Careers GraphQL
+    cxs_endpoint: "https://www.metacareers.com/graphql"
+    adapter_status: "NEEDS_GRAPHQL_CONNECTOR"
+    adapter_difficulty: "Medium (GraphQL Query interface without auth)"
+    expected_value: "High Tier-1 AI / Infrastructure (Select headcount)"
+
+  - name: Apple
+    tier: "1"
+    category: big-tech
+    india_presence: "Hyderabad, Bangalore (Maps, Siri, Core OS, Cloud Services, Hardware Engineering)"
+    job_source: Apple Jobs API
+    cxs_endpoint: "https://jobs.apple.com/api/v1/search"
+    adapter_status: "NEEDS_CUSTOM_CONNECTOR"
+    adapter_difficulty: "Medium-High (Proprietary session cookies / headers)"
+    expected_value: "High Tier-1 Core Systems & Services"
+
+  # ── Top Product & Infrastructure Tech ───────────────────────────────────────
+  - name: Salesforce
+    tier: "1"
+    category: top-product
+    india_presence: "Hyderabad, Bangalore, Mumbai, Pune (Core Cloud, Einstein AI, Data Cloud, Slack)"
+    job_source: Workday
+    cxs_endpoint: "https://salesforce.wd12.myworkdayjobs.com/wday/cxs/salesforce/External_Career_Site/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Workday Adapter)"
+    expected_value: "Tier 1 Enterprise Cloud & Agentic AI (260+ India roles)"
+
+  - name: Adobe
+    tier: "1"
+    category: top-product
+    india_presence: "Noida, Bangalore (Firefly AI, Document Cloud, Creative Cloud, Experience Platform)"
+    job_source: Workday
+    cxs_endpoint: "https://adobe.wd5.myworkdayjobs.com/wday/cxs/adobe/external_experienced/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Workday Adapter)"
+    expected_value: "Tier 1 AI / Backend (140+ India roles)"
+
+  - name: Databricks
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore (Apache Spark, Delta Lake, Mosaic AI, Data Platform)"
+    job_source: Greenhouse
+    cxs_endpoint: "https://boards-api.greenhouse.io/v1/boards/databricks/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Greenhouse Adapter)"
+    expected_value: "Tier 1 Data Platform & AI Agents"
+
+  - name: Stripe
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore, Remote (Core Payments, Risk, Global Infrastructure)"
+    job_source: Greenhouse
+    cxs_endpoint: "https://boards-api.greenhouse.io/v1/boards/stripe/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Greenhouse Adapter)"
+    expected_value: "Tier 1 Core Infrastructure & Distributed Systems"
+
+  - name: Coinbase
+    tier: "1"
+    category: top-product
+    india_presence: "Remote - India (Crypto Infrastructure, Trading Engine, Wallets, Security)"
+    job_source: Greenhouse
+    cxs_endpoint: "https://boards-api.greenhouse.io/v1/boards/coinbase/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Greenhouse Adapter)"
+    expected_value: "Tier 1 Remote Infrastructure / High Compensation"
+
+  - name: Rubrik
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore (Data Security, Cloud Vault, Zero Trust Architecture)"
+    job_source: Greenhouse
+    cxs_endpoint: "https://boards-api.greenhouse.io/v1/boards/rubrik/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Greenhouse Adapter)"
+    expected_value: "Tier 1 Data Platform & Security"
+
+  - name: Postman
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore, Hyderabad (API Platform, Cloud Gateway, Observability)"
+    job_source: Greenhouse
+    cxs_endpoint: "https://boards-api.greenhouse.io/v1/boards/postman/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Greenhouse Adapter)"
+    expected_value: "Tier 1 Developer Tools & IAM Platforms"
+
+  - name: Cloudflare
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore, Remote (Edge Compute, Workers, Distributed Systems, Network Security)"
+    job_source: Greenhouse
+    cxs_endpoint: "https://boards-api.greenhouse.io/v1/boards/cloudflare/jobs"
+    adapter_status: "VERIFIED_READY"
+    adapter_difficulty: "Low (Direct Greenhouse Add)"
+    expected_value: "Tier 1 Edge / Distributed Systems"
+
+  - name: Uber
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore, Hyderabad (Core Mobility, Maps, Payments, Fulfillment Platform)"
+    job_source: Uber Careers API / iCIMS
+    cxs_endpoint: "https://www.uber.com/api/loadSearchJobsResults"
+    adapter_status: "BLOCKED_ANTI_BOT"
+    adapter_difficulty: "High (Cloudflare Bot Protection / WAF)"
+    expected_value: "Tier 1 Large-Scale Distributed Backend"
+
+  - name: Atlassian
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore, Remote (Jira, Confluence, Bitbucket Cloud, Platform Infrastructure)"
+    job_source: Custom SPA Portal
+    cxs_endpoint: "https://www.atlassian.com/company/careers"
+    adapter_status: "NEEDS_CUSTOM_CONNECTOR"
+    adapter_difficulty: "Medium (Hydrated JSON / SPA extraction)"
+    expected_value: "Tier 1 Developer Infrastructure & Remote Culture"
+
+  - name: LinkedIn
+    tier: "1"
+    category: top-product
+    india_presence: "Bangalore (Economic Graph, Distributed Feed, Kafka Core, Big Data)"
+    job_source: Microsoft Careers / SmartRecruiters
+    cxs_endpoint: "https://gcsservices.careers.microsoft.com/search/api/v1/search"
+    adapter_status: "NEEDS_GCS_CONNECTOR"
+    adapter_difficulty: "Medium (Integrated via MS GCS API)"
+    expected_value: "Tier 1 Distributed Systems & Search"
+
+  - name: Snowflake
+    tier: "1"
+    category: top-product
+    india_presence: "Pune, Bangalore (Core Database Engine, Cloud Virtual Warehouse, Query Optimization)"
+    job_source: Phenom People
+    cxs_endpoint: "https://careers.snowflake.com/api/jobs"
+    adapter_status: "NEEDS_PHENOM_ADAPTER"
+    adapter_difficulty: "Medium (Standard Phenom JSON API)"
+    expected_value: "Tier 1 High-Performance Database & Cloud Storage"
+
+  - name: BrowserStack
+    tier: "1"
+    category: top-product
+    india_presence: "Mumbai, Bangalore, Remote (Cloud Device Grid, Real Device Testing, DevOps)"
+    job_source: Workday / Custom
+    cxs_endpoint: "https://browserstack.com/careers"
+    adapter_status: "NEEDS_SITE_DISCOVERY"
+    adapter_difficulty: "Medium (Discover Workday tenant site or JSON route)"
+    expected_value: "Tier 1 Developer Tools & Cloud Infrastructure"
+
+  # ── Top GCC & Financial Tech ───────────────────────────────────────────────
+  - name: Goldman Sachs
+    tier: "1"
+    category: top-gcc
+    india_presence: "Bangalore, Hyderabad (Marquee, Core Strats, Asset Management, Prime Brokerage)"
+    job_source: Taleo / Custom GS Portal
+    cxs_endpoint: "https://api-hire.goldmansachs.com/"
+    adapter_status: "NEEDS_CUSTOM_CONNECTOR"
+    adapter_difficulty: "Medium-High (Taleo API session handling)"
+    expected_value: "Tier 1 Quantitative & Low Latency Systems"
+
+  - name: JPMorgan Chase
+    tier: "1"
+    category: top-gcc
+    india_presence: "Mumbai, Bangalore, Hyderabad (Athena, Quants, Payments, Cloud Modernization)"
+    job_source: Oracle HCM Cloud CE REST API
+    cxs_endpoint: "https://jpmc.fa.oraclecloud.com/hcmRestApi/resources/latest/recruitingCEJobRequisitions"
+    adapter_status: "API_DISCOVERED"
+    adapter_difficulty: "Low-Medium (Standard Oracle HCM Public REST API)"
+    expected_value: "Tier 1 Core Banking & High-Scale Financial Tech"
+
+  - name: Morgan Stanley
+    tier: "1"
+    category: top-gcc
+    india_presence: "Mumbai, Bangalore (Fixed Income Tech, Algo Trading, Core Infrastructure)"
+    job_source: Taleo / Workday
+    cxs_endpoint: "https://morganstanley.tal.net/"
+    adapter_status: "NEEDS_CUSTOM_CONNECTOR"
+    adapter_difficulty: "Medium (Taleo REST integration)"
+    expected_value: "Tier 1 Trading Systems & Data Platforms"
+
+  - name: D.E. Shaw
+    tier: "1"
+    category: top-gcc
+    india_presence: "Hyderabad (Quant Tech, High-Frequency Trading, Financial Modeling)"
+    job_source: Custom Proprietary
+    cxs_endpoint: "https://www.deshawindia.com/careers/current-openings"
+    adapter_status: "STATIC_HTML_TABLE"
+    adapter_difficulty: "Low-Medium (Clean HTML table / low volume)"
+    expected_value: "Elite Compensation & High-Caliber Engineering"
+
+  - name: Wells Fargo
+    tier: "1"
+    category: top-gcc
+    india_presence: "Hyderabad, Bangalore, Chennai (Consumer Lending, Core Banking, AI Systems)"
+    job_source: Workday / Custom
+    cxs_endpoint: "https://wellsfargo.wd1.myworkdayjobs.com/"
+    adapter_status: "BLOCKED_ANTI_BOT"
+    adapter_difficulty: "High (Akamai / Cloudflare WAF on career portal)"
+    expected_value: "High Volume Enterprise Banking"
+
+  - name: Citi
+    tier: "1"
+    category: top-gcc
+    india_presence: "Pune, Chennai, Mumbai (Institutional Clients Group, Treasury, Capital Markets)"
+    job_source: Workday
+    cxs_endpoint: "https://citi.wd5.myworkdayjobs.com/wday/cxs/citi/2/jobs"
+    adapter_status: "VERIFIED_ACTIVE"
+    adapter_difficulty: "Done (Workday Adapter)"
+    expected_value: "Tier 1 Banking GCC & Enterprise Platforms"
+
+  - name: Capital One
+    tier: "1"
+    category: top-gcc
+    india_presence: "Bangalore (Cloud-Native Banking, Credit Decisioning, Fraud Detection)"
+    job_source: Workday
+    cxs_endpoint: "https://capitalone.wd1.myworkdayjobs.com/wday/cxs/capitalone/Capital_One/jobs"
+    adapter_status: "NEEDS_SITE_DISCOVERY"
+    adapter_difficulty: "Medium (Verify Workday site identifier)"
+    expected_value: "High-Caliber Cloud-Native Engineering"
+
+  - name: American Express
+    tier: "1"
+    category: top-gcc
+    india_presence: "Gurgaon, Bangalore (Risk & Fraud Decisioning, Credit Analytics, Payments Engine)"
+    job_source: Eightfold AI
+    cxs_endpoint: "https://aexp.eightfold.ai/api/apply/v2/jobs"
+    adapter_status: "NEEDS_EIGHTFOLD_ADAPTER"
+    adapter_difficulty: "Medium (Eightfold REST API)"
+    expected_value: "High Tier-1 Financial Platforms & Analytics"
+
+  - name: Walmart Global Tech
+    tier: "1"
+    category: top-gcc
+    india_presence: "Bangalore, Chennai, Gurgaon (Supply Chain, Omni-channel Commerce, Marketplace)"
+    job_source: Workday / Walmart Careers API
+    cxs_endpoint: "https://walmart.wd5.myworkdayjobs.com/wday/cxs/walmart/WalmartExternal/jobs"
+    adapter_status: "NEEDS_SITE_DISCOVERY"
+    adapter_difficulty: "Medium (Discover active Workday site ID)"
+    expected_value: "Massive Retail Tech & Distributed Systems"
+
+  - name: Bloomberg
+    tier: "1"
+    category: top-gcc
+    india_presence: "Mumbai (Bloomberg Terminal, Market Data, Real-Time Analytics)"
+    job_source: SmartRecruiters / Custom
+    cxs_endpoint: "https://careers.bloomberg.com/"
+    adapter_status: "BLOCKED_ANTI_BOT"
+    adapter_difficulty: "High (Cloudflare Bot Protection)"
+    expected_value: "Elite Financial Infrastructure & Low Latency"
+
+  - name: ServiceNow
+    tier: "1"
+    category: top-gcc
+    india_presence: "Hyderabad, Bangalore (Core Cloud Platform, Workflow Engine, Enterprise AI)"
+    job_source: SmartRecruiters / Workday
+    cxs_endpoint: "https://careers.servicenow.com/"
+    adapter_status: "BLOCKED_ANTI_BOT"
+    adapter_difficulty: "High (Cloudflare Bot Protection)"
+    expected_value: "Tier 1 Enterprise Cloud Platform"
+
+  - name: Cisco
+    tier: "1"
+    category: top-gcc
+    india_presence: "Bangalore, Chennai (Networking OS, ThousandEyes, Duo Security, Cloud Native)"
+    job_source: Phenom People
+    cxs_endpoint: "https://jobs.cisco.com/api/jobs"
+    adapter_status: "NEEDS_PHENOM_ADAPTER"
+    adapter_difficulty: "Medium (Phenom JSON API)"
+    expected_value: "High Tier-1 Networking & Systems Engineering"
+
+  - name: PayPal
+    tier: "1"
+    category: top-gcc
+    india_presence: "Chennai, Bangalore, Hyderabad (Braintree, Venmo Platform, Payment Gateways)"
+    job_source: Eightfold AI / Workday
+    cxs_endpoint: "https://paypal.eightfold.ai/api/apply/v2/jobs"
+    adapter_status: "BLOCKED_ANTI_BOT"
+    adapter_difficulty: "Medium-High (Eightfold WAF)"
+    expected_value: "High Scale Payments & Distributed Systems"

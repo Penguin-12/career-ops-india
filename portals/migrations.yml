@@ -1,0 +1,193 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# MIGRATIONS REGISTRY (Known unsupported / protected / custom career portals)
+# ─────────────────────────────────────────────────────────────────────────────
+
+darwinbox:
+  - name: Zomato
+    tier: "1"
+    careers_url: https://zomato.darwinbox.in
+    status: blocked
+    reason: "Internal / protected HRMS (Referral-only model via eternal.com)"
+
+  - name: BharatPe
+    tier: "1"
+    careers_url: https://bharatpe.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Paytm
+    tier: "1"
+    careers_url: https://paytm.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Cashfree
+    tier: "1"
+    careers_url: https://cashfree.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Urban Company
+    tier: "1"
+    careers_url: https://urbancompany.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Spinny
+    tier: "1"
+    careers_url: https://spinny.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Cars24
+    tier: "1"
+    careers_url: https://cars24.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Delhivery
+    tier: "1"
+    careers_url: https://delhivery.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Shadowfax
+    tier: "2"
+    careers_url: https://shadowfax.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Ather Energy
+    tier: "1"
+    careers_url: https://atherenergy.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Nykaa
+    tier: "1"
+    careers_url: https://nykaa.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Lenskart
+    tier: "1"
+    careers_url: https://lenskart.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Upstox
+    tier: "1"
+    careers_url: https://upstox.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: NoBroker
+    tier: "2"
+    careers_url: https://nobroker.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: PhysicsWallah
+    tier: "2"
+    careers_url: https://pw.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+  - name: Unacademy
+    tier: "2"
+    careers_url: https://unacademy.com/careers
+    status: unsupported
+    reason: "Custom internal portal"
+
+  - name: PharmEasy
+    tier: "2"
+    careers_url: https://pharmeasy.darwinbox.in
+    status: blocked
+    reason: "Darwinbox tenant endpoint protected by anti-bot / Cloudflare"
+
+keka:
+  - name: Zepto
+    tier: "1"
+    careers_url: https://careers.zepto.co
+    status: auth_required
+    reason: "Keka Hire API requires OAuth 2.0 tenant credentials"
+
+  - name: Rapido
+    tier: "1"
+    careers_url: https://rapido.keka.com
+    status: auth_required
+    reason: "Keka Hire API requires OAuth 2.0 tenant credentials"
+
+  - name: HealthifyMe
+    tier: "2"
+    careers_url: https://healthifyme.keka.com
+    status: auth_required
+    reason: "Keka Hire API requires OAuth 2.0 tenant credentials"
+
+  - name: Zypp Electric
+    tier: "2"
+    careers_url: https://zypp.keka.com
+    status: auth_required
+    reason: "Keka Hire API requires OAuth 2.0 tenant credentials"
+
+workday:
+  - name: BrowserStack
+    tier: "1"
+    careers_url: https://browserstack.com/careers
+    status: adapter_needed
+    reason: "Workday ATS detected"
+
+  - name: Nvidia
+    tier: "1"
+    careers_url: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+    status: adapter_needed
+    reason: "Workday ATS detected"
+
+  - name: Walmart Global Tech
+    tier: "1"
+    careers_url: https://careers.walmart.com/global-tech
+    status: adapter_needed
+    reason: "Workday ATS detected"
+
+  - name: Target
+    tier: "1"
+    careers_url: https://corporate.target.com/careers/india
+    status: adapter_needed
+    reason: "Workday ATS detected"
+
+  - name: Adobe
+    tier: "1"
+    careers_url: https://adobe.wd5.myworkdayjobs.com/external_experienced
+    status: adapter_needed
+    reason: "Workday ATS detected"
+
+  - name: Salesforce
+    tier: "1"
+    careers_url: https://salesforce.wd12.myworkdayjobs.com/External_Career_Site
+    status: adapter_needed
+    reason: "Workday ATS detected"
+
+custom:
+  - name: Zerodha
+    tier: "1"
+    careers_url: https://zerodha.com/careers
+    status: unsupported
+    reason: "Self-hosted custom careers page"
+
+  - name: Juspay
+    tier: "1"
+    careers_url: https://juspay.in/careers
+    status: unsupported
+    reason: "Self-hosted custom careers page"
+
+  - name: CleverTap
+    tier: "1"
+    careers_url: https://clevertap.com/careers
+    status: unsupported
+    reason: "Custom careers portal"
+
+  - name: Whatfix
+    tier: "1"
+    careers_url: https://whatfix.com/careers
+    status: unsupported
+    reason: "Custom careers portal"

@@ -3,14 +3,30 @@ cv.md
 config/profile.yml
 data/pipeline.json
 data/scan_results.json
+data/discovery_results.json
+data/application_state.json
+data/job_lifecycle_state.json
+data/.ai_cache.json
+data/.daily-pipeline-status.json
+data/daily-pipeline.lock
+data/source_discovery.json
+data/source_roi.json
+data/company_coverage_priority.json
+data/ai_calibration.json
 data/dashboard_preview.html
 data/*.bak
+data/*.tmp
 reports/
 output/
+.venv/
+__pycache__/
+*.pyc
 
 # Keep templates and examples
 !config/profile.example.yml
 !data/.gitkeep
+!data/application_state.example.json
+!data/job_lifecycle_state.example.json
 !reports/.gitkeep
 !output/.gitkeep
 
