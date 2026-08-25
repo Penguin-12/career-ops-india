@@ -17,28 +17,13 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
-const RESULTS_PATH = path.join(ROOT, "data/scan_results.json");
-
-if (!fs.existsSync(RESULTS_PATH)) {
-  console.log("No scan_results.json found. Run: npm run scan first.");
-  process.exit(0);
-}
-
-const data = JSON.parse(fs.readFileSync(RESULTS_PATH, "utf8"));
-const jobs = data.jobs || [];
-
-if (jobs.length === 0) {
-  console.log("No eligible matches found in scan_results.json.");
-  process.exit(0);
-}
-
 import { diversifyJobs, partitionQueue, formatLabel } from "./queue-core.mjs";
 import { loadApplicationState, filterJobsByState } from "./state-service.mjs";
 import { loadJobLifecycleState, filterJobsByLifecycle } from "./job-lifecycle-service.mjs";
 
 export { diversifyJobs, partitionQueue, formatLabel };
 
-function printJobCard(j, rank) {
+export function printJobCard(j, rank) {
   const detScore = j.score ?? "N/A";
   const priority = j.priority || "GOOD";
   const fresh = j.freshness_tier === "hot" ? "🟢 Hot (0–7d)" : (j.freshness_tier === "fresh" ? "🟡 Fresh (8–14d)" : "⚪ Active (15–30d)");
@@ -78,52 +63,77 @@ function printJobCard(j, rank) {
   console.log(`     🔗 ${j.url}`);
 }
 
-const appState = loadApplicationState();
-const lifecycleState = loadJobLifecycleState();
-const { active: unActioned } = filterJobsByState(jobs, appState);
-const { active: activeEligible } = filterJobsByLifecycle(unActioned, lifecycleState);
+export function runQueue(scanResultsPath = RESULTS_PATH) {
+  if (!fs.existsSync(scanResultsPath)) {
+    console.log("No scan_results.json found. Run: npm run scan first.");
+    return;
+  }
 
-const q = partitionQueue(activeEligible, 5);
+  const data = JSON.parse(fs.readFileSync(scanResultsPath, "utf8"));
+  const jobs = data.jobs || [];
 
-console.log(`\n${"═".repeat(72)}`);
-console.log(`🎯 CAREER-OPS-INDIA — DAILY APPLICATION QUEUE`);
-console.log(`${"═".repeat(72)}`);
-console.log(`Total Candidates Evaluated: ${data.total} eligible matches | Scanned: ${new Date(data.scanned_at || Date.now()).toLocaleDateString()}`);
+  if (jobs.length === 0) {
+    console.log("No eligible matches found in scan_results.json.");
+    return;
+  }
 
-let currentRank = 1;
+  const appState = loadApplicationState();
+  const lifecycleState = loadJobLifecycleState();
+  const { active: unActioned } = filterJobsByState(jobs, appState);
+  const { active: activeEligible } = filterJobsByLifecycle(unActioned, lifecycleState);
 
-if (q.apply.length > 0) {
-  console.log(`\n${"─".repeat(72)}`);
-  console.log(`🔥 1. AI VERIFIED — APPLY NOW (${q.apply.length} Top Priority Recommendations)`);
-  console.log(`${"─".repeat(72)}`);
-  q.apply.forEach(j => printJobCard(j, currentRank++));
+  const q = partitionQueue(activeEligible, 5);
+
+  console.log(`\n${"═".repeat(72)}`);
+  console.log(`🎯 CAREER-OPS-INDIA — DAILY APPLICATION QUEUE`);
+  console.log(`${"═".repeat(72)}`);
+  console.log(`Total Candidates Evaluated: ${data.total} eligible matches | Scanned: ${new Date(data.scanned_at || Date.now()).toLocaleDateString()}`);
+
+  let currentRank = 1;
+
+  if (q.apply.length > 0) {
+    console.log(`\n${"─".repeat(72)}`);
+    console.log(`🔥 1. AI VERIFIED — APPLY NOW (${q.apply.length} Top Priority Recommendations)`);
+    console.log(`${"─".repeat(72)}`);
+    q.apply.forEach(j => printJobCard(j, currentRank++));
+  }
+
+  if (q.consider.length > 0) {
+    console.log(`\n${"─".repeat(72)}`);
+    console.log(`🟡 2. AI EVALUATED — CONSIDER / BACKUP (${q.consider.length} Opportunities)`);
+    console.log(`${"─".repeat(72)}`);
+    q.consider.forEach(j => printJobCard(j, currentRank++));
+  }
+
+  const topUnevaluated = q.unevaluated.slice(0, Math.max(10, 30 - currentRank + 1));
+  if (topUnevaluated.length > 0) {
+    console.log(`\n${"─".repeat(72)}`);
+    console.log(`📋 3. NOT YET AI EVALUATED (Top Deterministic Candidates)`);
+    console.log(`${"─".repeat(72)}`);
+    topUnevaluated.forEach(j => printJobCard(j, currentRank++));
+  }
+
+  if (q.skip.length > 0) {
+    console.log(`\n${"─".repeat(72)}`);
+    console.log(`⚪ 4. AI EVALUATED — SKIPPED (${q.skip.length} Filtered Noise / Mismatches)`);
+    console.log(`${"─".repeat(72)}`);
+    q.skip.forEach(j => printJobCard(j, currentRank++));
+  }
+
+  console.log(`\n${"═".repeat(72)}`);
+  console.log(`Next Steps:`);
+  console.log(`  1. /evaluate [URL]   → Score against your profile & check resume match`);
+  console.log(`  2. /apply [URL]      → Tailor resume & track application status`);
+  console.log(`  3. npm run dashboard → Open visual Kanban pipeline & daily queue`);
+  console.log(`${"═".repeat(72)}\n`);
 }
 
-if (q.consider.length > 0) {
-  console.log(`\n${"─".repeat(72)}`);
-  console.log(`🟡 2. AI EVALUATED — CONSIDER / BACKUP (${q.consider.length} Opportunities)`);
-  console.log(`${"─".repeat(72)}`);
-  q.consider.forEach(j => printJobCard(j, currentRank++));
-}
+const isDirectCli = process.argv[1] && (
+  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url)) ||
+  process.argv[1].endsWith("/queue.mjs") ||
+  process.argv[1].endsWith("\\queue.mjs")
+);
 
-const topUnevaluated = q.unevaluated.slice(0, Math.max(10, 30 - currentRank + 1));
-if (topUnevaluated.length > 0) {
-  console.log(`\n${"─".repeat(72)}`);
-  console.log(`📋 3. NOT YET AI EVALUATED (Top Deterministic Candidates)`);
-  console.log(`${"─".repeat(72)}`);
-  topUnevaluated.forEach(j => printJobCard(j, currentRank++));
+if (isDirectCli) {
+  runQueue();
 }
-
-if (q.skip.length > 0) {
-  console.log(`\n${"─".repeat(72)}`);
-  console.log(`⚪ 4. AI EVALUATED — SKIPPED (${q.skip.length} Filtered Noise / Mismatches)`);
-  console.log(`${"─".repeat(72)}`);
-  q.skip.forEach(j => printJobCard(j, currentRank++));
-}
-
-console.log(`\n${"═".repeat(72)}`);
-console.log(`Next Steps:`);
-console.log(`  1. /evaluate [URL]   → Score against your profile & check resume match`);
-console.log(`  2. /apply [URL]      → Tailor resume & track application status`);
-console.log(`  3. npm run dashboard → Open visual Kanban pipeline & daily queue`);
-console.log(`${"═".repeat(72)}\n`);

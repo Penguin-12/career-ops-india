@@ -5,31 +5,105 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
+    name: Lint, Syntax & Test Suite
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Validate portals/india.yml is valid YAML
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Check required project files exist
+        run: |
+          test -f CLAUDE.md && echo '✓ CLAUDE.md exists'
+          test -f GEMINI.md && echo '✓ GEMINI.md exists'
+          test -f package.json && echo '✓ package.json exists'
+          test -f portals/india.yml && echo '✓ portals/india.yml exists'
+          test -f config/profile.example.yml && echo '✓ config/profile.example.yml exists'
+          test -f templates/cv-template.md && echo '✓ templates/cv-template.md exists'
+          test -f modes/_shared.md && echo '✓ modes/_shared.md exists'
+          test -f modes/evaluate.md && echo '✓ modes/evaluate.md exists'
+          test -f scripts/scan.mjs && echo '✓ scripts/scan.mjs exists'
+          test -f scripts/daily-pipeline.mjs && echo '✓ scripts/daily-pipeline.mjs exists'
+          test -f scripts/queue.mjs && echo '✓ scripts/queue.mjs exists'
+          test -f scripts/doctor.mjs && echo '✓ scripts/doctor.mjs exists'
+          test -f scripts/generate-pdf.mjs && echo '✓ scripts/generate-pdf.mjs exists'
+
+      - name: Validate YAML configurations (portals & profiles)
         run: node -e "
           const fs = require('fs');
-          const content = fs.readFileSync('portals/india.yml', 'utf8');
-          console.log('portals/india.yml: valid YAML structure');
+          const yaml = require('js-yaml');
+
+          // Validate portals/india.yml
+          const portals = yaml.load(fs.readFileSync('portals/india.yml', 'utf8'));
+          if (!portals || typeof portals !== 'object') {
+            throw new Error('portals/india.yml: invalid YAML root object');
+          }
+          const portalKeys = Object.keys(portals);
+          let companyCount = 0;
+          for (const key of portalKeys) {
+            if (Array.isArray(portals[key])) companyCount += portals[key].length;
+          }
+          console.log(\`✓ portals/india.yml: valid YAML (\${companyCount} companies across \${portalKeys.length} portals)\`);
+
+          // Validate config/profile.example.yml
+          const profileExample = yaml.load(fs.readFileSync('config/profile.example.yml', 'utf8'));
+          if (!profileExample || !profileExample.candidate) {
+            throw new Error('config/profile.example.yml: missing candidate section');
+          }
+          console.log('✓ config/profile.example.yml: valid candidate schema');
         "
-      - name: Check required files exist
+
+      - name: Verify JavaScript & ESM syntax (node --check)
+        run: node -e "
+          const fs = require('fs');
+          const path = require('path');
+          const { execSync } = require('child_process');
+
+          function findMjs(dir) {
+            let results = [];
+            if (!fs.existsSync(dir)) return results;
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) results.push(...findMjs(full));
+              else if (entry.name.endsWith('.mjs')) results.push(full);
+            }
+            return results;
+          }
+
+          const files = [...findMjs('scripts'), ...findMjs('tests')];
+          console.log(\`Checking syntax on \${files.length} JavaScript files...\`);
+          for (const f of files) {
+            execSync(\`node --check \${f}\`);
+          }
+          console.log(\`✓ All \${files.length} JavaScript files passed syntax check\`);
+        "
+
+      - name: Verify Python scripts syntax (py_compile)
         run: |
-          test -f CLAUDE.md && echo 'CLAUDE.md ok'
-          test -f GEMINI.md && echo 'GEMINI.md ok'
-          test -f package.json && echo 'package.json ok'
-          test -f config/profile.example.yml && echo 'profile.example.yml ok'
-          test -f scripts/scan.mjs && echo 'scan.mjs ok'
-          test -f scripts/doctor.mjs && echo 'doctor.mjs ok'
-          test -f scripts/generate-pdf.mjs && echo 'generate-pdf.mjs ok'
-      - name: Verify scan.mjs has no syntax errors
-        run: node --check scripts/scan.mjs && echo 'scan.mjs syntax ok'
-      - name: Verify doctor.mjs has no syntax errors
-        run: node --check scripts/doctor.mjs && echo 'doctor.mjs syntax ok'
+          python -m py_compile scrapers/*.py tui/*.py
+          echo "✓ All Python scrapers and TUI scripts passed compilation check"
+
+      - name: Run full automated test suite (npm test)
+        run: npm test

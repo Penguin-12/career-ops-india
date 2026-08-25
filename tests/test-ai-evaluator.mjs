@@ -7,8 +7,9 @@
 import assert from "assert";
 import fs from "fs";
 import { parseModelJsonResponse, MockProvider, getAIProvider, DEFAULT_MODEL } from "../scripts/ai/provider.mjs";
-import { evaluateJob, evaluateBatch, computeCacheKey, validateEvaluation } from "../scripts/ai/evaluator.mjs";
+import { evaluateJob, evaluateBatch, computeCacheKey, validateEvaluation, selectJobsForEvaluation } from "../scripts/ai/evaluator.mjs";
 import { buildEvaluationPrompt } from "../scripts/ai/prompt.mjs";
+import { diversifyJobs, partitionQueue } from "../scripts/queue-core.mjs";
 
 console.log("=== AI Job Evaluator Lifecycle & Robustness Test Suite ===");
 
@@ -430,7 +431,6 @@ console.log("========================================================\n");
 
 // 16. Company Diversification Cap (Default 5)
 console.log("\n[Test 16] Company diversification cap limits APPLY queue to 5 jobs/company");
-import { diversifyJobs } from "../scripts/queue.mjs";
 {
   const testJobs = [
     { company: "Amazon", title: "Job 1", score: 98 },
@@ -514,7 +514,6 @@ console.log("========================================================\n");
 
 // 20. Queue Precedence: High Deterministic Score + AI SKIP
 console.log("\n[Test 20] Queue precedence: AI SKIP never enters APPLY or CONSIDER");
-import { partitionQueue } from "../scripts/queue.mjs";
 {
   const mockJobs = [
     { company: "Amazon", title: "SysDE II Time & Pay", score: 95, ai_evaluation: { recommendation: "SKIP", ai_score: 58 } },
@@ -599,7 +598,6 @@ console.log("\n[Test 24] AI SKIP does not consume company diversification quota"
 
 // 25. Selection Priority: Employer ATS outranks Aggregator when selecting AI candidates
 console.log("\n[Test 25] Selection priority: Employer ATS outranks Aggregator for unevaluated candidates");
-import { selectJobsForEvaluation } from "../scripts/ai/evaluator.mjs";
 {
   const testPool = [
     { title: "Aggregator BIE", company: "Barclays", score: 95, source_type: "aggregator", source: "naukri" },

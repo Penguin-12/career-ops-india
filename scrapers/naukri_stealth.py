@@ -9,6 +9,8 @@ Does NOT overwrite data/scan_results.json.
 """
 import json, os, random, time, sys, tempfile, re
 from datetime import datetime, timedelta
+from pathlib import Path
+
 ROOT = Path(__file__).parent.parent
 
 def read_config():
@@ -40,18 +42,35 @@ def build_url(role, page=1, min_lpa=10):
 
 def _first_el(node, *selectors):
     for sel in selectors:
+        res = node.css(sel) if hasattr(node, "css") else []
+        if res:
+            return res[0]
+    return None
+
+def _first_text(node, *selectors):
+    el = _first_el(node, *selectors)
+    if el is not None:
+        return el.text.strip() if hasattr(el, "text") and el.text else ""
+    return ""
+
+def parse_cards(page_obj):
     cards = []
     for sel in ["div.srp-jobtuple-wrapper", "div.cust-job-tuple", "article.jobTuple", 'li[class*="jobTupleHeader"]']:
-        cards = page_obj.css(sel)
+        cards = page_obj.css(sel) if hasattr(page_obj, "css") else []
         if cards:
+            break
     if not cards:
         print("    No cards found — selectors may need updating or page is blocked.")
+        return []
+
+    results = []
+    for card in cards:
         try:
             title_el = _first_el(card, "a.title", "h2 a", 'a[class*="jobTitle"]', 'a[class*="title"]')
             if not title_el:
                 continue
-            title = title_el.text.strip() if title_el.text else ""
-            url = title_el.attrib.get("href", "")
+            title = title_el.text.strip() if hasattr(title_el, "text") and title_el.text else ""
+            url = title_el.attrib.get("href", "") if hasattr(title_el, "attrib") else ""
             if url and not url.startswith("http"):
                 url = "https://www.naukri.com" + url
             if not title or not url:
@@ -63,15 +82,40 @@ def _first_el(node, *selectors):
             sal = _first_text(card, 'span[class*="sal"]', 'span[class*="salary"]')
             desc = _first_text(card, "span.job-desc", 'span[class*="job-desc"]', 'div[class*="job-desc"]')
             post_day = _first_text(card, "span.job-post-day", 'span[class*="post-day"]')
-            job_id = card.attrib.get("data-job-id")
+            job_id = card.attrib.get("data-job-id") if hasattr(card, "attrib") else None
 
-            # Parse posted_at if relative day string exists
+            posted_at = None
+            if post_day:
+                m = re.search(r"(\d+)\s*day", post_day, re.IGNORECASE)
+                if m:
+                    days_ago = int(m.group(1))
+                    posted_at = (datetime.now() - timedelta(days=days_ago)).isoformat()
+                elif "today" in post_day.lower() or "just now" in post_day.lower() or "few hours" in post_day.lower():
+                    posted_at = datetime.now().isoformat()
+
+            results.append({
+                "source": "naukri",
+                "source_type": "aggregator",
+                "source_job_id": job_id,
+                "title": title,
+                "company": company,
+                "location": loc,
+                "url": url,
+                "posted_at": posted_at,
+                "snippet": desc or None,
+                "salary": sal or None,
+                "experience": exp or None
+            })
+        except Exception:
+            continue
+    return results
 
 def loc_match(job, locations):
     if not job.get("location") or not locations: return True
     loc = job["location"].lower()
     if "remote" in loc: return True
     return any(l.lower() in loc for l in locations)
+
 def save_discovery_results(new_jobs):
     disc_path = ROOT / "data" / "discovery_results.json"
     disc_path.parent.mkdir(parents=True, exist_ok=True)
@@ -79,8 +123,21 @@ def save_discovery_results(new_jobs):
     if disc_path.exists():
         try:
             data = json.loads(disc_path.read_text(encoding="utf-8"))
+            existing_jobs = data.get("jobs", [])
+        except Exception:
+            existing_jobs = []
+
+    seen_urls = set()
+    combined = []
+    for j in new_jobs + existing_jobs:
+        u = j.get("url")
+        if u and u not in seen_urls:
+            seen_urls.add(u)
+            combined.append(j)
+
     out_data = {
         "discovered_at": datetime.now().isoformat(),
+        "total": len(combined),
         "jobs": combined
     }
     temp_file = disc_path.with_suffix(".tmp")

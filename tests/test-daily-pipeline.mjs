@@ -163,8 +163,10 @@ console.log("\n[Test 4] Cache reuse: Existing valid AI verdicts do not consume n
     }
   ];
 
-  const profileText = fs.existsSync("config/profile.yml") ? fs.readFileSync("config/profile.yml", "utf8") : "";
-  const cvText = fs.existsSync("cv.md") ? fs.readFileSync("cv.md", "utf8") : "";
+  const profilePath = fs.existsSync("config/profile.yml") ? "config/profile.yml" : "config/profile.example.yml";
+  const cvPath = fs.existsSync("cv.md") ? "cv.md" : "templates/cv-template.md";
+  const profileText = fs.existsSync(profilePath) ? fs.readFileSync(profilePath, "utf8") : "";
+  const cvText = fs.existsSync(cvPath) ? fs.readFileSync(cvPath, "utf8") : "";
   const cacheKey = computeCacheKey(fixtureJobs[0], profileText, cvText);
 
   const seedCache = {

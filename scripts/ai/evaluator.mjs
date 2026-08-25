@@ -233,8 +233,8 @@ export async function evaluateBatch(options = {}) {
   }
 
   // Load candidate profile and CV
-  const profilePath = options.profilePath || "config/profile.yml";
-  const cvPath = options.cvPath || "cv.md";
+  const profilePath = options.profilePath || (fs.existsSync("config/profile.yml") ? "config/profile.yml" : "config/profile.example.yml");
+  const cvPath = options.cvPath || (fs.existsSync("cv.md") ? "cv.md" : "templates/cv-template.md");
 
   if (!fs.existsSync(cvPath)) {
     throw new Error(`CV file not found at ${cvPath}`);
@@ -327,10 +327,11 @@ export async function evaluateBatch(options = {}) {
         console.log(`  [${jobNum}/${total}] Evaluating ${job.company} — "${job.title.slice(0, 45)}"...`);
       }
 
+      let timer;
       try {
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`Timed out after ${jobTimeoutMs / 1000}s`)), jobTimeoutMs)
-        );
+        const timeoutPromise = new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error(`Timed out after ${jobTimeoutMs / 1000}s`)), jobTimeoutMs);
+        });
 
         const evalPromise = evaluateJob(job, {
           provider,
@@ -344,6 +345,7 @@ export async function evaluateBatch(options = {}) {
         });
 
         const enrichedJob = await Promise.race([evalPromise, timeoutPromise]);
+        clearTimeout(timer);
         const ai = enrichedJob.ai_evaluation;
         const duration = ((Date.now() - jobStart) / 1000).toFixed(1);
 
@@ -364,6 +366,7 @@ export async function evaluateBatch(options = {}) {
 
         results[currentIndex] = enrichedJob;
       } catch (err) {
+        clearTimeout(timer);
         failedCount++;
         completedCount++;
         const duration = ((Date.now() - jobStart) / 1000).toFixed(1);
