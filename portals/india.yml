@@ -604,14 +604,78 @@ microsoft:
     domain: big-tech/cloud/os/ai
     hq: Bengaluru/Hyderabad/Noida/Gurugram/Mumbai
 
-eightfold:
-  - name: Morgan Stanley
-    tenant: morganstanley
-    domain_host: morganstanley.com
-    tier: "0"
+radancy:
+  - name: Barclays
+    host: search.jobs.barclays
+    orgId: "2257"
+    tier: "1"
     priority: GO
-    domain: investment-banking/fintech/distributed-systems
-    hq: Mumbai/Bengaluru
+    domain: fintech/investment-banking
+    hq: Pune/Bengaluru
+
+  - name: Capital One
+    host: www.capitalonecareers.com
+    orgId: "1732"
+    tier: "1"
+    priority: GO
+    domain: fintech/banking
+    hq: Bengaluru
+
+  - name: Intuit
+    host: jobs.intuit.com
+    orgId: "27595"
+    tier: "1"
+    priority: GO
+    domain: fintech/SaaS
+    hq: Bengaluru
+
+  - name: Arm
+    host: careers.arm.com
+    orgId: "14468"
+    tier: "1"
+    priority: GO
+    domain: semiconductor/systems/compiler
+    hq: Bengaluru/Noida
+
+  - name: Palo Alto Networks
+    host: jobs.paloaltonetworks.com
+    path_prefix: "en/"
+    orgId: "25217"
+    tier: "1"
+    priority: GO
+    domain: cybersecurity/cloud-security
+    hq: Bengaluru
+
+  - name: Charles Schwab
+    host: www.schwabjobs.com
+    orgId: "3371"
+    tier: "1"
+    priority: GO
+    domain: fintech/wealth-management
+    hq: Hyderabad
+
+  - name: Optum
+    host: careers.unitedhealthgroup.com
+    orgId: "34088"
+    tier: "1"
+    priority: GO
+    domain: healthcare-tech/distributed-systems
+    hq: Bengaluru/Hyderabad/Gurugram/Noida
+
+successfactors:
+  - name: SAP
+    host: jobs.sap.com
+    tier: "1"
+    priority: GO
+    domain: enterprise-software/cloud/ai
+    hq: Bengaluru/Gurugram/Pune
+
+ibm:
+  - name: IBM
+    tier: "1"
+    priority: GO
+    domain: enterprise-cloud/ai/systems
+    hq: Bengaluru/Hyderabad/Kochi/Pune
 
 
 # ─────────────────────────────────────────────────────────────────────────────

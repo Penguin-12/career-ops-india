@@ -1117,15 +1117,17 @@ function renderJobCard(j, currentContext = "queue") {
   `;
 }
 
-function renderGrid(containerId, jobs, context) {
+function renderGrid(containerId, jobs, context, limit = null) {
   const container = document.getElementById(containerId);
-  if (!container) return;
+  if (!container) return 0;
   const filtered = (jobs || []).filter(matchesFilters);
-  if (filtered.length === 0) {
+  const displayList = (limit && Number.isFinite(limit)) ? filtered.slice(0, limit) : filtered;
+  if (displayList.length === 0) {
     container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3>No matching opportunities in this section</h3><p>Try clearing filters or running the daily hunt.</p></div>`;
   } else {
-    container.innerHTML = filtered.map(j => renderJobCard(j, context)).join("");
+    container.innerHTML = displayList.map(j => renderJobCard(j, context)).join("");
   }
+  return filtered.length;
 }
 
 function renderAll() {
@@ -1155,37 +1157,39 @@ function applyFilters() {
   const q = DASHBOARD_DATA.queue || {};
   const applyList = q.apply || [];
   const considerList = q.consider || [];
-  const unevalList = (q.unevaluated || []).slice(0, 30);
+  const unevalList = q.unevaluated || [];
 
   // 1. Queue Tab
-  renderGrid("grid-apply-now", applyList, "queue");
-  document.getElementById("count-apply-now").textContent = `${applyList.filter(matchesFilters).length} opportunities`;
+  const applyCount = renderGrid("grid-apply-now", applyList, "queue");
+  document.getElementById("count-apply-now").textContent = `${applyCount} opportunities`;
 
-  renderGrid("grid-consider", considerList, "queue");
-  document.getElementById("count-consider").textContent = `${considerList.filter(matchesFilters).length} opportunities`;
+  const considerCount = renderGrid("grid-consider", considerList, "queue");
+  document.getElementById("count-consider").textContent = `${considerCount} opportunities`;
 
-  renderGrid("grid-unevaluated", unevalList, "queue");
-  document.getElementById("count-unevaluated").textContent = `${unevalList.filter(matchesFilters).length} opportunities`;
+  const unevalCount = renderGrid("grid-unevaluated", unevalList, "queue", 30);
+  document.getElementById("count-unevaluated").textContent = unevalCount > 30 
+    ? `Showing top 30 of ${unevalCount} opportunities` 
+    : `${unevalCount} opportunities`;
 
   // 2. Saved Tab
   const savedList = DASHBOARD_DATA.saved || [];
-  renderGrid("grid-saved", savedList, "saved");
-  document.getElementById("count-saved-view").textContent = `${savedList.filter(matchesFilters).length} saved`;
+  const savedCount = renderGrid("grid-saved", savedList, "saved");
+  document.getElementById("count-saved-view").textContent = `${savedCount} saved`;
 
   // 3. Applied Tab
   const appliedList = DASHBOARD_DATA.applied || [];
-  renderGrid("grid-applied", appliedList, "applied");
-  document.getElementById("count-applied-view").textContent = `${appliedList.filter(matchesFilters).length} applied`;
+  const appliedCount = renderGrid("grid-applied", appliedList, "applied");
+  document.getElementById("count-applied-view").textContent = `${appliedCount} applied`;
 
   // 4. Not Interested Tab
   const notIntList = DASHBOARD_DATA.not_interested || [];
-  renderGrid("grid-not-interested", notIntList, "not_interested");
-  document.getElementById("count-not-interested-view").textContent = `${notIntList.filter(matchesFilters).length} excluded`;
+  const notIntCount = renderGrid("grid-not-interested", notIntList, "not_interested");
+  document.getElementById("count-not-interested-view").textContent = `${notIntCount} excluded`;
 
   // 5. Expired Tab
   const expiredList = DASHBOARD_DATA.expired || [];
-  renderGrid("grid-expired", expiredList, "expired");
-  document.getElementById("count-expired-view").textContent = `${expiredList.filter(matchesFilters).length} expired`;
+  const expiredCount = renderGrid("grid-expired", expiredList, "expired");
+  document.getElementById("count-expired-view").textContent = `${expiredCount} expired`;
 
   // 6. All Jobs Table
   const allList = (DASHBOARD_DATA.all || []).filter(matchesFilters);

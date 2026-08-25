@@ -37,11 +37,11 @@
 - **Target Companies**: High-growth YC & AI engineering startups.
 - **Normalization**: Normalizes secondary locations, compensation tier objects, and employment types.
 
-### 6. Eightfold (`scripts/adapters/eightfold.mjs`)
-- **Protocol**: Career Search REST API (`GET /api/apply/v2/jobs?domain={domain}&location=India&num=100`)
-- **Pagination**: Page-based (`start`, `num: 100`).
-- **Target Companies**: Microsoft, Morgan Stanley, BNY Mellon, Capital One.
-- **Normalization**: Normalizes multi-location strings, fallback timestamp fields (`creationTs`, `postedTs`), and generates canonical direct application URLs with domain context.
+### 6. Microsoft Careers (`scripts/adapters/microsoft.mjs`)
+- **Protocol**: Career Search REST API (`GET https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com&location=India&results_per_page=100`)
+- **Pagination**: Offset and limit (`start`, `results_per_page`).
+- **Target Companies**: Microsoft India.
+- **Normalization**: Normalizes multi-location strings, fallback timestamp fields, and generates canonical direct application URLs.
 
 ### 7. Oracle Cloud HCM (`scripts/adapters/oraclecloud.mjs`)
 - **Protocol**: Candidate Experience REST API (`GET /hcmRestApi/resources/latest/recruitingCEJobRequisitions?finder=findReqs;siteNumber={site},locationCountryList=IN`)
@@ -67,7 +67,25 @@
 - **Target Companies**: Amazon India, AWS.
 - **Normalization**: Normalizes basic qualifications, preferred qualifications, and direct requisition links.
 
-### 11. MyNextHire (`scripts/adapters/mynexthire.mjs`)
+### 11. Radancy / TalentBrew (`scripts/adapters/radancy.mjs`)
+- **Protocol**: TalentBrew SSR HTML card parser with search result pagination.
+- **Pagination**: Page-based (`/search-jobs/results?page={n}`).
+- **Target Companies**: Barclays, Capital One, Intuit, Arm, Palo Alto Networks, Charles Schwab, Optum.
+- **Normalization**: Decodes HTML entities, parses numeric requisition IDs, and attaches canonical direct application URLs.
+
+### 12. SAP SuccessFactors (`scripts/adapters/successfactors.mjs`)
+- **Protocol**: Career Site Builder (CSB) table pagination.
+- **Pagination**: Row-based (`startrow={n}`).
+- **Target Companies**: SAP Labs India.
+- **Normalization**: Extracts job table metadata, parses ISO UTC timestamps, and builds canonical `jobs.sap.com` links.
+
+### 13. IBM Careers (`scripts/adapters/ibm.mjs`)
+- **Protocol**: IBM Public Search REST API v1 (`scope=careers2`).
+- **Pagination**: Offset/limit (`fr={offset}&nr={pageSize}`).
+- **Target Companies**: IBM India.
+- **Normalization**: Maps JSON document attributes, city metadata, and extracts requisition numbers from canonical detail URLs.
+
+### 14. MyNextHire (`scripts/adapters/mynexthire.mjs`)
 - **Protocol**: Public Career Portal API.
 - **Target Companies**: Indian product tech firms and venture-backed scale-ups.
 
@@ -75,7 +93,7 @@
 
 ## 2. Universal Adapter Contract
 
-All 11 adapters adhere to the following interface:
+All active adapters adhere to the following interface:
 
 ```typescript
 interface ATSAdapter {

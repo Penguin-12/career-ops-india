@@ -25,7 +25,7 @@ Career-Ops India is an agentic, zero-database career pipeline built with native 
 graph TD
     subgraph Ingestion["1. Direct ATS Ingestion (65+ Portals)"]
         A1["Workday, SmartRecruiters, Greenhouse, Lever, Ashby"]
-        A2["Eightfold, Oracle Cloud HCM, Google SSR, D.E. Shaw Next.js, Amazon"]
+        A2["Radancy, SuccessFactors, IBM, Oracle Cloud HCM, Google SSR, D.E. Shaw Next.js, Amazon, Microsoft"]
         A3["Discovery Layer (Naukri Stealth Scraper)"]
     end
 
@@ -77,18 +77,21 @@ graph TD
 
 ## 🛠️ ATS Adapter Directory
 
-Career-Ops India features 11 specialized protocol adapters in [`scripts/adapters/`](scripts/adapters/) querying structured JSON/REST endpoints:
+Career-Ops India features specialized protocol adapters in [`scripts/adapters/`](scripts/adapters/) querying structured JSON/REST endpoints:
 
-- **Workday**: Visa, Mastercard, Adobe, Walmart, Target, Nvidia, AMD, Intuit
-- **SmartRecruiters**: ServiceNow, Bosch, Sandisk, Western Digital
+- **Workday**: Visa, Mastercard, Adobe, Walmart, Target, Nvidia, AMD
+- **SmartRecruiters**: ServiceNow, Bosch, Sandisk, Western Digital, Autodesk
 - **Greenhouse**: Okta, GitLab, Twilio, Postman, Stripe, Atlassian, Rubrik, Databricks
 - **Lever**: Fi Money, Jupiter, CRED, Slice, Razorpay
 - **Ashby**: Modern YC & AI engineering companies
-- **Eightfold**: Microsoft, Morgan Stanley, BNY Mellon, Capital One
 - **Oracle Cloud HCM**: JPMorgan Chase, Goldman Sachs
 - **Google Careers**: Server-rendered `AF_initDataCallback (ds:1)` payload extraction
 - **D.E. Shaw**: Next.js `__NEXT_DATA__` server-rendered regularJobs extraction
 - **Amazon**: Amazon Jobs REST API
+- **Microsoft Careers**: apply.careers.microsoft.com search API
+- **Radancy / TalentBrew**: Barclays, Capital One, Intuit, Arm, Palo Alto Networks, Charles Schwab, Optum
+- **SAP SuccessFactors**: SAP Labs
+- **IBM Careers**: IBM Public Search API
 - **MyNextHire**: Indian high-growth product startups
 
 ---
@@ -98,16 +101,8 @@ Career-Ops India features 11 specialized protocol adapters in [`scripts/adapters
 Career-Ops strictly separates user application tracking from job portal availability:
 
 1. **Canonical Job Dataset** (`data/scan_results.json`): Authoritative scraped jobs from active ATS scans.
-2. **Application State** (`data/application_state.json`): User actions (`new`, `saved`, `applied`, `not_interested`). Stores an immutable display snapshot (`{ title, company, location, url }`) captured at the moment of state transition.
-3. **Job Lifecycle State** (`data/job_lifecycle_state.json`): Portal availability (`active`, `stale`, `expired`).
-
-A job can independently be:
-- `applied` + `active`
-- `applied` + `expired` (tracked in both **✓ Applied** and **✕ Expired** views)
-- `saved` + `expired`
-- `new` + `stale`
-
-When jobs disappear from active scans, historical records in `application_state.json` and `job_lifecycle_state.json` remain fully visible as archived cards in their respective dashboard views, preserving their real title/company metadata without contaminating the active daily queue.
+2. **Application Tracking State** (`data/application_state.json`): User interactions (`new`, `saved`, `applied`, `not_interested`), notes, and application dates.
+3. **Portal Lifecycle State** (`data/job_lifecycle_state.json`): Availability state (`active`, `stale`, `expired`) tracked across scan cycles.
 
 ---
 
@@ -157,7 +152,10 @@ node tests/test-ai-evaluator.mjs
 node tests/test-discovery-ingest.mjs
 node tests/test-wave1-adapters.mjs
 node tests/test-wave1-fixes.mjs
-node tests/test-eightfold-adapter.mjs
+node tests/test-microsoft-adapter.mjs
+node tests/test-radancy-adapter.mjs
+node tests/test-successfactors-adapter.mjs
+node tests/test-ibm-adapter.mjs
 node tests/test-application-state.mjs
 node tests/test-job-lifecycle.mjs
 node tests/test-daily-pipeline.mjs

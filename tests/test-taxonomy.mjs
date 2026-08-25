@@ -6,10 +6,10 @@
 import assert from "assert";
 
 const ROLE_FAMILY_PATTERNS = [
-  // 1. Non-Technical / Management / Product / Program / Writing (Hard Exclusions)
+  // 1. Non-Technical / Management / Product / Program / Writing / ERP Configuration (Hard Exclusions)
   {
     family: "non_technical",
-    pattern: /\b(technical writer|writer|documentation|product owner|product manager|technical product manager|program manager|technical program manager|tpm\b|project manager|scrum master|agile coach|sales|marketing|growth|content|video|finance|accounting|controller|equity research|portfolio specialist|hr\b|human resources|recruiter|talent|facilities|warehouse|fleet|category|cx\b|customer experience|client servicing|account executive|account manager|business development|bd\b|legal|counsel|procurement|strategist|transformation owner|bdr\b|executive assistant|advisory|risk analytics|rcsa|strategy)\b/i
+    pattern: /\b(technical writer|writer|documentation|product owner|product manager|technical product manager|program manager|technical program manager|tpm\b|project manager|scrum master|agile coach|sales|marketing|growth|content|video|finance|accounting|controller|equity research|portfolio specialist|hr\b|human resources|recruiter|talent|facilities|warehouse|fleet|category|cx\b|customer experience|client servicing|account executive|account manager|business development|bd\b|legal|counsel|procurement|strategist|transformation owner|bdr\b|executive assistant|advisory|risk analytics|rcsa|strategy|package consultant|functional consultant|sap functional|oracle functional|peoplesoft|workday functional|program office|pmo\b)\b/i
   },
   // 2. QA / SDET / IT Helpdesk
   {
@@ -38,7 +38,7 @@ const ROLE_FAMILY_PATTERNS = [
   },
   {
     family: "data_science",
-    pattern: /\b(data scientist|decision scientist|applied scientist|quantitative researcher|statistician)\b/i
+    pattern: /\b(data science|data scientist|decision scientist|applied scientist|quantitative researcher|statistician)\b/i
   },
   {
     family: "data_engineering",
@@ -82,11 +82,11 @@ const SENIORITY_PATTERNS = [
   { seniority: "manager", pattern: /\b(manager|engineering manager|sdm\b|software development manager|director|vp\b|vice president|head of|chief|cto)\b/i },
   { seniority: "principal", pattern: /\b(principal|distinguished|fellow)\b/i },
   { seniority: "staff", pattern: /\b(staff)\b/i },
-  { seniority: "lead", pattern: /\b(lead|tech lead|team lead|architect)\b/i },
+  { seniority: "lead", pattern: /\b(lead|leader|tech lead|team lead|architect)\b/i },
   { seniority: "senior", pattern: /\b(senior|sr\.?)\b/i },
-  { seniority: "sde_3", pattern: /\b(sde\s*iii\b|sde\s*3\b|software engineer\s*3\b|software engineer\s*iii\b|engineer\s*iii\b|engineer\s*3\b|mts\s*3\b|l3\b)\b/i },
-  { seniority: "sde_2", pattern: /\b(sde\s*ii\b|sde\s*2\b|software engineer\s*2\b|software engineer\s*ii\b|engineer\s*ii\b|engineer\s*2\b|intermediate|l2\b|mid)\b/i },
-  { seniority: "sde_1", pattern: /\b(sde\s*i\b|sde\s*1\b|software engineer\s*1\b|software engineer\s*i\b|engineer\s*i\b|engineer\s*1\b|junior|associate|entry|l1\b|grad|graduate)\b/i },
+  { seniority: "sde_3", pattern: /\b(sde\s*iii\b|sde\s*3\b|software engineer\s*3\b|software engineer\s*iii\b|engineer\s*3\b|engineer\s*iii\b|mts\s*3\b|l3\b)\b/i },
+  { seniority: "sde_2", pattern: /\b(sde\s*ii\b|sde\s*2\b|software engineer\s*2\b|software engineer\s*ii\b|engineer\s*2\b|engineer\s*ii\b|intermediate|l2\b|mid)\b/i },
+  { seniority: "sde_1", pattern: /\b(sde\s*i\b|sde\s*1\b|software engineer\s*1\b|software engineer\s*i\b|engineer\s*1\b|engineer\s*i\b|junior|associate|entry|l1\b|grad|graduate)\b/i },
   { seniority: "intern", pattern: /\b(intern|internship|co-op|apprentice|apprenticeship|trainee)\b/i }
 ];
 
@@ -166,7 +166,14 @@ const auditTestCases = [
   { title: "SDE II - iOS", expFamily: "mobile", expSen: "sde_2", expAlign: "low" },
   { title: "Software Engineer - React Native", expFamily: "mobile", expSen: "unknown", expAlign: "low" },
   { title: "Backend Engineer - Mobile API Platform", expFamily: "backend", expSen: "unknown", expAlign: "very_high" },
-  { title: "Software Development Engineer II (Mobile development), Amazon Cross Border Tech", expFamily: "mobile", expSen: "sde_2", expAlign: "low" }
+  { title: "Software Development Engineer II (Mobile development), Amazon Cross Border Tech", expFamily: "mobile", expSen: "sde_2", expAlign: "low" },
+  // ERP / Package Consultant vs Technical Consultant disambiguation test cases
+  { title: "Package Consultant-Oracle SCM Cloud", expFamily: "non_technical", expSen: "unknown", expAlign: "low" },
+  { title: "Package Consultant-SAP Cloud Integration", expFamily: "non_technical", expSen: "unknown", expAlign: "low" },
+  { title: "Functional Consultant - Workday HCM", expFamily: "non_technical", expSen: "unknown", expAlign: "low" },
+  { title: "Senior Technical Consultant - Full Stack (.NET, React)", expFamily: "consulting_solutions", expSen: "senior", expAlign: "low" },
+  { title: "Senior Consultant Apps - (AI + Full stack)", expFamily: "consulting_solutions", expSen: "senior", expAlign: "low" },
+  { title: "Data Science Leader, Spend Management", expFamily: "data_science", expSen: "lead", expAlign: "low" }
 ];
 
 console.log("=== Running Semantic Precedence Regression Suite ===");

@@ -41,7 +41,10 @@ node tests/test-ai-evaluator.mjs       # Evaluation logic, score bands & cache k
 node tests/test-discovery-ingest.mjs   # Discovery ingestion & ATS precedence
 node tests/test-wave1-adapters.mjs     # Direct ATS protocol adapters
 node tests/test-wave1-fixes.mjs        # Adapter site parameters & edge cases
-node tests/test-eightfold-adapter.mjs  # Eightfold adapter & query pagination
+node tests/test-microsoft-adapter.mjs  # Microsoft Careers PCSX API adapter
+node tests/test-radancy-adapter.mjs    # Radancy / TalentBrew adapter
+node tests/test-successfactors-adapter.mjs # SAP SuccessFactors CSB adapter
+node tests/test-ibm-adapter.mjs        # IBM Careers search API adapter
 node tests/test-application-state.mjs  # Application state & dashboard REST APIs
 node tests/test-job-lifecycle.mjs      # Job lifecycle availability & auto-restore
 node tests/test-daily-pipeline.mjs     # Pipeline orchestration, locking & recovery

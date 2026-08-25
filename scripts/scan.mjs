@@ -70,8 +70,7 @@ const HARD_EXCLUSIONS = {
   management: /\b(manager|director|vp\b|vice president|head of|chief|cto|cpo|coo|scrum master|agile coach)\b/i,
   
   // Non-Technical / Non-Engineering Functions (hard drop)
-  non_tech: /\b(sales|marketing|growth|content|video|finance|accounting|controller|equity research|portfolio specialist|hr\b|human resources|recruiter|talent|facilities|warehouse|fleet|category|cx\b|customer experience|client servicing|account executive|account manager|business development|bd\b|legal|counsel|procurement|strategist|transformation owner|solutions architect|presales|sales engineer|technical writer)\b/i,
-  
+  non_tech: /\b(sales|marketing|growth|content|video|finance|accounting|controller|equity research|portfolio specialist|hr\b|human resources|recruiter|talent|facilities|warehouse|fleet|category|cx\b|customer experience|client servicing|account executive|account manager|business development|bd\b|legal|counsel|procurement|strategist|transformation owner|solutions architect|presales|sales engineer|technical writer|package consultant|functional consultant|sap functional|oracle functional|peoplesoft|workday functional|program office|pmo\b)\b/i,
   // QA / SDET / Support (hard drop)
   qa_support: /\b(qa\b|quality assurance|sdet|test engineer|automation engineer|support engineer|customer support|technical support|it helpdesk|tech support|community engineer|devrel)\b/i,
 
@@ -106,12 +105,10 @@ const FUNCTION_PATTERNS = {
 
 // ── Seniority Levels ─────────────────────────────────────────────────────────
 const LEVEL_PATTERNS = {
-  principal: /\b(principal)\b/i,
+  principal: /\b(principal|distinguished|fellow)\b/i,
   staff: /\b(staff)\b/i,
-  lead: /\b(lead|tech lead)\b/i,
   architect: /\b(architect)\b/i,
   sde_3: /\b(sde\s*iii\b|sde\s*3\b|software engineer\s*3\b|software engineer\s*iii\b|senior|sr\.?|l3\b)\b/i,
-  sde_2: /\b(sde\s*ii\b|sde\s*2\b|software engineer\s*2\b|software engineer\s*ii\b|intermediate|l2\b|mid)\b/i,
   sde_1: /\b(sde\s*i\b|sde\s*1\b|software engineer\s*1\b|software engineer\s*i\b|junior|associate|entry|l1\b|grad)\b/i
 };
 

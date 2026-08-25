@@ -56,18 +56,21 @@ career-ops-india/
 │   ├── doctor.mjs                  # Environment diagnostics
 │   ├── coverage.mjs                # Portal coverage reporter
 │   ├── generate-pdf.mjs            # Tailored resume PDF builder
-│   ├── adapters/                   # 11 Direct ATS protocol adapters
+│   ├── adapters/                   # Direct ATS protocol adapters
 │   │   ├── index.mjs               # Adapter registry & dynamic dispatcher
 │   │   ├── workday.mjs             # Workday CXS JSON API adapter
 │   │   ├── smartrecruiters.mjs     # SmartRecruiters Public API adapter
 │   │   ├── greenhouse.mjs          # Greenhouse Public JSON API adapter
 │   │   ├── lever.mjs               # Lever Postings API adapter
 │   │   ├── ashby.mjs               # Ashby API adapter
-│   │   ├── eightfold.mjs           # Eightfold Career API adapter
 │   │   ├── oraclecloud.mjs         # Oracle Cloud HCM REST API adapter
 │   │   ├── google.mjs              # Google Careers SSR HTML adapter
 │   │   ├── deshaw.mjs              # D.E. Shaw Next.js SSR adapter
 │   │   ├── amazon.mjs              # Amazon Jobs REST API adapter
+│   │   ├── microsoft.mjs           # Microsoft Careers PCSX API adapter
+│   │   ├── radancy.mjs             # Radancy / TalentBrew adapter
+│   │   ├── successfactors.mjs      # SAP SuccessFactors CSB adapter
+│   │   ├── ibm.mjs                 # IBM Careers search API adapter
 │   │   └── mynexthire.mjs          # MyNextHire API adapter
 │   ├── ai/                         # Gemini Flash LLM fit evaluator & caching
 │   │   ├── evaluator.mjs           # Batch candidate evaluation engine
@@ -82,12 +85,15 @@ career-ops-india/
 │   ├── cv-template.html            # Puppeteer resume HTML template
 │   └── cv-template.md              # Markdown resume source
 ├── tests/                          # Automated regression & invariant test suites
-│   ├── test-taxonomy.mjs           # 53 assertions: taxonomy, hardware/DFT exclusions, YOE
+│   ├── test-taxonomy.mjs           # 59 assertions: taxonomy, hardware/DFT exclusions, YOE
 │   ├── test-ai-evaluator.mjs       # 29 assertions: scoring, confidence, caching
 │   ├── test-discovery-ingest.mjs   # 10 assertions: aggregator normalization & ATS precedence
 │   ├── test-wave1-adapters.mjs     # 6 assertions: Oracle Cloud HCM, Google SSR, D.E. Shaw
 │   ├── test-wave1-fixes.mjs        # 3 assertions: Wave 1 edge cases & site parameters
-│   ├── test-eightfold-adapter.mjs  # 10 assertions: Microsoft, Morgan Stanley Eightfold
+│   ├── test-microsoft-adapter.mjs  # 7 assertions: Microsoft PCSX API adapter
+│   ├── test-radancy-adapter.mjs    # 6 assertions: Radancy TalentBrew adapter
+│   ├── test-successfactors-adapter.mjs # 3 assertions: SAP SuccessFactors CSB adapter
+│   ├── test-ibm-adapter.mjs        # 3 assertions: IBM Careers search API adapter
 │   ├── test-application-state.mjs  # 12 assertions: state persistence & REST API
 │   ├── test-job-lifecycle.mjs      # 15 assertions: availability reconciliation & quota release
 │   ├── test-daily-pipeline.mjs     # 10 assertions: locking, recovery, partial failure resilience
