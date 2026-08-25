@@ -187,7 +187,8 @@ console.log("──────────────────────�
   const { buildDashboardData } = await import(path.join(ROOT, "scripts/dashboard-server.mjs"));
   const result = buildDashboardData();
 
-  const appStateRaw = JSON.parse(fs.readFileSync(path.join(ROOT, "data/application_state.json"), "utf8"));
+  const appStatePath = path.join(ROOT, "data/application_state.json");
+  const appStateRaw = fs.existsSync(appStatePath) ? JSON.parse(fs.readFileSync(appStatePath, "utf8")) : {};
   const totalAppliedInState = Object.values(appStateRaw)
     .filter(e => ["applied", "oa", "interview", "rejected", "withdrawn"].includes(e.status))
     .length;
@@ -220,7 +221,8 @@ console.log("──────────────────────�
   const { buildDashboardData } = await import(path.join(ROOT, "scripts/dashboard-server.mjs"));
   const result = buildDashboardData();
 
-  const lifecycleRaw = JSON.parse(fs.readFileSync(path.join(ROOT, "data/job_lifecycle_state.json"), "utf8"));
+  const lifecyclePath = path.join(ROOT, "data/job_lifecycle_state.json");
+  const lifecycleRaw = fs.existsSync(lifecyclePath) ? JSON.parse(fs.readFileSync(lifecyclePath, "utf8")) : {};
   const totalExpiredInState = Object.values(lifecycleRaw).filter(e => e.status === "expired").length;
 
   assert(
@@ -374,6 +376,11 @@ console.log("\n─────────────────────�
 console.log("T8: Legacy state records without snapshot fall back gracefully");
 console.log("──────────────────────────────────────────────────────────");
 {
+  const tmpDir = makeTempDir();
+  const testAppStateFile = path.join(tmpDir, "test_app_state.json");
+  const testLifecycleFile = path.join(tmpDir, "test_lifecycle.json");
+  const testScanResultsFile = path.join(tmpDir, "test_scan_results.json");
+
   const legacyEntry = {
     status: "applied",
     updated_at: "2026-08-24T08:47:09.951Z"
@@ -381,16 +388,26 @@ console.log("──────────────────────�
   };
   const legacyId = "workday:https://mastercard.wd1.myworkdayjobs.com/en-US/CorporateCareers/job/Pune-India/Senior-Software-Engineer_R-277806";
 
-  const { buildDashboardData } = await import(path.join(ROOT, "scripts/dashboard-server.mjs"));
-  const result = buildDashboardData();
+  fs.writeFileSync(testAppStateFile, JSON.stringify({ [legacyId]: legacyEntry }, null, 2));
+  fs.writeFileSync(testLifecycleFile, JSON.stringify({}, null, 2));
+  fs.writeFileSync(testScanResultsFile, JSON.stringify([], null, 2));
 
-  // Find the legacy mastercard orphan in actual production data
+  const { buildDashboardData } = await import(path.join(ROOT, "scripts/dashboard-server.mjs"));
+  const result = buildDashboardData({
+    appStateFile: testAppStateFile,
+    lifecycleFile: testLifecycleFile,
+    scanResultsFile: testScanResultsFile
+  });
+
+  // Find the legacy mastercard orphan in isolated test data
   const legacyOrphan = result.applied.find(j => j.job_id === legacyId);
   assert(legacyOrphan !== undefined, "Legacy mastercard orphan is present");
   assert(legacyOrphan.is_orphan === true, "Legacy record is marked is_orphan=true");
   assert(legacyOrphan.company === "Mastercard", "Legacy company is correctly inferred from URL");
   assert(legacyOrphan.title === "(Position no longer listed)", "Legacy title uses graceful placeholder");
   assert(legacyOrphan.location === "—", "Legacy location uses placeholder");
+
+  cleanupDir(tmpDir);
 }
 
 // ── T9 ────────────────────────────────────────────────────────────────────────
@@ -398,27 +415,27 @@ console.log("\n─────────────────────�
 console.log("T9: Snapshot preservation — partial updates do not overwrite existing snapshot");
 console.log("──────────────────────────────────────────────────────────");
 {
-  const { setJobStatus, loadApplicationState } = await import(path.join(ROOT, "scripts/state-service.mjs"));
+  const { setJobStatus, loadApplicationState, getJobId } = await import(path.join(ROOT, "scripts/state-service.mjs"));
   const tmpDir = makeTempDir();
   const testStateFile = path.join(tmpDir, "test_app_state.json");
 
   const fullJob = {
-    source: "eightfold",
-    source_job_id: "req-100",
+    source: "workday",
     company: "NVIDIA",
     title: "Senior Deep Learning Engineer",
     location: "Pune, India",
-    url: "https://nvidia.eightfold.ai/careers/job/req-100"
+    url: "https://nvidia.wd5.myworkdayjobs.com/careers/job/req-100"
   };
+  const jobId = getJobId(fullJob);
 
   // 1. Initial save with full job
   setJobStatus(fullJob, "saved", { filePath: testStateFile });
 
   // 2. Transition to applied passing only string ID and new notes (no job object)
-  setJobStatus("eightfold:req-100", "applied", { filePath: testStateFile, notes: "Followed up with recruiter" });
+  setJobStatus(jobId, "applied", { filePath: testStateFile, notes: "Followed up with recruiter" });
 
   const stateAfter = loadApplicationState(testStateFile);
-  const entry = stateAfter["eightfold:req-100"];
+  const entry = stateAfter[jobId];
 
   assert(entry.status === "applied", "Status updated to applied");
   assert(entry.notes === "Followed up with recruiter", "Notes updated");
@@ -426,7 +443,7 @@ console.log("──────────────────────�
   assert(entry.job.title === "Senior Deep Learning Engineer", "Title preserved");
   assert(entry.job.company === "NVIDIA", "Company preserved");
   assert(entry.job.location === "Pune, India", "Location preserved");
-  assert(entry.job.url === "https://nvidia.eightfold.ai/careers/job/req-100", "URL preserved");
+  assert(entry.job.url === "https://nvidia.wd5.myworkdayjobs.com/careers/job/req-100", "URL preserved");
 
   cleanupDir(tmpDir);
 }

@@ -233,11 +233,11 @@ function buildOrphanJobs(mode, appState, lifecycleState, scanJobIds) {
  * records (jobs whose state/lifecycle is persisted but whose scan listing has since been removed).
  * State and lifecycle remain fully independent — a job can appear in both Applied and Expired.
  */
-export function buildDashboardData() {
-  const scanData = loadScanResults();
-  const rawJobs = scanData.jobs || [];
-  const appState = loadApplicationState();
-  const lifecycleState = loadJobLifecycleState();
+export function buildDashboardData(options = {}) {
+  const scanData = options.scanData || loadScanResults(options.scanResultsFile);
+  const rawJobs = options.jobs || scanData.jobs || [];
+  const appState = options.appState || loadApplicationState(options.appStateFile);
+  const lifecycleState = options.lifecycleState || loadJobLifecycleState(options.lifecycleFile);
 
   // Enrich all scan jobs with both application state and lifecycle status
   const enrichedWithState = enrichJobsWithState(rawJobs, appState);
