@@ -51,7 +51,8 @@ jobs:
           test -f scripts/generate-pdf.mjs && echo '✓ scripts/generate-pdf.mjs exists'
 
       - name: Validate YAML configurations (portals & profiles)
-        run: node -e "
+        run: |
+          node -e "
           const fs = require('fs');
           const yaml = require('js-yaml');
 
@@ -65,7 +66,7 @@ jobs:
           for (const key of portalKeys) {
             if (Array.isArray(portals[key])) companyCount += portals[key].length;
           }
-          console.log(\`✓ portals/india.yml: valid YAML (\${companyCount} companies across \${portalKeys.length} portals)\`);
+          console.log('✓ portals/india.yml: valid YAML (' + companyCount + ' companies across ' + portalKeys.length + ' portals)');
 
           // Validate config/profile.example.yml
           const profileExample = yaml.load(fs.readFileSync('config/profile.example.yml', 'utf8'));
@@ -73,10 +74,11 @@ jobs:
             throw new Error('config/profile.example.yml: missing candidate section');
           }
           console.log('✓ config/profile.example.yml: valid candidate schema');
-        "
+          "
 
       - name: Verify JavaScript & ESM syntax (node --check)
-        run: node -e "
+        run: |
+          node -e "
           const fs = require('fs');
           const path = require('path');
           const { execSync } = require('child_process');
@@ -93,12 +95,12 @@ jobs:
           }
 
           const files = [...findMjs('scripts'), ...findMjs('tests')];
-          console.log(\`Checking syntax on \${files.length} JavaScript files...\`);
+          console.log('Checking syntax on ' + files.length + ' JavaScript files...');
           for (const f of files) {
-            execSync(\`node --check \${f}\`);
+            execSync('node --check ' + f);
           }
-          console.log(\`✓ All \${files.length} JavaScript files passed syntax check\`);
-        "
+          console.log('✓ All ' + files.length + ' JavaScript files passed syntax check');
+          "
 
       - name: Verify Python scripts syntax (py_compile)
         run: |
