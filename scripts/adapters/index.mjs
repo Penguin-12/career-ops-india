@@ -9,6 +9,7 @@ import oraclecloud from "./oraclecloud.mjs";
 import google from "./google.mjs";
 import deshaw from "./deshaw.mjs";
 import eightfold from "./eightfold.mjs";
+import microsoft from "./microsoft.mjs";
 
 export default {
   greenhouse,
@@ -21,7 +22,8 @@ export default {
   oraclecloud,
   google,
   deshaw,
-  eightfold
+  eightfold,
+  microsoft
 };
 
 

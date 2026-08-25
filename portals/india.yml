@@ -160,6 +160,76 @@ greenhouse:
     domain: edge compute/distributed systems
     hq: Remote/India
 
+  - name: Zscaler
+    slug: zscaler
+    tier: "1"
+    priority: GO
+    domain: zero-trust/cloud-security
+    hq: Bangalore/Pune
+
+  - name: CockroachDB
+    slug: cockroachlabs
+    tier: "1"
+    priority: GO
+    domain: distributed-database/systems
+    hq: Bangalore
+
+  - name: Sumo Logic
+    slug: sumologic
+    tier: "1"
+    priority: GO
+    domain: observability/security
+    hq: Bangalore
+
+  - name: Datadog
+    slug: datadog
+    tier: "1"
+    priority: GO
+    domain: observability/cloud
+    hq: Bangalore
+
+  - name: Agoda
+    slug: agoda
+    tier: "1"
+    priority: GO
+    domain: traveltech/distributed-systems
+    hq: Gurgaon/Bangalore
+
+  - name: Elastic
+    slug: elastic
+    tier: "1"
+    priority: GO
+    domain: search/observability/distributed-systems
+    hq: Bangalore
+
+  - name: New Relic
+    slug: newrelic
+    tier: "1"
+    priority: GO
+    domain: observability/telemetry
+    hq: Hyderabad/Bangalore
+
+  - name: Bitwarden
+    slug: bitwarden
+    tier: "1"
+    priority: GO
+    domain: security/open-source
+    hq: Remote/India
+
+  - name: InMobi
+    slug: inmobi
+    tier: "1"
+    priority: GO
+    domain: adtech/ai/distributed-systems
+    hq: Bangalore
+
+  - name: Groww
+    slug: groww
+    tier: "1"
+    priority: GO
+    domain: fintech/wealthtech
+    hq: Bangalore
+
 
 lever:
 
@@ -282,6 +352,20 @@ smartrecruiters:
     priority: GO
     domain: enterprise-cloud/platform/ai
     hq: Hyderabad/Bangalore
+
+  - name: Grab
+    slug: grab
+    tier: "1"
+    priority: GO
+    domain: super-app/fintech/systems
+    hq: Bangalore
+
+  - name: Experian
+    slug: Experian
+    tier: "1"
+    priority: GO
+    domain: fintech/data-platforms/analytics
+    hq: Hyderabad/Bengaluru
 
 workday:
   # ── Tier-1 Global Big Tech & Enterprise Platforms ─────────────────────────
@@ -407,6 +491,60 @@ workday:
     domain: fintech/payments/distributed-systems
     hq: Bangalore
 
+  - name: Broadcom
+    tenant: broadcom
+    instance: wd1
+    site: External_Career
+    tier: "1"
+    priority: GO
+    domain: infrastructure/virtualization/systems
+    hq: Bangalore
+
+  - name: Cadence
+    tenant: cadence
+    instance: wd1
+    site: External_Careers
+    tier: "1"
+    priority: GO
+    domain: eda/silicon/systems
+    hq: Noida/Bangalore
+
+  - name: Micron
+    tenant: micron
+    instance: wd1
+    site: External
+    tier: "1"
+    priority: GO
+    domain: semiconductors/memory
+    hq: Hyderabad
+
+  - name: Deutsche Bank
+    tenant: db
+    instance: wd3
+    site: DBWebsite
+    tier: "1"
+    priority: GO
+    domain: banking/fintech/cloud-platforms
+    hq: Pune/Bengaluru
+
+  - name: BlackRock
+    tenant: blackrock
+    instance: wd1
+    site: BlackRock_Professional
+    tier: "0"
+    priority: GO
+    domain: asset-management/aladdin/fintech
+    hq: Gurugram/Mumbai/Bengaluru
+
+  - name: State Street
+    tenant: statestreet
+    instance: wd1
+    site: Global
+    tier: "1"
+    priority: GO
+    domain: banking/custody/financial-platforms
+    hq: Bengaluru/Hyderabad/Pune
+
 amazon:
   - name: Amazon
     slug: amazon
@@ -434,6 +572,15 @@ oraclecloud:
     domain: quant/fintech/systems
     hq: Bangalore/Hyderabad
 
+  - name: Oracle
+    host: eeho.fa.us2.oraclecloud.com
+    site: CX_1
+    keyword: India
+    tier: "1"
+    priority: GO
+    domain: enterprise-cloud/database/systems
+    hq: Bangalore/Hyderabad
+
 google:
   - name: Google
     tier: "0"
@@ -448,15 +595,16 @@ deshaw:
     domain: quant/distributed-systems/algorithms
     hq: Hyderabad/Bangalore/Gurugram
 
-eightfold:
+microsoft:
   - name: Microsoft
-    tenant: microsoft
+    host: apply.careers.microsoft.com
     domain_host: microsoft.com
     tier: "0"
     priority: GO
     domain: big-tech/cloud/os/ai
-    hq: Hyderabad/Bangalore/Noida/Pune
+    hq: Bengaluru/Hyderabad/Noida/Gurugram/Mumbai
 
+eightfold:
   - name: Morgan Stanley
     tenant: morganstanley
     domain_host: morganstanley.com
