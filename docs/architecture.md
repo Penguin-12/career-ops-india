@@ -87,14 +87,14 @@ graph TD
 
 | Subsystem | Primary Modules | Architectural Responsibility | Key Inputs / Outputs |
 |---|---|---|---|
-| **Orchestration** | `daily-pipeline.mjs`, `dashboard-server.mjs` | Controls high-level execution, enforces single-process concurrency locking, serves REST APIs, and coordinates multi-stage daily job hunts. | Input: CLI args / HTTP POST<br/>Output: Telemetry status, HTTP JSON responses |
-| **Ingestion** | `scan.mjs`, `adapters/*`, `scrapers/*` | Queries 65+ employer ATS boards via direct HTTP APIs without browser automation; normalizes disparate payloads into `CanonicalJob` schema. | Input: `portals/india.yml`<br/>Output: `data/scan_results.json` |
+| **Orchestration** | `daily-pipeline.mjs`, `dashboard-server.mjs` | Controls high-level execution, enforces single-process concurrency locking, serves REST APIs, builds aggregated dashboard views with historical state, and coordinates daily job hunts. | Input: CLI args / HTTP POST<br/>Output: Telemetry status, HTTP JSON responses |
+| **Ingestion** | `scan.mjs`, `adapters/*`, `scrapers/*` | Queries 65+ employer ATS boards via direct HTTP APIs; reattaches local AI evaluation cache via canonical SHA-256 keys (0 tokens/network); normalizes payloads into `CanonicalJob` schema. | Input: `portals/india.yml`, `data/.ai_cache.json`<br/>Output: `data/scan_results.json` |
 | **Semantic Taxonomy** | `scan.mjs` | Multi-gate filtering (Hard Exclusions $\rightarrow$ Function Classification $\rightarrow$ Experience/Seniority Normalization $\rightarrow$ Deterministic 100-pt Scoring). | Input: Raw ATS job payloads<br/>Output: Filtered & scored job entities |
-| **AI Evaluation** | `ai/evaluator.mjs`, `ai/prompt.mjs`, `ai/provider.mjs` | Selects high-priority unevaluated jobs, synthesizes candidate CV with JD requirements, queries Gemini Flash, and caches verdicts by SHA-256 prompt hash. | Input: `cv.md`, `scan_results.json`<br/>Output: `ai_evaluation` metadata, `data/.ai_cache.json` |
-| **Application State** | `state-service.mjs` | Tracks user application actions (`new`, `saved`, `applied`, `not_interested`) with deterministic job IDs and atomic file writes. | Input: Job ID + action<br/>Output: `data/application_state.json` |
+| **AI Evaluation** | `ai/evaluator.mjs`, `ai/prompt.mjs`, `ai/provider.mjs` | Selects high-priority unevaluated jobs, queries Gemini Flash, caches verdicts by SHA-256 prompt hash, and writes results back using URL-first identity matching. | Input: `cv.md`, `scan_results.json`<br/>Output: `ai_evaluation` metadata, `data/.ai_cache.json` |
+| **Application State** | `state-service.mjs` | Tracks user actions (`new`, `saved`, `applied`, `not_interested`) with deterministic job IDs, captures immutable `{ title, company, location, url }` display snapshots, and persists atomically. | Input: Job ID + action + snapshot<br/>Output: `data/application_state.json` |
 | **Job Lifecycle** | `job-lifecycle-service.mjs` | Tracks portal posting availability (`active`, `stale`, `expired`) with automated rescan reconciliation and quota-freeing manual expiration. | Input: Scanned jobs + user action<br/>Output: `data/job_lifecycle_state.json` |
-| **Queue & Ranking** | `queue-core.mjs`, `queue.mjs` | Enforces ranking precedence (`APPLY` > `CONSIDER` > `UNEVAL` > `STRETCH`) and limits company recommendations to max 5/company. | Input: `scan_results`, `app_state`, `lifecycle`<br/>Output: Partitioned, diversified queues |
-| **User Interface** | `templates/dashboard.html` | Pure HTML5/vanilla JS single-page dashboard with Kanban columns, live pipeline trigger, filtering, and manual action hooks. | Input: `GET /api/jobs`, `GET /api/state`<br/>Output: DOM rendered UI |
+| **Queue & Ranking** | `queue-core.mjs`, `queue.mjs` | Enforces ranking precedence (`APPLY` > `CONSIDER` > `UNEVAL` > `STRETCH`) and limits company recommendations to max 5/company. Excludes all orphan/archived records from active queue. | Input: `scan_results`, `app_state`, `lifecycle`<br/>Output: Partitioned, diversified queues |
+| **User Interface** | `templates/dashboard.html` | Pure HTML5/vanilla JS single-page dashboard with Kanban columns, live pipeline trigger, filtering, orphan card differentiation (`📦 Archived`), and manual action hooks. | Input: `GET /api/jobs`, `GET /api/state`<br/>Output: DOM rendered UI |
 
 ---
 
@@ -116,6 +116,7 @@ classDiagram
         <<data/application_state.json>>
         +Map~String, StateRecord~ records
         +String status: new | saved | applied | not_interested
+        +Object job: { title, company, location, url }
         +Owned By: scripts/state-service.mjs
     }
 
@@ -132,27 +133,27 @@ classDiagram
         +Owned By: scripts/ai/evaluator.mjs
     }
 
-    ScanResults "1" ..> "1" ApplicationState : joined via getJobId()
-    ScanResults "1" ..> "1" JobLifecycleState : joined via getJobId()
+    ScanResults "1" ..> "1" ApplicationState : joined via getJobId() / URL
+    ScanResults "1" ..> "1" JobLifecycleState : joined via getJobId() / URL
     ScanResults "1" ..> "1" AICache : keyed by SHA-256 hash
 ```
 
 1. **`data/scan_results.json`**:
-   - **Exclusive Writer**: `scripts/scan.mjs`.
+   - **Exclusive Writer**: `scripts/scan.mjs` (scan results & reattached evaluations) and `scripts/ai/evaluator.mjs` (evaluation persistence via URL-first match).
    - **Content**: Canonical scraped postings, deterministic taxonomy scores, and attached AI evaluation metadata.
    - **Guarantee**: Scanner never mutates user application state or lifecycle state.
 
 2. **`data/application_state.json`**:
    - **Exclusive Writer**: `scripts/state-service.mjs`.
-   - **Content**: User interaction history (`applied`, `saved`, `not_interested`).
-   - **Guarantee**: Never modified by scan runs, AI evaluations, or pipeline rebuilds.
+   - **Content**: User interaction history (`applied`, `saved`, `not_interested`) along with an immutable identity snapshot (`{ title, company, location, url }`).
+   - **Guarantee**: Authoritative for Applied view; historical applied jobs remain fully visible in dashboard as archived records even after disappearing from scans.
 
 3. **`data/job_lifecycle_state.json`**:
    - **Exclusive Writer**: `scripts/job-lifecycle-service.mjs`.
    - **Content**: Availability records (`expired`, `stale`, `active`).
-   - **Guarantee**: Decoupled from user actions. Expiring a job does NOT mark it applied; applying does NOT alter lifecycle.
+   - **Guarantee**: Authoritative for Expired view; decoupled from user application actions. Expiring a job does NOT mark it applied; applying does NOT alter lifecycle. A job can exist in both Applied and Expired views simultaneously.
 
 4. **`data/.ai_cache.json`**:
    - **Exclusive Writer**: `scripts/ai/evaluator.mjs`.
-   - **Content**: SHA-256 hash-keyed evaluation results.
-   - **Guarantee**: 100% token reuse for identical JD and profile inputs across runs.
+   - **Content**: SHA-256 hash-keyed evaluation results (`url|title|company|description|profileText|cvText`).
+   - **Guarantee**: 100% token reuse across scanner runs and pipeline evaluations. Reattachment during scanning is local and requires zero LLM tokens.

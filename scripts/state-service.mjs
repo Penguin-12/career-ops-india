@@ -107,6 +107,29 @@ export function validateStatus(status) {
 }
 
 /**
+ * Extracts a minimal immutable identity/display snapshot from a job record.
+ * Contains only { title, company, location, url } — zero volatile scan/score/evaluation data.
+ */
+export function extractJobSnapshot(job) {
+  if (!job || typeof job !== "object") return null;
+  const title = job.title ? String(job.title).trim() : undefined;
+  const company = job.company ? String(job.company).trim() : undefined;
+  const location = job.location ? String(job.location).trim() : undefined;
+  const url = job.apply_url || job.url || job.source_url || undefined;
+  const trimmedUrl = url ? String(url).trim() : undefined;
+
+  if (!title && !company && !location && !trimmedUrl) return null;
+
+  const snapshot = {};
+  if (title) snapshot.title = title;
+  if (company) snapshot.company = company;
+  if (location) snapshot.location = location;
+  if (trimmedUrl) snapshot.url = trimmedUrl;
+
+  return snapshot;
+}
+
+/**
  * Retrieves the application state for a job or ID. Defaults to status: 'new'.
  */
 export function getJobStatus(jobOrId, state = {}) {
@@ -116,7 +139,8 @@ export function getJobStatus(jobOrId, state = {}) {
     return {
       status: entry.status,
       updated_at: entry.updated_at || null,
-      notes: entry.notes || ""
+      notes: entry.notes || "",
+      ...(entry.job ? { job: entry.job } : {})
     };
   }
   return {
@@ -128,6 +152,9 @@ export function getJobStatus(jobOrId, state = {}) {
 
 /**
  * Sets status for a job, updates timestamp, and optionally persists atomically.
+ * Captures an immutable { title, company, location, url } snapshot from the job record
+ * at the moment of state transition, allowing historical orphan records to be reconstructed
+ * even after disappearing from future scan results.
  */
 export function setJobStatus(jobOrId, status, options = {}) {
   const normStatus = String(status || "").toLowerCase().trim();
@@ -146,10 +173,24 @@ export function setJobStatus(jobOrId, status, options = {}) {
     // Resetting to new removes explicit action from state or sets status new
     delete state[id];
   } else {
+    // Extract snapshot from job object if provided, otherwise preserve existing snapshot
+    const sourceJob = typeof jobOrId === "object" && jobOrId !== null
+      ? jobOrId
+      : (options.job || options.snapshot || null);
+    const newSnapshot = extractJobSnapshot(sourceJob);
+    const existingSnapshot = existing.job || null;
+
+    // Merge: new snapshot fields take precedence over existing, but existing fields are preserved if new is incomplete
+    const mergedSnapshot = (newSnapshot || existingSnapshot) ? {
+      ...(existingSnapshot || {}),
+      ...(newSnapshot || {})
+    } : null;
+
     state[id] = {
       status: normStatus,
       updated_at: options.updated_at || new Date().toISOString(),
-      ...(notes ? { notes } : {})
+      ...(notes ? { notes } : {}),
+      ...(mergedSnapshot && Object.keys(mergedSnapshot).length > 0 ? { job: mergedSnapshot } : {})
     };
   }
 

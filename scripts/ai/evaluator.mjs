@@ -289,9 +289,19 @@ export async function evaluateBatch(options = {}) {
 
   const persistJobResult = (jobWithAi) => {
     try {
-      const idx = scanData.jobs.findIndex(
-        j => j.title?.trim() === jobWithAi.title?.trim() && j.company?.trim() === jobWithAi.company?.trim()
-      );
+      const idx = scanData.jobs.findIndex(j => {
+        // Primary identity: URL (unique per job posting, always present in scan results)
+        if (j.url && jobWithAi.url) return j.url === jobWithAi.url;
+        // Secondary: source_job_id scoped to company (stable requisition ID when available)
+        if (j.source_job_id && jobWithAi.source_job_id) {
+          return j.source_job_id === jobWithAi.source_job_id
+            && String(j.company || "").trim() === String(jobWithAi.company || "").trim();
+        }
+        // Constrained fallback: title + company + location (all three required to reduce collision risk)
+        return j.title?.trim() === jobWithAi.title?.trim()
+          && j.company?.trim() === jobWithAi.company?.trim()
+          && j.location?.trim() === jobWithAi.location?.trim();
+      });
       if (idx !== -1) {
         scanData.jobs[idx] = {
           ...scanData.jobs[idx],

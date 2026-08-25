@@ -74,6 +74,7 @@ career-ops-india/
 │   │   ├── prompt.mjs              # CV + JD prompt synthesizer
 │   │   └── provider.mjs            # LLM API caller & JSON response parser
 │   └── tools/                      # Reusable diagnostic & audit utilities
+│       ├── backfill-application-snapshots.mjs # One-time idempotent application snapshot backfiller
 │       ├── audit-company-coverage.mjs # Company coverage gap auditor
 │       └── audit_hardware_exclusions.mjs # Hardware & DFT exclusion auditor
 ├── templates/                      # UI and document templates
@@ -89,7 +90,8 @@ career-ops-india/
 │   ├── test-eightfold-adapter.mjs  # 10 assertions: Microsoft, Morgan Stanley Eightfold
 │   ├── test-application-state.mjs  # 12 assertions: state persistence & REST API
 │   ├── test-job-lifecycle.mjs      # 15 assertions: availability reconciliation & quota release
-│   └── test-daily-pipeline.mjs     # 10 assertions: locking, recovery, partial failure resilience
+│   ├── test-daily-pipeline.mjs     # 10 assertions: locking, recovery, partial failure resilience
+│   └── test-state-fixes.mjs        # 18 assertions: cache reattach, URL persistence, snapshot & orphans
 ├── .gitignore                      # Git exclusion rules
 ├── package.json                    # Dependencies & npm run scripts
 └── README.md                       # Comprehensive user guide & architecture overview

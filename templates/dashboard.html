@@ -864,10 +864,22 @@ function switchTab(tabName) {
 
 async function updateJobState(jobId, status, notes = "") {
   try {
+    let jobData = null;
+    if (window.DASHBOARD_DATA && Array.isArray(window.DASHBOARD_DATA.all)) {
+      const found = window.DASHBOARD_DATA.all.find(j => j.job_id === jobId);
+      if (found) {
+        jobData = {
+          title: found.title,
+          company: found.company,
+          location: found.location,
+          url: found.apply_url || found.url || found.source_url
+        };
+      }
+    }
     const res = await fetch("/api/state", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jobId, status, notes })
+      body: JSON.stringify({ jobId, status, notes, job: jobData })
     });
     if (!res.ok) throw new Error("Failed to update status");
     showToast(`Job status updated to ${status}`);
@@ -950,6 +962,7 @@ function formatLabel(str) {
 function renderJobCard(j, currentContext = "queue") {
   const ai = j.ai_evaluation;
   const isStretch = Boolean(j.is_stretch);
+  const isOrphan = Boolean(j.is_orphan);
   const freshClass = j.freshness_tier === "hot" ? "badge-hot" : (j.freshness_tier === "fresh" ? "badge-fresh" : "badge-active");
   const freshText = j.freshness_tier === "hot" ? "🟢 Hot (0-7d)" : (j.freshness_tier === "fresh" ? "🟡 Fresh (8-14d)" : "⚪ Active");
   const prioClass = (j.priority === "GO" ? "badge-prio-go" : "badge-prio-good");
@@ -962,6 +975,11 @@ function renderJobCard(j, currentContext = "queue") {
   // Target application URL (apply_url > url > source_url)
   const targetUrl = j.apply_url || j.url || j.source_url || "#";
   const isAggregator = j.source_type === "aggregator" || j.source === "naukri" || j.source === "discovery";
+
+  // Orphan badge — shown for historical records no longer in current scan
+  const orphanBadgeHtml = isOrphan
+    ? `<span class="badge badge-stale" title="This listing is no longer in the current scan — showing from persisted history">📦 Archived</span>`
+    : "";
 
   let aiBadgeHtml = "";
   if (ai) {
@@ -1075,18 +1093,18 @@ function renderJobCard(j, currentContext = "queue") {
 
         <div class="meta-chips">
           <span>📍 ${j.location || "India"}</span>
-          <span>🕒 ${freshText} (${j.age_days ?? 0}d)</span>
+          ${isOrphan ? "" : `<span>🕒 ${freshText} (${j.age_days ?? 0}d)</span>`}
           ${j.remote ? `<span>🌐 Remote</span>` : ""}
         </div>
 
         <div class="badge-row">
-          <span class="badge ${isStretch ? 'badge-stretch' : 'badge-primary'}">${fitLabel}</span>
-          <span class="badge badge-tier2">${roleLabel}</span>
-          <span class="badge badge-tier2">${seniorityLabel}</span>
+          ${isOrphan ? orphanBadgeHtml : `<span class="badge ${isStretch ? 'badge-stretch' : 'badge-primary'}">${fitLabel}</span>`}
+          ${isOrphan ? "" : `<span class="badge badge-tier2">${roleLabel}</span>`}
+          ${isOrphan ? "" : `<span class="badge badge-tier2">${seniorityLabel}</span>`}
           ${aiBadgeHtml}
           ${lifecycleBadgeHtml}
           ${staffingAlert}
-          ${aggregatorTag}
+          ${isOrphan ? "" : aggregatorTag}
         </div>
 
         ${rationaleHtml}

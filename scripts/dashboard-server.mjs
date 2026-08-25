@@ -60,7 +60,178 @@ function loadScanResults() {
 }
 
 /**
+ * Parses a job ID of the form "{source}:{url}" into its components.
+ * Keys in application_state.json and job_lifecycle_state.json all use this format.
+ */
+function parseJobId(jobId) {
+  const colonIdx = jobId.indexOf(":");
+  if (colonIdx === -1) return { source: "unknown", url: null };
+  return {
+    source: jobId.substring(0, colonIdx),
+    url: jobId.substring(colonIdx + 1)
+  };
+}
+
+/**
+ * Extracts a human-readable company hint from a job URL and source name.
+ * Used only for orphan stubs where the canonical scan record is no longer present.
+ */
+function extractCompanyHint(url, source) {
+  if (!url) return source || "Unknown";
+  try {
+    const parsed = new URL(url);
+    const hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+
+    // Workday: {company}.wd{n}.myworkdayjobs.com
+    const workdayMatch = hostname.match(/^([a-z0-9-]+)\.wd\d+\.myworkdayjobs\.com$/);
+    if (workdayMatch) {
+      const name = workdayMatch[1];
+      return name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    // OracleCloud: {company}.fa.oraclecloud.com
+    const oracleMatch = hostname.match(/^([a-z0-9-]+)\.fa\.oraclecloud\.com$/);
+    if (oracleMatch) {
+      return oracleMatch[1].toUpperCase();
+    }
+
+    // SmartRecruiters: jobs.smartrecruiters.com/{Company}/...
+    if (hostname.includes("smartrecruiters.com")) {
+      const parts = parsed.pathname.split("/").filter(Boolean);
+      if (parts.length > 0) {
+        // CamelCase company slug → words
+        return parts[0].replace(/([A-Z])/g, " $1").trim();
+      }
+    }
+
+    // Greenhouse: boards.greenhouse.io/{company}/jobs/{id}
+    if (hostname.includes("greenhouse.io")) {
+      const parts = parsed.pathname.split("/").filter(Boolean);
+      if (parts.length > 0) {
+        const name = parts[0];
+        return name.charAt(0).toUpperCase() + name.slice(1);
+      }
+    }
+
+    // Direct company domain: okta.com → "Okta"
+    const domainParts = hostname.split(".");
+    if (domainParts.length >= 2) {
+      const name = domainParts[0];
+      return name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    return hostname;
+  } catch {
+    return source || "Unknown";
+  }
+}
+
+/**
+ * Builds lightweight "orphan" job stubs for state/lifecycle records that have no
+ * corresponding job in the current scan_results.json.
+ *
+ * Mode "applied": iterates appState, builds stubs for applied/oa/interview/rejected/withdrawn.
+ * Mode "expired": iterates lifecycleState, builds stubs for expired records.
+ *
+ * Each stub is independently enriched from both state files so that a job that is
+ * simultaneously applied AND expired (in different files) appears correctly in both
+ * the Applied and Expired views — preserving state/lifecycle independence.
+ *
+ * @param {"applied"|"expired"} mode
+ * @param {object} appState        - full application_state.json object
+ * @param {object} lifecycleState  - full job_lifecycle_state.json object
+ * @param {Set<string>} scanJobIds - set of job_id values present in current scan
+ * @returns {Array} orphan job stubs
+ */
+function buildOrphanJobs(mode, appState, lifecycleState, scanJobIds) {
+  const APPLIED_STATUSES = new Set(["applied", "oa", "interview", "rejected", "withdrawn"]);
+  const orphans = [];
+
+  if (mode === "applied") {
+    for (const [id, entry] of Object.entries(appState)) {
+      if (scanJobIds.has(id)) continue; // in scan → handled by normal join path
+      if (!APPLIED_STATUSES.has(entry.status)) continue;
+
+      const { source, url } = parseJobId(id);
+      const lifecycleEntry = lifecycleState[id];
+      const snap = entry.job || entry.snapshot || null;
+
+      orphans.push({
+        job_id: id,
+        source,
+        url: snap?.url || entry.url || url,
+        company: snap?.company || entry.company || extractCompanyHint(url, source),
+        title: snap?.title || entry.title || "(Position no longer listed)",
+        location: snap?.location || entry.location || "—",
+        department: "",
+        is_orphan: true,
+        tier: "2",
+        priority: "GOOD",
+        is_stretch: false,
+        freshness_tier: "active",
+        age_days: null,
+        application_state: {
+          status: entry.status,
+          updated_at: entry.updated_at || null,
+          notes: entry.notes || ""
+        },
+        lifecycle: lifecycleEntry
+          ? {
+              status: lifecycleEntry.status,
+              updated_at: lifecycleEntry.updated_at || null,
+              source: lifecycleEntry.source || "manual"
+            }
+          : { status: "active", updated_at: null, source: "system" }
+      });
+    }
+  } else if (mode === "expired") {
+    for (const [id, entry] of Object.entries(lifecycleState)) {
+      if (scanJobIds.has(id)) continue; // in scan → handled by allEnriched filter
+      if (entry.status !== "expired") continue;
+
+      const { source, url } = parseJobId(id);
+      const appEntry = appState[id];
+      const snap = appEntry?.job || appEntry?.snapshot || entry.job || entry.snapshot || null;
+
+      orphans.push({
+        job_id: id,
+        source,
+        url: snap?.url || appEntry?.url || entry.url || url,
+        company: snap?.company || appEntry?.company || entry.company || extractCompanyHint(url, source),
+        title: snap?.title || appEntry?.title || entry.title || "(Position no longer listed)",
+        location: snap?.location || appEntry?.location || entry.location || "—",
+        department: "",
+        is_orphan: true,
+        tier: "2",
+        priority: "GOOD",
+        is_stretch: false,
+        freshness_tier: "active",
+        age_days: null,
+        application_state: appEntry
+          ? {
+              status: appEntry.status,
+              updated_at: appEntry.updated_at || null,
+              notes: appEntry.notes || ""
+            }
+          : { status: "new", updated_at: null, notes: "" },
+        lifecycle: {
+          status: entry.status,
+          updated_at: entry.updated_at || null,
+          source: entry.source || "manual"
+        }
+      });
+    }
+  }
+
+  return orphans;
+}
+
+/**
  * Builds the aggregated payload combining canonical jobs, state, lifecycle, and partitioned queues.
+ *
+ * Applied and Expired counts are authoritative: they include both scan-matched jobs and orphan
+ * records (jobs whose state/lifecycle is persisted but whose scan listing has since been removed).
+ * State and lifecycle remain fully independent — a job can appear in both Applied and Expired.
  */
 export function buildDashboardData() {
   const scanData = loadScanResults();
@@ -68,22 +239,34 @@ export function buildDashboardData() {
   const appState = loadApplicationState();
   const lifecycleState = loadJobLifecycleState();
 
-  // Enrich all jobs with both application state and lifecycle status
+  // Enrich all scan jobs with both application state and lifecycle status
   const enrichedWithState = enrichJobsWithState(rawJobs, appState);
   const allEnriched = enrichJobsWithLifecycle(enrichedWithState, lifecycleState);
 
-  // Partition jobs by user application state
-  const { active: unActioned, saved, applied, notInterested } = filterJobsByState(allEnriched, appState);
+  // Build the set of job IDs that are present in the current scan
+  const scanJobIds = new Set(allEnriched.map(j => j.job_id));
 
-  // Partition un-actioned jobs by lifecycle state
-  const { active: activeEligible, stale: activeStale, expired: activeExpired } = filterJobsByLifecycle(unActioned, lifecycleState);
+  // Partition scan jobs by user application state
+  const { active: unActioned, saved, applied: appliedFromScan, notInterested } = filterJobsByState(allEnriched, appState);
 
-  // Partition active (new/un-actioned + active lifecycle) jobs through canonical queue ranking & diversification
+  // Partition un-actioned scan jobs by lifecycle state
+  const { active: activeEligible } = filterJobsByLifecycle(unActioned, lifecycleState);
+
+  // Partition active (new/un-actioned + active-lifecycle) jobs through canonical queue ranking & diversification
   const activeQueue = partitionQueue(activeEligible, 5);
 
-  // Collect all expired and stale jobs across entire dataset for dedicated tabs/views
-  const allExpired = allEnriched.filter(j => j.lifecycle?.status === "expired");
+  // Collect expired/stale jobs from scan (jobs in scan_results with lifecycle = expired/stale)
+  const expiredFromScan = allEnriched.filter(j => j.lifecycle?.status === "expired");
   const allStale = allEnriched.filter(j => j.lifecycle?.status === "stale");
+
+  // Build orphan records for jobs with persisted state but absent from current scan.
+  // An applied+expired job produces stubs in BOTH lists — state/lifecycle independence preserved.
+  const orphanApplied = buildOrphanJobs("applied", appState, lifecycleState, scanJobIds);
+  const orphanExpired = buildOrphanJobs("expired", appState, lifecycleState, scanJobIds);
+
+  // Merge: scan-matched + orphans (no overlap possible — orphans are by definition absent from scan)
+  const applied = [...appliedFromScan, ...orphanApplied];
+  const allExpired = [...expiredFromScan, ...orphanExpired];
 
   return {
     scanned_at: scanData.scanned_at,
@@ -175,7 +358,7 @@ export function createRequestHandler() {
       // 3. POST /api/state
       if (pathname === "/api/state" && method === "POST") {
         const payload = await parseRequestBody(req);
-        const { jobId, status, notes } = payload;
+        const { jobId, status, notes, job, snapshot } = payload;
 
         if (!jobId || typeof jobId !== "string") {
           res.writeHead(400, { "Content-Type": "application/json" });
@@ -190,7 +373,13 @@ export function createRequestHandler() {
           return;
         }
 
-        const result = setJobStatus(jobId, normStatus, { notes });
+        let jobRecord = job || snapshot || null;
+        if (!jobRecord) {
+          const scanData = loadScanResults();
+          jobRecord = (scanData.jobs || []).find(j => (j.job_id === jobId || getJobId(j) === jobId)) || null;
+        }
+
+        const result = setJobStatus(jobId, normStatus, { notes, job: jobRecord });
         res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
         res.end(JSON.stringify({ success: true, result }));
         return;

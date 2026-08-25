@@ -97,15 +97,17 @@ Career-Ops India features 11 specialized protocol adapters in [`scripts/adapters
 
 Career-Ops strictly separates user application tracking from job portal availability:
 
-1. **Canonical Job Dataset** (`data/scan_results.json`): Authoritative scraped jobs.
-2. **Application State** (`data/application_state.json`): User actions (`new`, `saved`, `applied`, `not_interested`).
+1. **Canonical Job Dataset** (`data/scan_results.json`): Authoritative scraped jobs from active ATS scans.
+2. **Application State** (`data/application_state.json`): User actions (`new`, `saved`, `applied`, `not_interested`). Stores an immutable display snapshot (`{ title, company, location, url }`) captured at the moment of state transition.
 3. **Job Lifecycle State** (`data/job_lifecycle_state.json`): Portal availability (`active`, `stale`, `expired`).
 
 A job can independently be:
 - `applied` + `active`
-- `applied` + `expired`
+- `applied` + `expired` (tracked in both **✓ Applied** and **✕ Expired** views)
 - `saved` + `expired`
 - `new` + `stale`
+
+When jobs disappear from active scans, historical records in `application_state.json` and `job_lifecycle_state.json` remain fully visible as archived cards in their respective dashboard views, preserving their real title/company metadata without contaminating the active daily queue.
 
 ---
 
@@ -146,7 +148,7 @@ npm run dashboard
 Run the comprehensive regression battery via npm or individually:
 
 ```bash
-# Run all 9 regression test suites
+# Run all regression test suites
 npm test
 
 # Or run individual test suites
@@ -159,6 +161,7 @@ node tests/test-eightfold-adapter.mjs
 node tests/test-application-state.mjs
 node tests/test-job-lifecycle.mjs
 node tests/test-daily-pipeline.mjs
+node tests/test-state-fixes.mjs
 ```
 
 ---

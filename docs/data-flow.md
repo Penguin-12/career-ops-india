@@ -89,33 +89,41 @@ flowchart TD
 
 ---
 
-## 3. Queue Construction & Company Diversification Flow
+## 3. Queue Construction & Dashboard Data Flow
 
 ```mermaid
 flowchart TD
-    A[Raw Scanned Postings in scan_results.json] --> B[Enrich with Application State & Lifecycle Status]
+    ScanData[data/scan_results.json<br/>Current Scanned Jobs] --> Enrich[Enrich Scan Jobs with State & Lifecycle]
     
-    B --> C{Partition by Application State}
-    C -- status: 'applied' --> TabApplied[✓ Applied View]
-    C -- status: 'saved' --> TabSaved[💾 Saved View]
-    C -- status: 'not_interested' --> TabExcluded[✕ Excluded View]
-    C -- status: 'new' --> D{Partition by Lifecycle State}
+    Enrich --> PartState{Partition by Application State}
+    PartState -- status: 'applied' (scan-matched) --> AppliedMerge
+    PartState -- status: 'saved' --> TabSaved[💾 Saved View]
+    PartState -- status: 'not_interested' --> TabExcluded[✕ Excluded View]
+    PartState -- status: 'new' --> PartLife{Partition by Lifecycle State}
     
-    D -- lifecycle: 'expired' --> TabExpired[✕ Expired View]
-    D -- lifecycle: 'stale' --> TabStale[⚠ Stale Tag / Held Outside Active Queue]
-    D -- lifecycle: 'active' --> E[Active Recommendation Candidate Pool]
+    PartLife -- lifecycle: 'expired' (scan-matched) --> ExpiredMerge
+    PartLife -- lifecycle: 'stale' --> TabStale[⚠ Stale Tag / Held Outside Active Queue]
+    PartLife -- lifecycle: 'active' --> Pool[Active Recommendation Candidate Pool]
     
-    E --> F[Partition by AI Recommendation]
-    F -- AI: 'APPLY' (Score >= 80) --> G[Sort by AI Score Descending]
-    F -- AI: 'CONSIDER' (Score 60-79) --> H[Sort by AI Score Descending]
-    F -- Unevaluated --> I[Sort by Deterministic Score Descending]
+    AppState[data/application_state.json<br/>Persisted User State & Snapshots] --> OrphanApplied[Build Orphan Applied Records<br/>Absent from latest scan]
+    OrphanApplied --> AppliedMerge[Merge Scan-Matched + Orphan Applied]
+    AppliedMerge --> TabApplied[✓ Applied View & Authoritative Count]
     
-    G --> DivApply{Apply 5/Company Diversification Cap}
+    LifeState[data/job_lifecycle_state.json<br/>Persisted Lifecycle State] --> OrphanExpired[Build Orphan Expired Records<br/>Absent from latest scan]
+    OrphanExpired --> ExpiredMerge[Merge Scan-Matched + Orphan Expired]
+    ExpiredMerge --> TabExpired[✕ Expired View & Authoritative Count]
+
+    Pool --> PartAI[Partition by AI Recommendation]
+    PartAI -- AI: 'APPLY' (Score >= 80) --> SortApply[Sort by AI Score Descending]
+    PartAI -- AI: 'CONSIDER' (Score 60-79) --> SortConsider[Sort by AI Score Descending]
+    PartAI -- Unevaluated --> SortNew[Sort by Deterministic Score Descending]
+    
+    SortApply --> DivApply{Apply 5/Company Diversification Cap}
     DivApply -- Within 5/company quota --> QueueApply[🔥 1. APPLY NOW Queue]
     DivApply -- Exceeds 5/company quota --> QueueApplyOverflow[Backup Apply Opportunities]
     
-    H --> QueueConsider[🟡 2. CONSIDER Queue]
-    I --> QueueNew[📋 3. NEW / UNEVALUATED Queue]
+    SortConsider --> QueueConsider[🟡 2. CONSIDER Queue]
+    SortNew --> QueueNew[📋 3. NEW / UNEVALUATED Queue]
 ```
 
 ---
@@ -157,13 +165,14 @@ sequenceDiagram
 
     Browser->>Server: GET /api/jobs
     Server->>ScanData: Load raw scan results
-    Server->>AppState: Load application state
+    Server->>AppState: Load application state (including snapshots)
     Server->>LifeState: Load lifecycle state
-    Server->>Server: Build aggregated payload (partition queues, count stats)
-    Server-->>Browser: Return JSON (counts, partitioned queues, tabs)
+    Server->>Server: Partition active queue & construct orphan applied/expired records
+    Server-->>Browser: Return JSON (counts, partitioned queues, historical tabs)
 
-    Browser->>Server: POST /api/state { jobId, status: 'applied', notes }
-    Server->>AppState: setJobStatus(jobId, 'applied')
+    Browser->>Server: POST /api/state { jobId, status: 'applied', notes, job: { title, company, location, url } }
+    Server->>AppState: setJobStatus(jobId, 'applied', { notes, job })
+    Note over AppState: Captures immutable display snapshot { title, company, location, url }
     AppState->>AppState: Atomic write data/application_state.json
     Server-->>Browser: HTTP 200 OK { success: true }
 

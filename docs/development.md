@@ -36,15 +36,16 @@ To ensure zero regressions across taxonomy, adapters, state managers, and pipeli
 npm test
 
 # Or run individual test suites
-node tests/test-taxonomy.mjs
-node tests/test-ai-evaluator.mjs
-node tests/test-discovery-ingest.mjs
-node tests/test-wave1-adapters.mjs
-node tests/test-wave1-fixes.mjs
-node tests/test-eightfold-adapter.mjs
-node tests/test-application-state.mjs
-node tests/test-job-lifecycle.mjs
-node tests/test-daily-pipeline.mjs
+node tests/test-taxonomy.mjs           # Taxonomy, exclusions & experience filters
+node tests/test-ai-evaluator.mjs       # Evaluation logic, score bands & cache keys
+node tests/test-discovery-ingest.mjs   # Discovery ingestion & ATS precedence
+node tests/test-wave1-adapters.mjs     # Direct ATS protocol adapters
+node tests/test-wave1-fixes.mjs        # Adapter site parameters & edge cases
+node tests/test-eightfold-adapter.mjs  # Eightfold adapter & query pagination
+node tests/test-application-state.mjs  # Application state & dashboard REST APIs
+node tests/test-job-lifecycle.mjs      # Job lifecycle availability & auto-restore
+node tests/test-daily-pipeline.mjs     # Pipeline orchestration, locking & recovery
+node tests/test-state-fixes.mjs        # AI cache reattach, URL persistence, snapshot & orphans
 ```
 
 ---

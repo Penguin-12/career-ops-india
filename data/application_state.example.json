@@ -1,15 +1,27 @@
 {
-  "workday:REF081481W": {
+  "workday:https://example.wd1.myworkdayjobs.com/careers/job/Bengaluru/Senior-Software-Engineer_R-10001": {
     "status": "applied",
     "updated_at": "2026-08-24T10:00:00.000Z",
-    "notes": "Applied via Workday portal"
+    "notes": "Applied via referral",
+    "job": {
+      "title": "Senior Software Engineer",
+      "company": "Acme Corp",
+      "location": "Bengaluru, India",
+      "url": "https://example.wd1.myworkdayjobs.com/careers/job/Bengaluru/Senior-Software-Engineer_R-10001"
+    }
   },
-  "smartrecruiters:744000144803914": {
+  "smartrecruiters:https://jobs.smartrecruiters.com/AcmeCorp/744000100000000": {
     "status": "saved",
     "updated_at": "2026-08-24T10:05:00.000Z",
-    "notes": "Review JD and tailor resume"
+    "notes": "Review JD and tailor resume",
+    "job": {
+      "title": "Staff Platform Engineer",
+      "company": "Acme Corp",
+      "location": "Remote, India",
+      "url": "https://jobs.smartrecruiters.com/AcmeCorp/744000100000000"
+    }
   },
-  "greenhouse:8146810": {
+  "greenhouse:https://boards.greenhouse.io/acme/jobs/8000001": {
     "status": "not_interested",
     "updated_at": "2026-08-24T10:10:00.000Z",
     "notes": "Pass - stack mismatch"

@@ -15,6 +15,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import yaml from "js-yaml";
 import adapters from "./adapters/index.mjs";
+import { computeCacheKey } from "./ai/evaluator.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -379,17 +380,39 @@ export async function runScan(options = {}) {
     seen.add(key); return true;
   });
 
-  // Re-attach existing cached AI evaluations if present
+  // Re-attach existing cached AI evaluations if present.
+  // Uses the same canonical SHA-256 cache key as evaluator.mjs (computeCacheKey) so that
+  // evaluations persisted by the pipeline or a prior /evaluate call survive the next scan
+  // without requiring daily-pipeline to run again. Zero AI tokens consumed here.
   const dataDir = path.join(ROOT, "data");
   const cachePath = path.join(dataDir, ".ai_cache.json");
   if (fs.existsSync(cachePath)) {
     try {
       const cache = JSON.parse(fs.readFileSync(cachePath, "utf8"));
-      unique.forEach(j => {
-        if (j.url && cache[j.url]) {
-          j.ai_evaluation = cache[j.url];
+      // Load profile + CV text — same paths & fallbacks used by evaluateBatch()
+      const profilePath = fs.existsSync(path.join(ROOT, "config/profile.yml"))
+        ? path.join(ROOT, "config/profile.yml")
+        : path.join(ROOT, "config/profile.example.yml");
+      const cvPath = fs.existsSync(path.join(ROOT, "cv.md"))
+        ? path.join(ROOT, "cv.md")
+        : path.join(ROOT, "templates/cv-template.md");
+      if (fs.existsSync(cvPath)) {
+        const profileText = fs.existsSync(profilePath)
+          ? fs.readFileSync(profilePath, "utf8")
+          : "";
+        const cvText = fs.readFileSync(cvPath, "utf8");
+        let reattached = 0;
+        unique.forEach(j => {
+          const cacheKey = computeCacheKey(j, profileText, cvText);
+          if (cache[cacheKey]) {
+            j.ai_evaluation = { ...cache[cacheKey], cached: true };
+            reattached++;
+          }
+        });
+        if (!silent && !jsonMode && reattached > 0) {
+          console.log(`  🤖 Re-attached ${reattached} cached AI evaluation(s) from .ai_cache.json`);
         }
-      });
+      }
     } catch {}
   }
 
