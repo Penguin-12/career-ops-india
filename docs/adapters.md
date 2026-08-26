@@ -37,10 +37,10 @@
 - **Target Companies**: High-growth YC & AI engineering startups.
 - **Normalization**: Normalizes secondary locations, compensation tier objects, and employment types.
 
-### 6. Microsoft Careers (`scripts/adapters/microsoft.mjs`)
-- **Protocol**: Career Search REST API (`GET https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com&location=India&results_per_page=100`)
-- **Pagination**: Offset and limit (`start`, `results_per_page`).
-- **Target Companies**: Microsoft India.
+### 6. Eightfold PCSX (`scripts/adapters/pcsx.mjs`)
+- **Protocol**: Career Search REST API (`GET https://{host}/api/pcsx/search?domain={domain}&location=India`)
+- **Pagination**: Offset and limit (`start`, server total consumption).
+- **Target Companies**: Microsoft, Qualcomm, Micron, Morgan Stanley, Vodafone.
 - **Normalization**: Normalizes multi-location strings, fallback timestamp fields, and generates canonical direct application URLs.
 
 ### 7. Oracle Cloud HCM (`scripts/adapters/oraclecloud.mjs`)
@@ -68,8 +68,8 @@
 - **Normalization**: Normalizes basic qualifications, preferred qualifications, and direct requisition links.
 
 ### 11. Radancy / TalentBrew (`scripts/adapters/radancy.mjs`)
-- **Protocol**: TalentBrew SSR HTML card parser with search result pagination.
-- **Pagination**: Page-based (`/search-jobs/results?page={n}`).
+- **Protocol**: TalentBrew SSR HTML card parser with search result dynamic pagination.
+- **Pagination**: Page-based facet search with `data-total-pages` detection.
 - **Target Companies**: Barclays, Capital One, Intuit, Arm, Palo Alto Networks, Charles Schwab, Optum.
 - **Normalization**: Decodes HTML entities, parses numeric requisition IDs, and attaches canonical direct application URLs.
 
@@ -85,7 +85,13 @@
 - **Target Companies**: IBM India.
 - **Normalization**: Maps JSON document attributes, city metadata, and extracts requisition numbers from canonical detail URLs.
 
-### 14. MyNextHire (`scripts/adapters/mynexthire.mjs`)
+### 14. Rippling ATS (`scripts/adapters/rippling.mjs`)
+- **Protocol**: Public REST API v2 (`GET /api/v2/board/{slug}/jobs`).
+- **Pagination**: Page-based (`pageSize=100`) with dynamic `totalPages` consumption.
+- **Target Companies**: Rippling India.
+- **Normalization**: Normalizes workplace types, requisition UUIDs, and canonical apply URLs.
+
+### 15. MyNextHire (`scripts/adapters/mynexthire.mjs`)
 - **Protocol**: Public Career Portal API.
 - **Target Companies**: Indian product tech firms and venture-backed scale-ups.
 

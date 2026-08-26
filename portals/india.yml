@@ -230,6 +230,27 @@ greenhouse:
     domain: fintech/wealthtech
     hq: Bangalore
 
+  - name: Airbnb
+    slug: airbnb
+    tier: "0"
+    priority: GO
+    domain: travel/marketplace/distributed-systems
+    hq: Gurugram/Bangalore
+
+  - name: Tower Research Capital
+    slug: towerresearchcapital
+    tier: "0"
+    priority: GO
+    domain: quant-finance/low-latency/systems
+    hq: Gurugram/Gift City
+
+  - name: Arcesium
+    slug: arcesiumllc
+    tier: "1"
+    priority: GO
+    domain: fintech/cloud/data-platform
+    hq: Hyderabad/Bengaluru/Gurugram
+
 
 lever:
 
@@ -315,6 +336,13 @@ ashby:
     tier: "1"
     domain: fintech/lending
     hq: Bangalore
+
+  - name: Confluent
+    slug: confluent
+    tier: "0"
+    priority: GO
+    domain: data-infrastructure/distributed-systems/kafka
+    hq: Remote/India
 
 
 mynexthire:
@@ -595,7 +623,7 @@ deshaw:
     domain: quant/distributed-systems/algorithms
     hq: Hyderabad/Bangalore/Gurugram
 
-microsoft:
+pcsx:
   - name: Microsoft
     host: apply.careers.microsoft.com
     domain_host: microsoft.com
@@ -603,6 +631,38 @@ microsoft:
     priority: GO
     domain: big-tech/cloud/os/ai
     hq: Bengaluru/Hyderabad/Noida/Gurugram/Mumbai
+
+  - name: Qualcomm
+    host: careers.qualcomm.com
+    domain_host: qualcomm.com
+    tier: "0"
+    priority: GO
+    domain: semiconductor/embedded/ai/systems
+    hq: Hyderabad/Bengaluru/Chennai/Noida
+
+  - name: Micron
+    host: micron.eightfold.ai
+    domain_host: micron.com
+    tier: "1"
+    priority: GO
+    domain: semiconductor/memory/systems/firmware
+    hq: Hyderabad/Bengaluru
+
+  - name: Morgan Stanley
+    host: morganstanley.eightfold.ai
+    domain_host: morganstanley.com
+    tier: "1"
+    priority: GO
+    domain: fintech/investment-banking/quant-tech
+    hq: Mumbai/Bengaluru
+
+  - name: Vodafone
+    host: vodafone.eightfold.ai
+    domain_host: vodafone.com
+    tier: "2"
+    priority: GOOD
+    domain: telecom/cloud/sre/network-automation
+    hq: Pune/Bengaluru/Ahmedabad
 
 radancy:
   - name: Barclays
@@ -676,6 +736,15 @@ ibm:
     priority: GO
     domain: enterprise-cloud/ai/systems
     hq: Bengaluru/Hyderabad/Kochi/Pune
+
+rippling:
+  - name: Rippling
+    slug: rippling
+    tier: "0"
+    priority: GO
+    domain: enterprise-saas/hris/fintech/ai
+    hq: Bengaluru
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────

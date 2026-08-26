@@ -148,6 +148,25 @@ console.log("\n[Test 6] Malformed HTML resilience");
   console.log("  ✅ Passed: Empty and malformed HTML safely returns empty array without throwing");
 }
 
+// 7. Pagination total pages detection & resilience
+console.log("\n[Test 7] Pagination total-pages parsing & circuit breaker safety");
+{
+  const htmlWithPages = `
+    <div id="search-results" data-total-pages="15" data-total-results="150">
+      <section id="search-results-list">
+        <ul>
+          <li><a href="/job/bengaluru/lead-sde/2257/123"><h2>Lead SDE</h2></a></li>
+        </ul>
+      </section>
+    </div>
+  `;
+  const parsed = parseRadancyCards(htmlWithPages, "search.jobs.barclays");
+  assert.strictEqual(parsed.length, 1);
+  const totalPagesMatch = htmlWithPages.match(/data-total-pages="(\d+)"/i);
+  assert.strictEqual(parseInt(totalPagesMatch[1], 10), 15);
+  console.log("  ✅ Passed: data-total-pages attribute parsed accurately for dynamic pagination");
+}
+
 console.log("\n========================================================");
 console.log("🎉 ALL RADANCY ADAPTER TESTS PASSED!");
 console.log("========================================================");

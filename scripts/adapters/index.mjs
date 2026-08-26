@@ -8,10 +8,11 @@ import amazon from "./amazon.mjs";
 import oraclecloud from "./oraclecloud.mjs";
 import google from "./google.mjs";
 import deshaw from "./deshaw.mjs";
-import microsoft from "./microsoft.mjs";
+import pcsx from "./pcsx.mjs";
 import radancy from "./radancy.mjs";
 import successfactors from "./successfactors.mjs";
 import ibm from "./ibm.mjs";
+import rippling from "./rippling.mjs";
 
 export default {
   greenhouse,
@@ -24,10 +25,9 @@ export default {
   oraclecloud,
   google,
   deshaw,
-  microsoft,
+  pcsx,
   radancy,
   successfactors,
-  ibm
+  ibm,
+  rippling
 };
-
-

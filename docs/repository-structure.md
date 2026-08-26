@@ -67,10 +67,11 @@ career-ops-india/
 │   │   ├── google.mjs              # Google Careers SSR HTML adapter
 │   │   ├── deshaw.mjs              # D.E. Shaw Next.js SSR adapter
 │   │   ├── amazon.mjs              # Amazon Jobs REST API adapter
-│   │   ├── microsoft.mjs           # Microsoft Careers PCSX API adapter
-│   │   ├── radancy.mjs             # Radancy / TalentBrew adapter
+│   │   ├── pcsx.mjs                # Eightfold PCSX public search API adapter (MS, Qualcomm, Micron, MS, Vodafone)
+│   │   ├── radancy.mjs             # Radancy / TalentBrew adapter (Barclays, Capital One, Optum, etc.)
 │   │   ├── successfactors.mjs      # SAP SuccessFactors CSB adapter
 │   │   ├── ibm.mjs                 # IBM Careers search API adapter
+│   │   ├── rippling.mjs            # Rippling ATS REST API v2 adapter
 │   │   └── mynexthire.mjs          # MyNextHire API adapter
 │   ├── ai/                         # Gemini Flash LLM fit evaluator & caching
 │   │   ├── evaluator.mjs           # Batch candidate evaluation engine

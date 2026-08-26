@@ -112,11 +112,14 @@ export default {
 
     const orgId = company.orgId || company.org_id || "0";
     const prefix = company.path_prefix || company.prefix || "";
-    const maxPages = company.maxPages || 8;
+    const maxPages = company.maxPages || 50;
     const allJobs = [];
+    const seenKeys = new Set();
+    let totalPages = Infinity;
+    let hitEmergencyCap = false;
 
     try {
-      for (let page = 1; page <= maxPages; page++) {
+      for (let page = 1; page <= totalPages && page <= maxPages; page++) {
         // Standard Radancy facet search path
         // /search-jobs/India/{orgId}/2/1269750/20/77/50/{page}
         const searchPath = `/${prefix}search-jobs/India/${orgId}/2/1269750/20/77/50/${page}`;
@@ -141,19 +144,37 @@ export default {
         const pageJobs = parseRadancyCards(html, domain, prefix);
         if (pageJobs.length === 0) break;
 
-        allJobs.push(...pageJobs);
+        let newJobsOnPage = 0;
+        for (const job of pageJobs) {
+          const key = job.url || job.id || `${job.title}|${job.location}`;
+          if (!seenKeys.has(key)) {
+            seenKeys.add(key);
+            allJobs.push(job);
+            newJobsOnPage++;
+          }
+        }
 
         // Detect total pages if available
         const totalPagesMatch = html.match(/data-total-pages="(\d+)"/i);
         if (totalPagesMatch) {
-          const totalPages = parseInt(totalPagesMatch[1], 10);
-          if (Number.isFinite(totalPages) && page >= totalPages) break;
-        } else if (pageJobs.length < 10) {
-          break;
+          const parsed = parseInt(totalPagesMatch[1], 10);
+          if (Number.isFinite(parsed) && parsed > 0) {
+            totalPages = parsed;
+          }
         }
+
+        if (page >= maxPages && page < totalPages) {
+          hitEmergencyCap = true;
+        }
+
+        if (newJobsOnPage === 0 && page > 1) break;
       }
 
-      return { jobs: allJobs };
+      const err = hitEmergencyCap
+        ? `Pagination reached emergency circuit-breaker (${maxPages}) before consuming all ${totalPages} pages from ${domain}`
+        : undefined;
+
+      return { jobs: allJobs, ...(err ? { err } : {}) };
     } catch (err) {
       return { jobs: allJobs, err: err.message };
     }

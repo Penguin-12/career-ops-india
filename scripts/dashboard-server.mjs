@@ -143,16 +143,17 @@ function extractCompanyHint(url, source) {
  * @param {Set<string>} scanJobIds - set of job_id values present in current scan
  * @returns {Array} orphan job stubs
  */
-function buildOrphanJobs(mode, appState, lifecycleState, scanJobIds) {
+function buildOrphanJobs(mode, appState, lifecycleState, scanJobIds, scanUrls = new Set()) {
   const APPLIED_STATUSES = new Set(["applied", "oa", "interview", "rejected", "withdrawn"]);
   const orphans = [];
 
   if (mode === "applied") {
     for (const [id, entry] of Object.entries(appState)) {
-      if (scanJobIds.has(id)) continue; // in scan → handled by normal join path
+      const { source, url } = parseJobId(id);
+      const isPresent = scanJobIds.has(id) || (url && scanUrls.has(url)) || (entry.job?.url && scanUrls.has(entry.job.url));
+      if (isPresent) continue; // in scan → handled by normal join path
       if (!APPLIED_STATUSES.has(entry.status)) continue;
 
-      const { source, url } = parseJobId(id);
       const lifecycleEntry = lifecycleState[id];
       const snap = entry.job || entry.snapshot || null;
 
@@ -186,10 +187,11 @@ function buildOrphanJobs(mode, appState, lifecycleState, scanJobIds) {
     }
   } else if (mode === "expired") {
     for (const [id, entry] of Object.entries(lifecycleState)) {
-      if (scanJobIds.has(id)) continue; // in scan → handled by allEnriched filter
+      const { source, url } = parseJobId(id);
+      const isPresent = scanJobIds.has(id) || (url && scanUrls.has(url));
+      if (isPresent) continue; // in scan → handled by allEnriched filter
       if (entry.status !== "expired") continue;
 
-      const { source, url } = parseJobId(id);
       const appEntry = appState[id];
       const snap = appEntry?.job || appEntry?.snapshot || entry.job || entry.snapshot || null;
 
@@ -243,8 +245,9 @@ export function buildDashboardData(options = {}) {
   const enrichedWithState = enrichJobsWithState(rawJobs, appState);
   const allEnriched = enrichJobsWithLifecycle(enrichedWithState, lifecycleState);
 
-  // Build the set of job IDs that are present in the current scan
+  // Build the set of job IDs and canonical URLs that are present in the current scan
   const scanJobIds = new Set(allEnriched.map(j => j.job_id));
+  const scanUrls = new Set(allEnriched.map(j => j.url || j.apply_url).filter(Boolean));
 
   // Partition scan jobs by user application state
   const { active: unActioned, saved, applied: appliedFromScan, notInterested } = filterJobsByState(allEnriched, appState);
@@ -261,8 +264,8 @@ export function buildDashboardData(options = {}) {
 
   // Build orphan records for jobs with persisted state but absent from current scan.
   // An applied+expired job produces stubs in BOTH lists — state/lifecycle independence preserved.
-  const orphanApplied = buildOrphanJobs("applied", appState, lifecycleState, scanJobIds);
-  const orphanExpired = buildOrphanJobs("expired", appState, lifecycleState, scanJobIds);
+  const orphanApplied = buildOrphanJobs("applied", appState, lifecycleState, scanJobIds, scanUrls);
+  const orphanExpired = buildOrphanJobs("expired", appState, lifecycleState, scanJobIds, scanUrls);
 
   // Merge: scan-matched + orphans (no overlap possible — orphans are by definition absent from scan)
   const applied = [...appliedFromScan, ...orphanApplied];
@@ -376,7 +379,7 @@ export function createRequestHandler() {
         let jobRecord = job || snapshot || null;
         if (!jobRecord) {
           const scanData = loadScanResults();
-          jobRecord = (scanData.jobs || []).find(j => (j.job_id === jobId || getJobId(j) === jobId)) || null;
+          jobRecord = (scanData.jobs || []).find(j => (j.job_id === jobId || getJobId(j) === jobId || (j.url && jobId.endsWith(":" + j.url)))) || null;
         }
 
         const result = setJobStatus(jobId, normStatus, { notes, job: jobRecord });

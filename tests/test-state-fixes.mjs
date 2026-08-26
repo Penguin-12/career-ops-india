@@ -470,6 +470,116 @@ console.log("──────────────────────�
   }
 }
 
+// ── T11 ───────────────────────────────────────────────────────────────────────
+console.log("\n──────────────────────────────────────────────────────────");
+console.log("T11: Cross-adapter identity migration (microsoft:* -> pcsx:*) URL resolution");
+console.log("──────────────────────────────────────────────────────────");
+{
+  const { getJobStatus, setJobStatus, enrichJobsWithState, filterJobsByState } = await import(path.join(ROOT, "scripts/state-service.mjs"));
+  const { getJobLifecycleStatus, setJobLifecycleStatus, reconcileJobLifecycle } = await import(path.join(ROOT, "scripts/job-lifecycle-service.mjs"));
+
+  const targetUrl = "https://apply.careers.microsoft.com/careers/job/1970393556972828?hl=en";
+  const mockAppState = {
+    [`microsoft:${targetUrl}`]: {
+      status: "applied",
+      updated_at: "2026-08-15T10:00:00.000Z",
+      notes: "Applied via referral",
+      job: {
+        title: "Software Engineer II",
+        company: "Microsoft",
+        location: "Hyderabad, India",
+        url: targetUrl
+      }
+    }
+  };
+
+  const scannedPcsxJob = {
+    source: "pcsx",
+    company: "Microsoft",
+    title: "Software Engineer II",
+    location: "Hyderabad, India",
+    url: targetUrl
+  };
+
+  // 1. getJobStatus matches historical record by URL despite source prefix change
+  const statusRes = getJobStatus(scannedPcsxJob, mockAppState);
+  assert(statusRes.status === "applied", "PCSX job resolved to historical 'applied' status");
+  assert(statusRes.notes === "Applied via referral", "Historical notes preserved");
+
+  // 2. enrichJobsWithState correctly attaches application_state
+  const enriched = enrichJobsWithState([scannedPcsxJob], mockAppState);
+  assert(enriched[0].application_state.status === "applied", "Enriched job has status 'applied'");
+
+  // 3. filterJobsByState excludes job from active recommendations
+  const filtered = filterJobsByState([scannedPcsxJob], mockAppState);
+  assert(filtered.active.length === 0, "Job is excluded from active queue");
+  assert(filtered.applied.length === 1, "Job is in applied list");
+
+  // 4. setJobStatus updates existing record in place without duplicating key
+  const updated = setJobStatus(scannedPcsxJob, "interview", { state: mockAppState, notes: "Round 1 scheduled", autoSave: false });
+  assert(Object.keys(mockAppState).length === 1, "No duplicate key created in application state");
+  assert(mockAppState[`microsoft:${targetUrl}`].status === "interview", "Existing historical record updated");
+
+  // 5. Lifecycle cross-source resolution
+  const mockLifecycleState = {
+    [`microsoft:${targetUrl}`]: {
+      status: "stale",
+      updated_at: "2026-08-15T10:00:00.000Z",
+      source: "scanner"
+    }
+  };
+  const lifeStatus = getJobLifecycleStatus(scannedPcsxJob, mockLifecycleState);
+  assert(lifeStatus.status === "stale", "Lifecycle resolved historical stale status");
+
+  reconcileJobLifecycle([scannedPcsxJob], mockLifecycleState, { autoSave: false });
+  assert(mockLifecycleState[`microsoft:${targetUrl}`].status === "active", "Reappearing job restored to active in lifecycle");
+}
+
+// ── T12 ───────────────────────────────────────────────────────────────────────
+console.log("\n──────────────────────────────────────────────────────────");
+console.log("T12: Dashboard data integration prevents duplicate orphan stubs when job is in scan");
+console.log("──────────────────────────────────────────────────────────");
+{
+  const { buildDashboardData } = await import(path.join(ROOT, "scripts/dashboard-server.mjs"));
+
+  const targetUrl = "https://apply.careers.microsoft.com/careers/job/1970393556972828?hl=en";
+  const mockAppState = {
+    [`microsoft:${targetUrl}`]: {
+      status: "applied",
+      updated_at: "2026-08-15T10:00:00.000Z",
+      job: {
+        title: "Software Engineer II",
+        company: "Microsoft",
+        location: "Hyderabad, India",
+        url: targetUrl
+      }
+    }
+  };
+
+  const mockScanJobs = [
+    {
+      source: "pcsx",
+      company: "Microsoft",
+      title: "Software Engineer II",
+      location: "Hyderabad, India",
+      url: targetUrl,
+      score: 85
+    }
+  ];
+
+  const dash = buildDashboardData({
+    scanData: { scanned_at: new Date().toISOString(), total: 1, jobs: mockScanJobs },
+    appState: mockAppState,
+    lifecycleState: {}
+  });
+
+  // The job should be in applied (matched from scan), NOT duplicated as an orphan stub
+  assert(dash.applied.length === 1, "Applied count is exactly 1 (no duplicate orphan stub)");
+  assert(dash.applied[0].is_orphan !== true, "Applied entry is matched from scan, not an orphan");
+  assert(dash.counts.active === 0, "Job is not in active queue");
+  assert(dash.queue.apply.length === 0, "Job is not in apply queue");
+}
+
 // ── Summary ───────────────────────────────────────────────────────────────────
 console.log("\n══════════════════════════════════════════════════════════");
 console.log(`Results: ${passed} passed, ${failed} failed`);

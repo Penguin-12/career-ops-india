@@ -78,11 +78,36 @@ export function validateLifecycleStatus(status) {
 }
 
 /**
+ * Resolves the lifecycle entry key for a job or ID with URL-first compatibility fallback.
+ */
+export function findLifecycleKey(jobOrId, state = {}) {
+  if (!state || typeof state !== "object") return null;
+  const id = typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId);
+  if (state[id]) return id;
+
+  let url = null;
+  if (typeof jobOrId === "object" && jobOrId !== null) {
+    url = (jobOrId.url || jobOrId.apply_url || jobOrId.source_url || "").trim();
+  } else if (typeof jobOrId === "string" && jobOrId.includes("http")) {
+    url = jobOrId.slice(jobOrId.indexOf("http")).trim();
+  }
+
+  if (url && url.startsWith("http")) {
+    for (const k of Object.keys(state)) {
+      if (k.endsWith(`:${url}`) || k === url) {
+        return k;
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Retrieves the lifecycle status for a job or ID. Defaults to status: 'active'.
  */
 export function getJobLifecycleStatus(jobOrId, state = {}) {
-  const id = typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId);
-  const entry = state[id];
+  const key = findLifecycleKey(jobOrId, state);
+  const entry = key ? state[key] : null;
   if (entry && entry.status && VALID_LIFECYCLE_STATUSES.has(entry.status)) {
     return {
       status: entry.status,
@@ -110,7 +135,8 @@ export function setJobLifecycleStatus(jobOrId, status, options = {}) {
 
   const filePath = options.filePath || DEFAULT_LIFECYCLE_FILE;
   const state = options.state || loadJobLifecycleState(filePath);
-  const id = typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId);
+  const existingKey = findLifecycleKey(jobOrId, state);
+  const id = existingKey || (typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId));
 
   const existing = state[id] || {};
   const notes = options.notes !== undefined ? String(options.notes) : (existing.notes || "");
@@ -155,7 +181,7 @@ export function enrichJobsWithLifecycle(jobs, state = null, filePath = DEFAULT_L
   const currentLifecycle = state || loadJobLifecycleState(filePath);
   return (jobs || []).map(job => {
     const id = job.job_id || getJobId(job);
-    const lifecycle = getJobLifecycleStatus(id, currentLifecycle);
+    const lifecycle = getJobLifecycleStatus(job, currentLifecycle);
     return {
       ...job,
       job_id: id,
@@ -203,18 +229,19 @@ export function filterJobsByLifecycle(jobs, state = null, filePath = DEFAULT_LIF
  */
 export function reconcileJobLifecycle(scannedJobs, state = null, options = {}) {
   const filePath = options.filePath || DEFAULT_LIFECYCLE_FILE;
-  const currentLifecycle = state ? { ...state } : loadJobLifecycleState(filePath);
+  const currentLifecycle = state || loadJobLifecycleState(filePath);
   const scannedJobIds = new Set((scannedJobs || []).map(j => getJobId(j)));
+  const scannedUrls = new Set((scannedJobs || []).map(j => j.url || j.apply_url).filter(Boolean));
   const now = new Date().toISOString();
 
   // 1. Process jobs currently present in the scan
   for (const job of scannedJobs || []) {
-    const id = getJobId(job);
-    const existing = currentLifecycle[id];
-    if (existing) {
+    const existingKey = findLifecycleKey(job, currentLifecycle);
+    if (existingKey && currentLifecycle[existingKey]) {
+      const existing = currentLifecycle[existingKey];
       if (existing.status === "expired" || existing.status === "stale") {
         // Automatically restore reappeared job to active
-        currentLifecycle[id] = {
+        currentLifecycle[existingKey] = {
           status: "active",
           updated_at: now,
           source: "scanner",
@@ -226,7 +253,11 @@ export function reconcileJobLifecycle(scannedJobs, state = null, options = {}) {
 
   // 2. Process previously tracked jobs now absent from the scan
   for (const [id, entry] of Object.entries(currentLifecycle)) {
-    if (!scannedJobIds.has(id)) {
+    const colonIdx = id.indexOf(":");
+    const url = colonIdx !== -1 ? id.substring(colonIdx + 1) : null;
+    const isPresent = scannedJobIds.has(id) || (url && scannedUrls.has(url));
+
+    if (!isPresent) {
       if (entry.status === "active") {
         currentLifecycle[id] = {
           ...entry,

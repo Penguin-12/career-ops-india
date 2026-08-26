@@ -130,11 +130,40 @@ export function extractJobSnapshot(job) {
 }
 
 /**
+ * Resolves the state entry key for a job or ID with URL-first compatibility fallback.
+ * Checks:
+ * 1. Direct key match: state[id]
+ * 2. URL suffix match: key.endsWith(":" + url) or key === url
+ * 3. Snapshot URL match: state[key].job?.url === url
+ */
+export function findStateEntryKey(jobOrId, state = {}) {
+  if (!state || typeof state !== "object") return null;
+  const id = typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId);
+  if (state[id]) return id;
+
+  let url = null;
+  if (typeof jobOrId === "object" && jobOrId !== null) {
+    url = (jobOrId.url || jobOrId.apply_url || jobOrId.source_url || "").trim();
+  } else if (typeof jobOrId === "string" && jobOrId.includes("http")) {
+    url = jobOrId.slice(jobOrId.indexOf("http")).trim();
+  }
+
+  if (url && url.startsWith("http")) {
+    for (const [k, v] of Object.entries(state)) {
+      if (k.endsWith(`:${url}`) || k === url || (v && v.job && v.job.url === url)) {
+        return k;
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Retrieves the application state for a job or ID. Defaults to status: 'new'.
  */
 export function getJobStatus(jobOrId, state = {}) {
-  const id = typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId);
-  const entry = state[id];
+  const key = findStateEntryKey(jobOrId, state);
+  const entry = key ? state[key] : null;
   if (entry && entry.status && VALID_STATUSES.has(entry.status)) {
     return {
       status: entry.status,
@@ -164,7 +193,8 @@ export function setJobStatus(jobOrId, status, options = {}) {
 
   const filePath = options.filePath || DEFAULT_STATE_FILE;
   const state = options.state || loadApplicationState(filePath);
-  const id = typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId);
+  const existingKey = findStateEntryKey(jobOrId, state);
+  const id = existingKey || (typeof jobOrId === "string" ? jobOrId : getJobId(jobOrId));
 
   const existing = state[id] || {};
   const notes = options.notes !== undefined ? String(options.notes) : (existing.notes || "");
@@ -219,7 +249,7 @@ export function enrichJobsWithState(jobs, state = null, filePath = DEFAULT_STATE
   const currentState = state || loadApplicationState(filePath);
   return (jobs || []).map(job => {
     const id = getJobId(job);
-    const appState = getJobStatus(id, currentState);
+    const appState = getJobStatus(job, currentState);
     return {
       ...job,
       job_id: id,
