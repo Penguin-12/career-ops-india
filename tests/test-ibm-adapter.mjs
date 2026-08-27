@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import ibmAdapter, { normalizeIbmHit, extractDocAttributes } from "../scripts/adapters/ibm.mjs";
-import { isHardwareSiliconExclusion } from "../scripts/scan.mjs";
+import { isHardwareSiliconExclusion } from "../scripts/taxonomy.mjs";
 
 console.log("=== IBM Careers Search API Adapter Test Suite ===");
 

@@ -8,7 +8,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { isHardwareSiliconExclusion } from "../scan.mjs";
+import { isHardwareSiliconExclusion } from "../taxonomy.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "../..");

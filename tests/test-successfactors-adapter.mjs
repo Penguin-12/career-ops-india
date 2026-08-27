@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import successFactorsAdapter, { parseSuccessFactorsCards } from "../scripts/adapters/successfactors.mjs";
-import { isHardwareSiliconExclusion } from "../scripts/scan.mjs";
+import { isHardwareSiliconExclusion } from "../scripts/taxonomy.mjs";
 
 console.log("=== SAP SuccessFactors CSB Adapter Test Suite ===");
 

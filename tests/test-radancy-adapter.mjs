@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import radancyAdapter, { parseRadancyCards } from "../scripts/adapters/radancy.mjs";
-import { isHardwareSiliconExclusion } from "../scripts/scan.mjs";
+import { isHardwareSiliconExclusion } from "../scripts/taxonomy.mjs";
 
 console.log("=== Radancy / TalentBrew Adapter Test Suite ===");
 

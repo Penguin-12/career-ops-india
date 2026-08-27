@@ -189,7 +189,7 @@ for (const tc of auditTestCases) {
   passedCount++;
 }
 
-import { isHardwareSiliconExclusion } from "../scripts/scan.mjs";
+import { isHardwareSiliconExclusion, HARD_EXCLUSIONS, classifyJob } from "../scripts/taxonomy.mjs";
 
 console.log("\n=== Running Hardware, Silicon & DFT Exclusion Regression Suite ===");
 const hardwareTestCases = [
@@ -236,6 +236,82 @@ for (const tc of hardwareTestCases) {
   hwPassed++;
 }
 
-console.log(`\n🎉 All ${passedCount + hwPassed} / ${auditTestCases.length + hardwareTestCases.length} regression tests passed successfully!\n`);
+console.log("\n=== Running DevOps, SRE & Intern/Trainee Exclusion Regression Suite ===");
+const devopsAndInternTestCases = [
+  // ── DevOps / SRE Exclusions (Must be rejected by hard_excluded_devops_sre) ──
+  { title: "DevOps Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Senior DevOps Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Staff DevOps Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Principal DevOps Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Site Reliability Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Senior Site Reliability Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Staff Site Reliability Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "SRE", expGate: "hard_excluded_devops_sre" },
+  { title: "Lead SRE", expGate: "hard_excluded_devops_sre" },
+  { title: "Staff SRE for Cloud Network Infrastructure Team", expGate: "hard_excluded_devops_sre" },
+  { title: "Staff Site Reliability Engineer - Ecosystem", expGate: "hard_excluded_devops_sre" },
+  { title: "Staff SRE for K8s Platform Team", expGate: "hard_excluded_devops_sre" },
+  { title: "DevSecOps Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Senior DevSecOps Engineer", expGate: "hard_excluded_devops_sre" },
+
+  // ── Intern / Trainee Exclusions (Must be rejected by hard_excluded_intern) ──
+  { title: "Intern", expGate: "hard_excluded_intern" },
+  { title: "Internship", expGate: "hard_excluded_intern" },
+  { title: "Software Engineering Intern", expGate: "hard_excluded_intern" },
+  { title: "Software Engineer Intern", expGate: "hard_excluded_intern" },
+  { title: "SDE Intern", expGate: "hard_excluded_intern" },
+  { title: "AI/ML Intern", expGate: "hard_excluded_intern" },
+  { title: "Data Science Intern", expGate: "hard_excluded_intern" },
+  { title: "Engineering Co-op", expGate: "hard_excluded_intern" },
+  { title: "Co-op", expGate: "hard_excluded_intern" },
+  { title: "Apprentice", expGate: "hard_excluded_intern" },
+  { title: "Software Engineering Apprenticeship", expGate: "hard_excluded_intern" },
+  { title: "Graduate Trainee", expGate: "hard_excluded_intern" },
+  { title: "Graduate Engineer Trainee", expGate: "hard_excluded_intern" },
+  { title: "Engineer Trainee", expGate: "hard_excluded_intern" },
+
+  // ── Platform, Cloud & Infrastructure Roles (Must be RETAINED / Eligible) ──
+  { title: "Platform Engineer", expGate: "passed_primary" },
+  { title: "Senior Platform Engineer", expGate: "passed_primary" },
+  { title: "Staff Platform Engineer", expGate: "passed_stretch" },
+  { title: "Cloud Engineer", expGate: "passed_primary" },
+  { title: "Cloud Software Engineer", expGate: "passed_primary" },
+  { title: "Infrastructure Engineer", expGate: "passed_primary" },
+  { title: "Software Engineer, Cloud Infrastructure", expGate: "passed_primary" },
+  { title: "Software Engineer, Platform", expGate: "passed_primary" },
+  { title: "Backend Engineer - Infrastructure", expGate: "passed_primary" },
+  { title: "Senior Software Development Engineer, Core Infrastructure", expGate: "passed_primary" },
+  { title: "Staff Design System Engineer (UI Foundation)", expGate: "passed_stretch" },
+  { title: "Software Engineer - Internal Tools", expGate: "passed_primary" },
+  { title: "Intermediate Software Engineer", expGate: "passed_primary" }
+];
+
+const mockConfig = {
+  locations: ["Bangalore", "Hyderabad", "Pune", "Mumbai", "Delhi NCR", "Chennai", "Remote"],
+  experienceFilter: "2-4",
+  freshnessDays: 30
+};
+
+let devopsInternPassed = 0;
+for (const tc of devopsAndInternTestCases) {
+  const job = {
+    title: tc.title,
+    location: "Bangalore, India",
+    posted_at: new Date().toISOString(),
+    _experienceText: "3 years of experience in software development"
+  };
+  const result = classifyJob(job, mockConfig);
+  assert.strictEqual(
+    result.gate,
+    tc.expGate,
+    `Classification mismatch for "${tc.title}" (got ${result.gate}, expected ${tc.expGate})`
+  );
+  console.log(`✅ Passed: "${tc.title}" -> ${result.gate}`);
+  devopsInternPassed++;
+}
+
+const totalTests = auditTestCases.length + hardwareTestCases.length + devopsAndInternTestCases.length;
+console.log(`\n🎉 All ${passedCount + hwPassed + devopsInternPassed} / ${totalTests} regression tests passed successfully!\n`);
+
 
 
