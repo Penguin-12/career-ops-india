@@ -35,19 +35,29 @@ export function diversifyJobs(jobList, maxPerCompany = 5) {
  * - Applies company diversification cap (default 5) to the AI APPLY bucket.
  */
 export function partitionQueue(jobList, maxPerCompany = 5) {
+  const today = [];
   const aiApply = [];
   const aiConsider = [];
   const aiSkip = [];
   const unevaluated = [];
 
   for (const job of jobList) {
+    const isToday = job.freshness_tier === "today" && job.lifecycle?.status !== "expired";
+    const rec = job.ai_evaluation ? String(job.ai_evaluation.recommendation || "").toUpperCase() : null;
+
     if (job.ai_evaluation) {
-      const rec = String(job.ai_evaluation.recommendation || "").toUpperCase();
-      if (rec === "APPLY") aiApply.push(job);
-      else if (rec === "CONSIDER") aiConsider.push(job);
-      else aiSkip.push(job);
+      if (rec === "APPLY") {
+        aiApply.push(job);
+        if (isToday) today.push(job);
+      } else if (rec === "CONSIDER") {
+        aiConsider.push(job);
+        if (isToday) today.push(job);
+      } else {
+        aiSkip.push(job);
+      }
     } else {
       unevaluated.push(job);
+      if (isToday) today.push(job);
     }
   }
 
@@ -56,11 +66,25 @@ export function partitionQueue(jobList, maxPerCompany = 5) {
   aiSkip.sort((a, b) => (b.ai_evaluation?.ai_score ?? 0) - (a.ai_evaluation?.ai_score ?? 0));
   unevaluated.sort((a, b) => (b.score || 0) - (a.score || 0));
 
+  // Sort today: AI APPLY first (by ai_score desc), then AI CONSIDER (by ai_score desc), then UNEVALUATED (by det score desc)
+  today.sort((a, b) => {
+    const aPriority = a.ai_evaluation?.recommendation === "APPLY" ? 0 : (a.ai_evaluation?.recommendation === "CONSIDER" ? 1 : 2);
+    const bPriority = b.ai_evaluation?.recommendation === "APPLY" ? 0 : (b.ai_evaluation?.recommendation === "CONSIDER" ? 1 : 2);
+    if (aPriority !== bPriority) return aPriority - bPriority;
+
+    if (a.ai_evaluation?.ai_score != null && b.ai_evaluation?.ai_score != null) {
+      return b.ai_evaluation.ai_score - a.ai_evaluation.ai_score;
+    }
+    return (b.score || 0) - (a.score || 0);
+  });
+
   const { selected: applySelected, overflow: applyOverflow } = diversifyJobs(aiApply, maxPerCompany);
 
   return {
+    today,
     apply: applySelected,
     applyOverflow,
+    applyAll: [...applySelected, ...applyOverflow],
     consider: aiConsider,
     skip: aiSkip,
     unevaluated

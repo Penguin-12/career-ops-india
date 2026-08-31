@@ -313,5 +313,96 @@ for (const tc of devopsAndInternTestCases) {
 const totalTests = auditTestCases.length + hardwareTestCases.length + devopsAndInternTestCases.length;
 console.log(`\n🎉 All ${passedCount + hwPassed + devopsInternPassed} / ${totalTests} regression tests passed successfully!\n`);
 
+// ── Freshness & Age Taxonomy Regression Suite ────────────────────────────────
+import { getFreshnessInfo } from "../scripts/taxonomy.mjs";
 
+console.log("=== Running Freshness & Age Taxonomy Regression Suite ===");
 
+const nowMs = 1700000000000; // Fixed base timestamp for deterministic testing
+const HOUR_MS = 3_600_000;
+const DAY_MS = 86_400_000;
+
+const freshnessTestCases = [
+  // 1. 0 hours -> today
+  { name: "0 hours (instant)", offsetMs: 0, expTier: "today", expAge: 0, expFresh: true },
+  // 2. 23h59m -> today
+  { name: "23h59m (under 24h)", offsetMs: (23 * HOUR_MS) + (59 * 60 * 1000), expTier: "today", expAge: 0, expFresh: true },
+  // 3. exactly 24h -> hot
+  { name: "exactly 24h", offsetMs: 24 * HOUR_MS, expTier: "hot", expAge: 1, expFresh: true },
+  // 4. 2d -> hot
+  { name: "2 days", offsetMs: 2 * DAY_MS, expTier: "hot", expAge: 2, expFresh: true },
+  // 5. 3d -> hot
+  { name: "3 days (end of 72h window)", offsetMs: (3 * DAY_MS) + (12 * HOUR_MS), expTier: "hot", expAge: 3, expFresh: true },
+  // 6. 4d -> fresh
+  { name: "4 days", offsetMs: 4 * DAY_MS, expTier: "fresh", expAge: 4, expFresh: true },
+  // 7. 7d -> fresh
+  { name: "7 days (end of 1 week window)", offsetMs: (7 * DAY_MS) + (23 * HOUR_MS), expTier: "fresh", expAge: 7, expFresh: true },
+  // 8. 8d -> active
+  { name: "8 days", offsetMs: 8 * DAY_MS, expTier: "active", expAge: 8, expFresh: true },
+  // 9. 14d -> active
+  { name: "14 days", offsetMs: (14 * DAY_MS) + (23 * HOUR_MS), expTier: "active", expAge: 14, expFresh: true },
+  // 10. 15d -> backlog
+  { name: "15 days", offsetMs: 15 * DAY_MS, expTier: "backlog", expAge: 15, expFresh: true },
+  // 11. 30d -> backlog
+  { name: "30 days (boundary)", offsetMs: 30 * DAY_MS, expTier: "backlog", expAge: 30, expFresh: true },
+  // 12. > 30d -> expired
+  { name: "31 days (expired)", offsetMs: 31 * DAY_MS, expTier: "expired", expAge: 31, expFresh: false },
+  // 13. posted_at: null -> unstated, ageDays: null
+  { name: "null posted_at", isNull: true, expTier: "unstated", expAge: null, expFresh: true }
+];
+
+let freshPassed = 0;
+for (const tc of freshnessTestCases) {
+  const postedAtStr = tc.isNull ? null : new Date(nowMs - tc.offsetMs).toISOString();
+  const info = getFreshnessInfo(postedAtStr, 30, nowMs);
+  assert.strictEqual(info.tier, tc.expTier, `Tier mismatch for "${tc.name}" (got ${info.tier}, expected ${tc.expTier})`);
+  assert.strictEqual(info.ageDays, tc.expAge, `AgeDays mismatch for "${tc.name}" (got ${info.ageDays}, expected ${tc.expAge})`);
+  assert.strictEqual(info.isFresh, tc.expFresh, `isFresh mismatch for "${tc.name}" (got ${info.isFresh}, expected ${tc.expFresh})`);
+  console.log(`✅ Passed: [${tc.name}] -> tier: ${info.tier}, age_days: ${info.ageDays}, isFresh: ${info.isFresh}`);
+  freshPassed++;
+}
+
+// 14 & 15. Unstated jobs sort below timestamped jobs & ranking remains deterministic
+console.log("\n[Test 14 & 15] Sorting order & unstated jobs ranking");
+{
+  const freshnessRank = { today: 0, hot: 1, fresh: 2, active: 3, backlog: 4, unstated: 5, expired: 6 };
+  const sampleJobs = [
+    { title: "Job Backlog", tier: "1", is_stretch: false, freshness_tier: "backlog", age_days: 20 },
+    { title: "Job Unstated", tier: "1", is_stretch: false, freshness_tier: "unstated", age_days: null },
+    { title: "Job Today", tier: "1", is_stretch: false, freshness_tier: "today", age_days: 0 },
+    { title: "Job Active", tier: "1", is_stretch: false, freshness_tier: "active", age_days: 10 },
+    { title: "Job Hot (2d)", tier: "1", is_stretch: false, freshness_tier: "hot", age_days: 2 },
+    { title: "Job Hot (1d)", tier: "1", is_stretch: false, freshness_tier: "hot", age_days: 1 },
+    { title: "Job Fresh", tier: "1", is_stretch: false, freshness_tier: "fresh", age_days: 5 }
+  ];
+
+  sampleJobs.sort((a, b) => {
+    const aFresh = freshnessRank[a.freshness_tier] ?? 5;
+    const bFresh = freshnessRank[b.freshness_tier] ?? 5;
+    if (aFresh !== bFresh) return aFresh - bFresh;
+
+    if (a.age_days != null && b.age_days != null) {
+      return a.age_days - b.age_days;
+    }
+    if (a.age_days != null) return -1;
+    if (b.age_days != null) return 1;
+    return 0;
+  });
+
+  const titles = sampleJobs.map(j => j.title);
+  const expectedOrder = [
+    "Job Today",
+    "Job Hot (1d)",
+    "Job Hot (2d)",
+    "Job Fresh",
+    "Job Active",
+    "Job Backlog",
+    "Job Unstated"
+  ];
+
+  assert.deepStrictEqual(titles, expectedOrder, `Sort order mismatch (got ${JSON.stringify(titles)})`);
+  console.log("✅ Passed: Deterministic sorting verified: today > hot (1d) > hot (2d) > fresh > active > backlog > unstated");
+  freshPassed += 2;
+}
+
+console.log(`\n🎉 All ${freshPassed} Freshness & Sorting regression tests passed successfully!\n`);

@@ -49,7 +49,7 @@ JOB POSTING DETAILS
 Company: ${job.company} (Tier / Priority: ${job.priority || "GOOD"})
 Job Title: ${job.title}
 Location: ${job.location || "India"}
-Posting Age: ${job.age_days ?? "Unknown"} days (${job.freshness_tier || "active"})
+Posting Age: ${job.age_days != null ? `${job.age_days} days` : "Unstated"} (${job.freshness_tier || "unstated"})
 Job URL: ${job.url}
 
 Deterministic Classification:

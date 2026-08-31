@@ -229,18 +229,22 @@ export function parseExperienceRequirements(text) {
 export function getFreshnessInfo(postedAt, maxDays = 30, now = Date.now()) {
   const posted = Date.parse(postedAt || "");
   if (!Number.isFinite(posted)) {
-    return { isFresh: true, tier: "active", ageDays: 0, confidence: "unknown", label: "Active (date unstated)" };
+    return { isFresh: true, tier: "unstated", ageDays: null, confidence: "unknown", label: "⚪ Unstated" };
   }
   const ageDays = Math.max(0, Math.floor((now - posted) / 86_400_000));
   if (ageDays > maxDays) {
     return { isFresh: false, tier: "expired", ageDays, confidence: "high", label: `Expired (${ageDays}d old)` };
   }
-  if (ageDays <= 7) {
-    return { isFresh: true, tier: "hot", ageDays, confidence: "high", label: "🟢 Hot (0–7d)" };
+  if (ageDays === 0) {
+    return { isFresh: true, tier: "today", ageDays, confidence: "high", label: "🔥 Today (<24h)" };
+  } else if (ageDays <= 3) {
+    return { isFresh: true, tier: "hot", ageDays, confidence: "high", label: "🟢 Hot (1–3d)" };
+  } else if (ageDays <= 7) {
+    return { isFresh: true, tier: "fresh", ageDays, confidence: "high", label: "🟡 Fresh (4–7d)" };
   } else if (ageDays <= 14) {
-    return { isFresh: true, tier: "fresh", ageDays, confidence: "high", label: "🟡 Fresh (8–14d)" };
+    return { isFresh: true, tier: "active", ageDays, confidence: "high", label: "⚪ Active (8–14d)" };
   } else {
-    return { isFresh: true, tier: "active", ageDays, confidence: "high", label: "⚪ Active (15–30d)" };
+    return { isFresh: true, tier: "backlog", ageDays, confidence: "high", label: "⚪ Backlog (15–30d)" };
   }
 }
 
@@ -370,12 +374,12 @@ export function computeJobScore(job, classification, config) {
 
   // Freshness (Only award bonus if valid date was provided)
   if (job.posted_at && classification.freshness_confidence !== "unknown") {
-    if (classification.freshness_tier === "hot") {
+    if (["today", "hot", "fresh"].includes(classification.freshness_tier)) {
       score += 5;
-      reasons.push("Hot posting (0–7 days old)");
-    } else if (classification.freshness_tier === "fresh") {
+      reasons.push("Hot/Fresh posting (0–7 days old)");
+    } else if (classification.freshness_tier === "active") {
       score += 2;
-      reasons.push("Fresh posting (8–14 days old)");
+      reasons.push("Active posting (8–14 days old)");
     }
   }
 

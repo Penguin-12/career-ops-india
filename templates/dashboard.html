@@ -332,6 +332,21 @@
     margin-top: 2px;
     line-height: 1.35;
   }
+  .score-pill {
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    text-align: center;
+    line-height: 1.1;
+    flex-shrink: 0;
+  }
+  .score-pill-selected { background: rgba(6, 182, 212, 0.18); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.35); }
+  .score-pill-deferred { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+  .score-pill-excluded { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
 
   /* Badges */
   .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
@@ -356,9 +371,12 @@
   .badge-ai-consider { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 800; }
   .badge-ai-skip { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
 
+  .badge-today { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-weight: 700; }
   .badge-hot { background: var(--green-bg); color: var(--green); }
   .badge-fresh { background: var(--yellow-bg); color: var(--yellow); }
-  .badge-active { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+  .badge-active { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+  .badge-backlog { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+  .badge-unstated { background: rgba(148, 163, 184, 0.12); color: #94a3b8; }
   .badge-stale { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
   .badge-expired { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
   .badge-stretch { background: var(--red-bg); color: #f87171; }
@@ -543,6 +561,10 @@
   <!-- Stats Row -->
   <div class="stats-row" id="stats-row">
     <div class="stat-card">
+      <div class="stat-val" id="stat-today" style="color:var(--orange)">-</div>
+      <div class="stat-label">🔥 Today (&lt;24h)</div>
+    </div>
+    <div class="stat-card">
       <div class="stat-val" id="stat-active" style="color:var(--blue)">-</div>
       <div class="stat-label">Active Queue</div>
     </div>
@@ -633,23 +655,43 @@
   <!-- Views -->
   <!-- 1. Daily Queue Tab -->
   <div id="view-queue">
+    <!-- 0. TODAY Cross-Cutting Queue (<24h) -->
+    <div class="section-header" style="background: rgba(249, 115, 22, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--orange); margin-bottom: 20px;">
+      <div>
+        <div class="section-title" style="color:var(--orange); font-size:18px;">🔥 TODAY — Posted in Last 24 Hours (&lt;24h)</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Cross-cutting daily radar: newly discovered postings across all decision stages</div>
+      </div>
+      <div class="section-count" id="count-today" style="font-weight:700; color:var(--orange);">0 opportunities</div>
+    </div>
+    <div class="jobs-grid" id="grid-today" style="margin-bottom: 32px;"></div>
+
+    <!-- 1. AI Verified — Apply Now -->
     <div class="section-header">
-      <div class="section-title" style="color:var(--orange)">🔥 1. AI Verified — Apply Now</div>
+      <div class="section-title" style="color:var(--green)">🟢 1. AI Verified — Apply Now</div>
       <div class="section-count" id="count-apply-now">0 opportunities</div>
     </div>
     <div class="jobs-grid" id="grid-apply-now"></div>
 
-    <div class="section-header">
+    <!-- 2. AI Evaluated — Consider / Backup -->
+    <div class="section-header" style="margin-top:28px;">
       <div class="section-title" style="color:var(--yellow)">🟡 2. AI Evaluated — Consider / Backup</div>
       <div class="section-count" id="count-consider">0 opportunities</div>
     </div>
     <div class="jobs-grid" id="grid-consider"></div>
 
-    <div class="section-header">
-      <div class="section-title" style="color:var(--blue)">📋 3. New / Not Yet AI Evaluated (Top Deterministic)</div>
+    <!-- 3. New / Not Yet AI Evaluated -->
+    <div class="section-header" style="margin-top:28px;">
+      <div class="section-title" style="color:var(--blue)">📋 3. New / Not Yet AI Evaluated (Deterministic Backlog)</div>
       <div class="section-count" id="count-unevaluated">0 opportunities</div>
     </div>
     <div class="jobs-grid" id="grid-unevaluated"></div>
+
+    <!-- 4. AI Evaluated — Skipped -->
+    <div class="section-header" style="margin-top:28px;">
+      <div class="section-title" style="color:var(--text-muted)">⚪ 4. AI Evaluated — Skipped (Filtered Mismatches)</div>
+      <div class="section-count" id="count-skip">0 opportunities</div>
+    </div>
+    <div class="jobs-grid" id="grid-skip"></div>
   </div>
 
   <!-- 2. Saved Jobs Tab -->
@@ -963,8 +1005,16 @@ function renderJobCard(j, currentContext = "queue") {
   const ai = j.ai_evaluation;
   const isStretch = Boolean(j.is_stretch);
   const isOrphan = Boolean(j.is_orphan);
-  const freshClass = j.freshness_tier === "hot" ? "badge-hot" : (j.freshness_tier === "fresh" ? "badge-fresh" : "badge-active");
-  const freshText = j.freshness_tier === "hot" ? "🟢 Hot (0-7d)" : (j.freshness_tier === "fresh" ? "🟡 Fresh (8-14d)" : "⚪ Active");
+  let freshClass = "badge-unstated";
+  let freshText = "⚪ Unstated";
+  switch (j.freshness_tier) {
+    case "today": freshClass = "badge-today"; freshText = "🔥 Today (<24h)"; break;
+    case "hot": freshClass = "badge-hot"; freshText = "🟢 Hot (1-3d)"; break;
+    case "fresh": freshClass = "badge-fresh"; freshText = "🟡 Fresh (4-7d)"; break;
+    case "active": freshClass = "badge-active"; freshText = "⚪ Active (8-14d)"; break;
+    case "backlog": freshClass = "badge-backlog"; freshText = "⚪ Backlog (15-30d)"; break;
+    default: freshClass = "badge-unstated"; freshText = "⚪ Unstated"; break;
+  }
   const prioClass = (j.priority === "GO" ? "badge-prio-go" : "badge-prio-good");
   const tierClass = j.tier === "0" ? "badge-tier0" : (j.tier === "1" ? "badge-tier1" : "badge-tier2");
   
@@ -1004,9 +1054,12 @@ function renderJobCard(j, currentContext = "queue") {
       </div>
     `;
   } else if (j.score_reasons && j.score_reasons.length) {
+    const rationaleTitle = typeof j.score === "number"
+      ? `Match Rationale (${j.score}/100 Det Score):`
+      : "Match Rationale (Taxonomy Qualified):";
     rationaleHtml = `
       <div class="card-rationale">
-        <div class="r-title">Match Rationale (${j.score || "N/A"}/100 Det Score):</div>
+        <div class="r-title">${rationaleTitle}</div>
         <div>${j.score_reasons.slice(0, 2).join("; ")}</div>
       </div>
     `;
@@ -1018,6 +1071,48 @@ function renderJobCard(j, currentContext = "queue") {
   const aggregatorTag = isAggregator ?
     `<span class="badge badge-tier2" title="Source aggregator: ${j.source}">Aggregator: ${j.source}</span>` :
     `<span class="badge badge-prio-good">Direct ATS</span>`;
+
+  // Score Pill / AI Evaluation Lifecycle logic
+  let scorePillHtml = "";
+  if (ai && typeof ai.ai_score === "number") {
+    const aiScoreClass = ai.ai_score >= 80 ? "badge-ai-apply" : (ai.ai_score >= 70 ? "badge-ai-consider" : "badge-ai-skip");
+    scorePillHtml = `
+      <div class="score-pill ${aiScoreClass}" title="AI Match Score: ${ai.ai_score}/100 (${ai.recommendation})">
+        <span style="font-size:9px;font-weight:700;opacity:0.85;letter-spacing:0.5px;">AI</span>
+        <span style="font-size:14px;font-weight:800;">${ai.ai_score}</span>
+      </div>`;
+  } else if (typeof j.score === "number") {
+    const detScoreClass = j.score >= 80 ? "badge-prio-go" : (j.score >= 70 ? "badge-prio-good" : "badge-tier2");
+    scorePillHtml = `
+      <div class="score-pill ${detScoreClass}" title="Deterministic Score: ${j.score}/100">
+        <span style="font-size:9px;font-weight:700;opacity:0.85;letter-spacing:0.5px;">DET</span>
+        <span style="font-size:14px;font-weight:800;">${j.score}</span>
+      </div>`;
+  } else if (j.eval_status === "selected") {
+    scorePillHtml = `
+      <div class="score-pill score-pill-selected" title="AI Evaluation Queue: Selected (Rank #${j.eval_rank || '—'}) — Awaiting model evaluation">
+        <span style="font-size:8px;font-weight:800;letter-spacing:0.4px;">AI QUEUE</span>
+        <span style="font-size:10px;font-weight:800;white-space:nowrap;">SELECTED · #${j.eval_rank || '—'}</span>
+      </div>`;
+  } else if (j.eval_status === "deferred") {
+    scorePillHtml = `
+      <div class="score-pill score-pill-deferred" title="AI Evaluation Queue: Deferred — Strong candidate outside current 120-slot batch capacity">
+        <span style="font-size:8px;font-weight:800;letter-spacing:0.4px;">AI QUEUE</span>
+        <span style="font-size:10px;font-weight:800;white-space:nowrap;">DEFERRED</span>
+      </div>`;
+  } else if (j.eval_status === "excluded") {
+    scorePillHtml = `
+      <div class="score-pill score-pill-excluded" title="AI Evaluation Queue: Excluded — ${j.eval_reason || 'Failed quality gate / Seniority stretch'}">
+        <span style="font-size:8px;font-weight:800;letter-spacing:0.4px;">AI QUEUE</span>
+        <span style="font-size:10px;font-weight:800;white-space:nowrap;">EXCLUDED</span>
+      </div>`;
+  } else {
+    scorePillHtml = `
+      <div class="score-pill badge-unstated" title="Unevaluated Candidate">
+        <span style="font-size:8px;font-weight:800;letter-spacing:0.4px;">STATUS</span>
+        <span style="font-size:10px;font-weight:800;white-space:nowrap;">UNEVAL</span>
+      </div>`;
+  }
 
   // Action Buttons
   let actionBtnsHtml = "";
@@ -1089,6 +1184,7 @@ function renderJobCard(j, currentContext = "queue") {
             </div>
             <div class="job-title">${j.title}</div>
           </div>
+          ${scorePillHtml}
         </div>
 
         <div class="meta-chips">
@@ -1134,6 +1230,7 @@ function renderAll() {
   if (!DASHBOARD_DATA) return;
 
   const counts = DASHBOARD_DATA.counts || {};
+  document.getElementById("stat-today").textContent = counts.today ?? 0;
   document.getElementById("stat-active").textContent = counts.active ?? 0;
   document.getElementById("stat-saved").textContent = counts.saved ?? 0;
   document.getElementById("stat-applied").textContent = counts.applied ?? 0;
@@ -1155,21 +1252,31 @@ function applyFilters() {
   if (!DASHBOARD_DATA) return;
 
   const q = DASHBOARD_DATA.queue || {};
-  const applyList = q.apply || [];
+  const todayList = q.today || [];
+  const applyList = q.applyAll || q.apply || [];
   const considerList = q.consider || [];
   const unevalList = q.unevaluated || [];
+  const skipList = q.skip || [];
 
-  // 1. Queue Tab
+  // 0. TODAY Queue (<24h)
+  const todayCount = renderGrid("grid-today", todayList, "queue");
+  document.getElementById("count-today").textContent = `${todayCount} opportunities`;
+
+  // 1. Apply Now
   const applyCount = renderGrid("grid-apply-now", applyList, "queue");
   document.getElementById("count-apply-now").textContent = `${applyCount} opportunities`;
 
+  // 2. Consider
   const considerCount = renderGrid("grid-consider", considerList, "queue");
   document.getElementById("count-consider").textContent = `${considerCount} opportunities`;
 
-  const unevalCount = renderGrid("grid-unevaluated", unevalList, "queue", 30);
-  document.getElementById("count-unevaluated").textContent = unevalCount > 30 
-    ? `Showing top 30 of ${unevalCount} opportunities` 
-    : `${unevalCount} opportunities`;
+  // 3. Unevaluated
+  const unevalCount = renderGrid("grid-unevaluated", unevalList, "queue");
+  document.getElementById("count-unevaluated").textContent = `${unevalCount} opportunities`;
+
+  // 4. Skipped
+  const skipCount = renderGrid("grid-skip", skipList, "queue");
+  document.getElementById("count-skip").textContent = `${skipCount} opportunities`;
 
   // 2. Saved Tab
   const savedList = DASHBOARD_DATA.saved || [];
@@ -1223,8 +1330,8 @@ function applyFilters() {
             <td><strong>${j.title}</strong></td>
             <td>${formatLabel(j.role_family || j.function)} <span style="color:var(--text-muted)">(${j.job_seniority || j.seniority || "mid"})</span></td>
             <td>${j.location || "India"}</td>
-            <td>Det: ${j.score || "N/A"}${j.ai_evaluation ? ` | AI: ${j.ai_evaluation.ai_score}` : ""}</td>
-            <td>${j.freshness_tier || "active"} (${j.age_days ?? 0}d)</td>
+            <td>${j.ai_evaluation ? `<span style="color:var(--green);font-weight:700;">AI: ${j.ai_evaluation.ai_score}</span>` : (typeof j.score === "number" ? `Det: ${j.score}` : `<span style="color:var(--text-muted);font-size:11px;">AI: ${formatLabel(j.eval_status || "queued")}${j.eval_rank ? ` (#${j.eval_rank})` : ""}</span>`)}</td>
+            <td>${j.freshness_tier || "unstated"}${j.age_days != null ? ` (${j.age_days}d)` : ""}</td>
             <td>${badgeHtml}</td>
             <td>
               <a href="${targetUrl}" target="_blank" rel="noopener" class="btn btn-apply-link" style="padding:3px 8px;font-size:10px;">Apply ↗</a>

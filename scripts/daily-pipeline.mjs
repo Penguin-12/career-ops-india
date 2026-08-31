@@ -99,6 +99,19 @@ export function isPipelineRunning(maxLockAgeMs = 15 * 60 * 1000) {
   try {
     const raw = fs.readFileSync(LOCK_FILE, "utf8");
     const data = JSON.parse(raw);
+
+    // Check if process is still alive
+    if (data.pid) {
+      try {
+        process.kill(data.pid, 0);
+      } catch (err) {
+        if (err.code === "ESRCH") {
+          releaseLock();
+          return false;
+        }
+      }
+    }
+
     const lockTime = Date.parse(data.started_at || "");
     if (Number.isFinite(lockTime) && Date.now() - lockTime > maxLockAgeMs) {
       console.warn(`⚠️ Stale pipeline lock detected (>15m old). Releasing lock automatically.`);
@@ -145,8 +158,8 @@ export function releaseLock() {
 export async function runDailyPipeline(options = {}) {
   const silent = options.silent ?? false;
   const dryRun = Boolean(options.dryRun || options["dry-run"]);
-  const employerAtsLimit = typeof options.employerAtsLimit === "number" ? options.employerAtsLimit : 50;
-  const aggregatorLimit = typeof options.aggregatorLimit === "number" ? options.aggregatorLimit : 10;
+  const employerAtsLimit = typeof options.employerAtsLimit === "number" ? options.employerAtsLimit : 120;
+  const aggregatorLimit = typeof options.aggregatorLimit === "number" ? options.aggregatorLimit : 30;
   const concurrency = typeof options.concurrency === "number" ? options.concurrency : 3;
   const force = Boolean(options.force);
   const scanResultsPath = options.scanResultsPath || SCAN_RESULTS_FILE;
@@ -364,8 +377,17 @@ if (isDirectCli) {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run") || args.includes("--dryRun");
   const force = args.includes("--force");
+  const limitArg = args.find(a => a.startsWith("--limit="))?.split("=")[1];
+  const atsLimitArg = args.find(a => a.startsWith("--employerAtsLimit="))?.split("=")[1] || limitArg;
+  const aggLimitArg = args.find(a => a.startsWith("--aggregatorLimit="))?.split("=")[1];
+  const concurrencyArg = args.find(a => a.startsWith("--concurrency="))?.split("=")[1];
 
-  runDailyPipeline({ dryRun, force, silent: false }).catch(err => {
+  const options = { dryRun, force, silent: false };
+  if (atsLimitArg && !isNaN(Number(atsLimitArg))) options.employerAtsLimit = Number(atsLimitArg);
+  if (aggLimitArg && !isNaN(Number(aggLimitArg))) options.aggregatorLimit = Number(aggLimitArg);
+  if (concurrencyArg && !isNaN(Number(concurrencyArg))) options.concurrency = Number(concurrencyArg);
+
+  runDailyPipeline(options).catch(err => {
     process.exit(1);
   });
 }

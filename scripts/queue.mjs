@@ -16,6 +16,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
+const RESULTS_PATH = path.join(ROOT, "data/scan_results.json");
 
 import { diversifyJobs, partitionQueue, formatLabel } from "./queue-core.mjs";
 import { loadApplicationState, filterJobsByState } from "./state-service.mjs";
@@ -26,7 +27,16 @@ export { diversifyJobs, partitionQueue, formatLabel };
 export function printJobCard(j, rank) {
   const detScore = j.score ?? "N/A";
   const priority = j.priority || "GOOD";
-  const fresh = j.freshness_tier === "hot" ? "🟢 Hot (0–7d)" : (j.freshness_tier === "fresh" ? "🟡 Fresh (8–14d)" : "⚪ Active (15–30d)");
+  let fresh;
+  switch (j.freshness_tier) {
+    case "today": fresh = "🔥 Today (<24h)"; break;
+    case "hot": fresh = "🟢 Hot (1–3d)"; break;
+    case "fresh": fresh = "🟡 Fresh (4–7d)"; break;
+    case "active": fresh = "⚪ Active (8–14d)"; break;
+    case "backlog": fresh = "⚪ Backlog (15–30d)"; break;
+    default: fresh = "⚪ Unstated"; break;
+  }
+  const ageStr = j.age_days != null ? ` (${j.age_days}d old)` : "";
   const roleLabel = formatLabel(j.role_family || j.function || "general_sde");
   const seniorityLabel = formatLabel(j.job_seniority || j.seniority || j.level || "unknown");
   const fitLabel = formatLabel(j.experience_fit || j.fit || "primary");
@@ -37,7 +47,7 @@ export function printJobCard(j, rank) {
   if (ai) {
     const aiBadge = ai.recommendation === "APPLY" ? "🟢 APPLY" : (ai.recommendation === "CONSIDER" ? "🟡 CONSIDER" : "⚪ SKIP");
     console.log(`\n  ${String(rank).padStart(2)}. [${ai.ai_score}/100 AI] [${aiBadge}] [${priority}] ${j.company} — ${j.title}`);
-    console.log(`     📍 ${(j.location || "India").padEnd(24)} |  🕒 ${fresh} (${j.age_days ?? 0}d old)`);
+    console.log(`     📍 ${(j.location || "India").padEnd(24)} |  🕒 ${fresh}${ageStr}`);
     console.log(`     📊 Deterministic: ${detScore}/100 | AI Score: ${ai.ai_score}/100 (Confidence: ${ai.confidence || "HIGH"})`);
     console.log(`     🏷️  Role: ${roleLabel} | Seniority: ${seniorityLabel} | Experience: ${fitLabel} | Career alignment: ${alignLabel}`);
     if (ai.why_apply) {
@@ -54,7 +64,7 @@ export function printJobCard(j, rank) {
     }
   } else {
     console.log(`\n  ${String(rank).padStart(2)}. [${detScore}/100] [${priority}] ${j.company} — ${j.title}`);
-    console.log(`     📍 ${(j.location || "India").padEnd(24)} |  🕒 ${fresh} (${j.age_days ?? 0}d old)  |  🤖 AI: Not evaluated`);
+    console.log(`     📍 ${(j.location || "India").padEnd(24)} |  🕒 ${fresh}${ageStr}  |  🤖 AI: Not evaluated`);
     console.log(`     🏷️  Role: ${roleLabel} | Seniority: ${seniorityLabel} | Experience fit: ${fitLabel} | Career alignment: ${alignLabel}`);
     if (rationale) {
       console.log(`     💡 Match Rationale: ${rationale}`);
@@ -91,11 +101,19 @@ export function runQueue(scanResultsPath = RESULTS_PATH) {
 
   let currentRank = 1;
 
-  if (q.apply.length > 0) {
+  if (q.today && q.today.length > 0) {
     console.log(`\n${"─".repeat(72)}`);
-    console.log(`🔥 1. AI VERIFIED — APPLY NOW (${q.apply.length} Top Priority Recommendations)`);
+    console.log(`🔥 TODAY — POSTED IN LAST 24 HOURS (${q.today.length} Fresh Opportunities)`);
     console.log(`${"─".repeat(72)}`);
-    q.apply.forEach(j => printJobCard(j, currentRank++));
+    q.today.forEach(j => printJobCard(j, currentRank++));
+  }
+
+  const allApply = q.applyAll || q.apply || [];
+  if (allApply.length > 0) {
+    console.log(`\n${"─".repeat(72)}`);
+    console.log(`🔥 1. AI VERIFIED — APPLY NOW (${allApply.length} Top Priority Recommendations)`);
+    console.log(`${"─".repeat(72)}`);
+    allApply.forEach(j => printJobCard(j, currentRank++));
   }
 
   if (q.consider.length > 0) {

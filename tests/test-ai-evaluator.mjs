@@ -710,6 +710,77 @@ console.log("\n[Test 29] AI Cache prevents repeat model calls");
   console.log("  ✅ Passed: AI Cache prevents redundant provider calls");
 }
 
+// 30. Cross-cutting TODAY queue (freshness_tier === "today")
+console.log("\n[Test 30] TODAY Queue strictly enforces freshness_tier === 'today' across active candidates");
+{
+  const testJobs = [
+    { company: "Google", title: "SWE II Today", freshness_tier: "today", age_days: 0, ai_evaluation: { recommendation: "APPLY", ai_score: 92 } },
+    { company: "Qualcomm", title: "AI Eng Today", freshness_tier: "today", age_days: 0, ai_evaluation: { recommendation: "CONSIDER", ai_score: 78 } },
+    { company: "Amazon", title: "SDE Unevaluated Today", freshness_tier: "today", age_days: 0, score: 85 },
+    { company: "GitLab", title: "Backend Yesterday", freshness_tier: "hot", age_days: 1, ai_evaluation: { recommendation: "APPLY", ai_score: 88 } },
+    { company: "Microsoft", title: "Architect Staff Today", freshness_tier: "today", age_days: 0, ai_evaluation: { recommendation: "SKIP", ai_score: 30 } },
+    { company: "StaleCo", title: "Expired Job", freshness_tier: "today", age_days: 0, lifecycle: { status: "expired" } }
+  ];
+
+  const q = partitionQueue(testJobs, 5);
+  assert.strictEqual(q.today.length, 3, "TODAY has exactly 3 actionable opportunities (<24h)");
+  assert.strictEqual(q.today[0].title, "SWE II Today", "APPLY job sorted first in TODAY queue");
+  assert.strictEqual(q.today[1].title, "AI Eng Today", "CONSIDER job sorted second in TODAY queue");
+  assert.strictEqual(q.today[2].title, "SDE Unevaluated Today", "UNEVALUATED job sorted third in TODAY queue");
+  assert.strictEqual(q.today.some(j => j.title === "Expired Job"), false, "Expired jobs excluded from TODAY");
+  assert.strictEqual(q.today.some(j => j.title === "Architect Staff Today"), false, "SKIP jobs excluded from TODAY");
+  assert.strictEqual(q.skip.some(j => j.title === "Architect Staff Today"), true, "SKIP job correctly routed to skip queue");
+  console.log("  ✅ Passed: Cross-cutting TODAY queue strictly enforces freshness_tier === 'today' and active recommendation ordering");
+}
+
+// 31. AI Candidate Selection: TODAY priority within source/risk class
+console.log("\n[Test 31] AI Candidate Selection: TODAY priority within source/risk class with score/age tie-breakers");
+{
+  const testPool = [
+    // Older high-scoring ATS job (score: 95, 5d old)
+    { id: "ats-older", company: "Google", title: "SWE II Older", source_type: "employer_ats", score: 95, freshness_tier: "fresh", age_days: 5 },
+    // Today ATS job (score: 80, 0d old)
+    { id: "ats-today-1", company: "Microsoft", title: "SWE II Today Mid", source_type: "employer_ats", score: 80, freshness_tier: "today", age_days: 0 },
+    // Today ATS job higher score (score: 90, 0d old)
+    { id: "ats-today-2", company: "Rubrik", title: "SWE II Today High", source_type: "employer_ats", score: 90, freshness_tier: "today", age_days: 0 },
+    // Aggregator Today normal risk (score: 95, 0d old)
+    { id: "agg-today-normal", company: "Medpace", title: "Platform Eng Today", source_type: "aggregator", discovery_risk: "normal", score: 95, freshness_tier: "today", age_days: 0 },
+    // Aggregator Today staffing risk (score: 98, 0d old)
+    { id: "agg-today-staffing", company: "StaffCo", title: "Contract Eng Today", source_type: "aggregator", discovery_risk: "staffing_agency_risk", score: 98, freshness_tier: "today", age_days: 0 },
+    // Aggregator Older normal risk (score: 92, 3d old)
+    { id: "agg-older-normal", company: "Barclays", title: "AI Eng Older", source_type: "aggregator", discovery_risk: "normal", score: 92, freshness_tier: "hot", age_days: 3 },
+    // Unstated freshness ATS job
+    { id: "ats-unstated", company: "Amazon", title: "SDE Unstated", source_type: "employer_ats", score: 85, freshness_tier: "unstated", age_days: null }
+  ];
+
+  // 1. Selector respects limit
+  const top2 = selectJobsForEvaluation(testPool, { limit: 2 });
+  assert.strictEqual(top2.length, 2, "Selector respects limit");
+
+  // 2. Select all
+  const allSelected = selectJobsForEvaluation(testPool, { limit: 10 });
+  const selectedIds = allSelected.map(j => j.id);
+
+  // Expected order:
+  // 1. ats-today-2 (ATS + TODAY + score 90)
+  // 2. ats-today-1 (ATS + TODAY + score 80)
+  // 3. ats-older (ATS + non-TODAY + score 95)
+  // 4. ats-unstated (ATS + unstated + score 85)
+  // 5. agg-today-normal (Aggregator + Normal Risk + TODAY + score 95)
+  // 6. agg-older-normal (Aggregator + Normal Risk + non-TODAY + score 92)
+  // 7. agg-today-staffing (Aggregator + Staffing Risk + TODAY + score 98)
+
+  assert.strictEqual(selectedIds[0], "ats-today-2", "ATS Today (score 90) outranks ATS Older (score 95)");
+  assert.strictEqual(selectedIds[1], "ats-today-1", "ATS Today (score 80) outranks ATS Older (score 95)");
+  assert.strictEqual(selectedIds[2], "ats-older", "ATS Older is selected after ATS Today candidates");
+  assert.strictEqual(selectedIds[3], "ats-unstated", "ATS Unstated is selected after timestamped ATS candidates");
+  assert.strictEqual(selectedIds[4], "agg-today-normal", "Aggregator Today normal risk outranks Aggregator older");
+  assert.strictEqual(selectedIds[5], "agg-older-normal", "Aggregator older normal risk outranks staffing risk");
+  assert.strictEqual(selectedIds[6], "agg-today-staffing", "Aggregator staffing risk placed last despite being TODAY");
+
+  console.log("  ✅ Passed: Evaluator candidate selection strictly prioritizes TODAY within source/risk class with score & age ordering");
+}
+
 console.log("\n=========================================================================");
-console.log("🎉 ALL 29 LIFECYCLE, TAXONOMY, PRECEDENCE & DIVERSIFICATION TESTS PASSED!");
+console.log("🎉 ALL 31 LIFECYCLE, TAXONOMY, PRECEDENCE & DIVERSIFICATION TESTS PASSED!");
 console.log("=========================================================================\n");

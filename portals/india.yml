@@ -656,13 +656,6 @@ pcsx:
     domain: fintech/investment-banking/quant-tech
     hq: Mumbai/Bengaluru
 
-  - name: Vodafone
-    host: vodafone.eightfold.ai
-    domain_host: vodafone.com
-    tier: "2"
-    priority: GOOD
-    domain: telecom/cloud/sre/network-automation
-    hq: Pune/Bengaluru/Ahmedabad
 
 radancy:
   - name: Barclays

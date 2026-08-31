@@ -147,11 +147,26 @@ export async function evaluateJob(job, options = {}) {
   };
 }
 
+const freshnessRank = { today: 0, hot: 1, fresh: 2, active: 3, backlog: 4, unstated: 5, expired: 6 };
+
+/**
+ * Determines whether a job meets the deterministic quality cutoff for early freshness evaluation
+ */
+export function isStrongCandidate(job) {
+  if (job.discovery_risk === "staffing_agency_risk") return false;
+  if (job.tier === "2") return false;
+  if (job.is_stretch) return false;
+  if (typeof job.score === "number") {
+    return job.score >= 80;
+  }
+  return true;
+}
+
 /**
  * Selects and prioritizes candidate jobs for AI evaluation
  */
 export function selectJobsForEvaluation(jobList, options = {}) {
-  const limit = typeof options.limit === "number" ? options.limit : 30;
+  const limit = typeof options.limit === "number" ? options.limit : 100;
   const force = !!options.force;
   const filterUrl = options.url;
   const filterCompany = options.company ? String(options.company).toLowerCase().trim() : null;
@@ -190,18 +205,31 @@ export function selectJobsForEvaluation(jobList, options = {}) {
     const bStaffing = b.discovery_risk === "staffing_agency_risk" ? 1 : 0;
     if (aStaffing !== bStaffing) return aStaffing - bStaffing;
 
-    // 3. Freshness confidence: high outranks unknown
+    // 3. Quality tier: strong candidates outrank weak/stretch/tier-2 candidates
+    const aStrong = isStrongCandidate(a) ? 0 : 1;
+    const bStrong = isStrongCandidate(b) ? 0 : 1;
+    if (aStrong !== bStrong) return aStrong - bStrong;
+
+    // 4. Freshness tier priority within quality pool (today > hot > fresh > active > backlog > unstated)
+    const aFresh = freshnessRank[a.freshness_tier] ?? 5;
+    const bFresh = freshnessRank[b.freshness_tier] ?? 5;
+    if (aFresh !== bFresh) return aFresh - bFresh;
+
+    // 5. Freshness confidence: high outranks unknown
     const aConf = a.freshness_confidence === "high" ? 0 : 1;
     const bConf = b.freshness_confidence === "high" ? 0 : 1;
     if (aConf !== bConf) return aConf - bConf;
 
-    // 4. Deterministic score descending
+    // 6. Deterministic score descending
     const aScore = a.score ?? 50;
     const bScore = b.score ?? 50;
     if (aScore !== bScore) return bScore - aScore;
 
-    // 5. Age ascending
-    return (a.age_days || 0) - (b.age_days || 0);
+    // 7. Age ascending (nulls last)
+    if (a.age_days != null && b.age_days != null) return a.age_days - b.age_days;
+    if (a.age_days != null) return -1;
+    if (b.age_days != null) return 1;
+    return 0;
   });
 
   return candidates.slice(0, limit);
@@ -212,7 +240,7 @@ export function selectJobsForEvaluation(jobList, options = {}) {
  */
 export async function evaluateBatch(options = {}) {
   const startTime = Date.now();
-  const limit = typeof options.limit === "number" ? options.limit : 30;
+  const limit = typeof options.limit === "number" ? options.limit : 100;
   const concurrency = Math.max(1, Math.min(10, typeof options.concurrency === "number" ? options.concurrency : 3));
   const jobTimeoutMs = (typeof options.timeout === "number" ? options.timeout : 60) * 1000;
   const force = !!options.force;

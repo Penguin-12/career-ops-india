@@ -160,18 +160,22 @@ export function parseExperienceRequirements(text) {
 export function getFreshnessInfo(postedAt, maxDays = 30, now = Date.now()) {
   const posted = Date.parse(postedAt || "");
   if (!Number.isFinite(posted)) {
-    return { isFresh: true, tier: "active", ageDays: 0, label: "Active (date unstated)" };
+    return { isFresh: true, tier: "unstated", ageDays: null, label: "⚪ Unstated" };
   }
   const ageDays = Math.max(0, Math.floor((now - posted) / 86_400_000));
   if (ageDays > maxDays) {
     return { isFresh: false, tier: "expired", ageDays, label: `Expired (${ageDays}d old)` };
   }
-  if (ageDays <= 7) {
-    return { isFresh: true, tier: "hot", ageDays, label: "🟢 Hot (0–7d)" };
+  if (ageDays === 0) {
+    return { isFresh: true, tier: "today", ageDays, label: "🔥 Today (<24h)" };
+  } else if (ageDays <= 3) {
+    return { isFresh: true, tier: "hot", ageDays, label: "🟢 Hot (1–3d)" };
+  } else if (ageDays <= 7) {
+    return { isFresh: true, tier: "fresh", ageDays, label: "🟡 Fresh (4–7d)" };
   } else if (ageDays <= 14) {
-    return { isFresh: true, tier: "fresh", ageDays, label: "🟡 Fresh (8–14d)" };
+    return { isFresh: true, tier: "active", ageDays, label: "⚪ Active (8–14d)" };
   } else {
-    return { isFresh: true, tier: "active", ageDays, label: "⚪ Active (15–30d)" };
+    return { isFresh: true, tier: "backlog", ageDays, label: "⚪ Backlog (15–30d)" };
   }
 }
 

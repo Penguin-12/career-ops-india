@@ -37,6 +37,7 @@ import {
 } from "./job-lifecycle-service.mjs";
 import { partitionQueue, diversifyJobs } from "./queue-core.mjs";
 import { runDailyPipeline, getPipelineStatus, isPipelineRunning } from "./daily-pipeline.mjs";
+import { selectJobsForEvaluation, isStrongCandidate } from "./ai/evaluator.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -169,7 +170,7 @@ function buildOrphanJobs(mode, appState, lifecycleState, scanJobIds, scanUrls = 
         tier: "2",
         priority: "GOOD",
         is_stretch: false,
-        freshness_tier: "active",
+        freshness_tier: "unstated",
         age_days: null,
         application_state: {
           status: entry.status,
@@ -207,7 +208,7 @@ function buildOrphanJobs(mode, appState, lifecycleState, scanJobIds, scanUrls = 
         tier: "2",
         priority: "GOOD",
         is_stretch: false,
-        freshness_tier: "active",
+        freshness_tier: "unstated",
         age_days: null,
         application_state: appEntry
           ? {
@@ -255,6 +256,41 @@ export function buildDashboardData(options = {}) {
   // Partition un-actioned scan jobs by lifecycle state
   const { active: activeEligible } = filterJobsByLifecycle(unActioned, lifecycleState);
 
+  // Derive AI evaluation lifecycle state for active jobs using authoritative production selector
+  const atsPool = activeEligible.filter(j => !j.ai_evaluation && j.source_type !== "aggregator" && j.source !== "naukri");
+  const aggPool = activeEligible.filter(j => !j.ai_evaluation && (j.source_type === "aggregator" || j.source === "naukri"));
+
+  const selectedAts = selectJobsForEvaluation(atsPool, { limit: 120, force: false });
+  const selectedAgg = selectJobsForEvaluation(aggPool, { limit: 30, force: false });
+
+  const selectedMap = new Map();
+  selectedAts.forEach((j, i) => selectedMap.set(j.job_id || j.url, { rank: i + 1, source_pool: "ats" }));
+  selectedAgg.forEach((j, i) => selectedMap.set(j.job_id || j.url, { rank: i + 1, source_pool: "aggregator" }));
+
+  activeEligible.forEach(j => {
+    if (j.ai_evaluation) {
+      j.eval_status = "evaluated";
+    } else {
+      const key = j.job_id || j.url;
+      if (selectedMap.has(key)) {
+        const info = selectedMap.get(key);
+        j.eval_status = "selected";
+        j.eval_rank = info.rank;
+        j.eval_reason = `Rank #${info.rank} in AI evaluation queue — Awaiting model evaluation`;
+      } else if (isStrongCandidate(j)) {
+        j.eval_status = "deferred";
+        j.eval_reason = "Strong candidate outside current 120-slot evaluation batch capacity";
+      } else {
+        j.eval_status = "excluded";
+        j.eval_reason = j.is_stretch
+          ? "Seniority stretch (Staff/Architect level) — Excluded from AI evaluation priority"
+          : (j.tier === "2"
+            ? "Tier-2 employer — Excluded from AI evaluation priority"
+            : "Below deterministic quality threshold — Excluded from AI evaluation priority");
+      }
+    }
+  });
+
   // Partition active (new/un-actioned + active-lifecycle) jobs through canonical queue ranking & diversification
   const activeQueue = partitionQueue(activeEligible, 5);
 
@@ -282,8 +318,11 @@ export function buildDashboardData(options = {}) {
       not_interested: notInterested.length,
       expired: allExpired.length,
       stale: allStale.length,
+      today: (activeQueue.today || []).length,
       apply_now: activeQueue.apply.length,
+      apply_overflow: (activeQueue.applyOverflow || []).length,
       consider: activeQueue.consider.length,
+      skip: (activeQueue.skip || []).length,
       unevaluated: (activeQueue.unevaluated || []).length
     },
     queue: activeQueue,

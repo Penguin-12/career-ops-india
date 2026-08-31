@@ -187,8 +187,8 @@ export async function runScan(options = {}) {
     } catch {}
   }
 
-  // Sort: Tier 1 Primary (Hot > Fresh > Active) > Tier 1 Stretch > Tier 2 Primary > Tier 2 Stretch
-  const freshnessRank = { hot: 0, fresh: 1, active: 2, expired: 3 };
+  // Sort: Tier 1 Primary (Today > Hot > Fresh > Active > Backlog > Unstated) > Tier 1 Stretch > Tier 2 Primary > Tier 2 Stretch
+  const freshnessRank = { today: 0, hot: 1, fresh: 2, active: 3, backlog: 4, unstated: 5, expired: 6 };
   unique.sort((a, b) => {
     const aTier = a.tier === "0" ? 0 : (a.tier === "1" ? 1 : 2);
     const bTier = b.tier === "0" ? 0 : (b.tier === "1" ? 1 : 2);
@@ -198,11 +198,16 @@ export async function runScan(options = {}) {
     const bStretch = b.is_stretch ? 1 : 0;
     if (aStretch !== bStretch) return aStretch - bStretch;
 
-    const aFresh = freshnessRank[a.freshness_tier] ?? 2;
-    const bFresh = freshnessRank[b.freshness_tier] ?? 2;
+    const aFresh = freshnessRank[a.freshness_tier] ?? 5;
+    const bFresh = freshnessRank[b.freshness_tier] ?? 5;
     if (aFresh !== bFresh) return aFresh - bFresh;
 
-    return (a.age_days || 0) - (b.age_days || 0);
+    if (a.age_days != null && b.age_days != null) {
+      return a.age_days - b.age_days;
+    }
+    if (a.age_days != null) return -1;
+    if (b.age_days != null) return 1;
+    return 0;
   });
 
   // Save
@@ -228,20 +233,22 @@ export async function runScan(options = {}) {
       hard_excluded_mgmt: "1. Hard Exclusion: People Management (Manager/Dir/VP/Chief)",
       hard_excluded_nontech: "2. Hard Exclusion: Non-Tech (Sales/Mktg/HR/Finance/Ops/Content)",
       hard_excluded_qa: "3. Hard Exclusion: QA/SDET/IT Helpdesk/Tech Support",
-      hard_excluded_hardware: "4. Hard Exclusion: Hardware / Silicon / Verification / Physical Design",
-      function_mismatch: "5. Function Mismatch: No Backend/Platform/AI/SDE signal",
-      location_mismatch: "6. Location Mismatch: Outside Target India Hubs / Non-Remote",
-      experience_mismatch: "7. Experience Mismatch: Requirements far exceed profile (>7 yrs)",
-      freshness_mismatch: "8. Stale / Expired (> 30 days old)",
-      passed_primary: "9. Passed: Primary Match (IC SDE I / II / III within 2-4 yrs)",
-      passed_stretch: "10. Passed: Stretch Match (Lead / Staff / Principal / 5-7 yrs)"
+      hard_excluded_devops_sre: "4. Hard Exclusion: DevOps / SRE / DevSecOps / Site Reliability",
+      hard_excluded_intern: "5. Hard Exclusion: Internships / Apprenticeships / Trainees",
+      hard_excluded_hardware: "6. Hard Exclusion: Hardware / Silicon / Verification / Physical Design",
+      function_mismatch: "7. Function Mismatch: No Backend/Platform/AI/SDE signal",
+      location_mismatch: "8. Location Mismatch: Outside Target India Hubs / Non-Remote",
+      experience_mismatch: "9. Experience Mismatch: Requirements far exceed profile (>7 yrs)",
+      freshness_mismatch: "10. Stale / Expired (> 30 days old)",
+      passed_primary: "11. Passed: Primary Match (IC SDE I / II / III within 2-4 yrs)",
+      passed_stretch: "12. Passed: Stretch Match (Lead / Staff / Principal / 5-7 yrs)"
     };
 
     console.log(`── Step-by-Step Gate Breakdown ──`);
     for (const gate of GATES) {
       const g = stats.byGate[gate];
       const pct = stats.total > 0 ? ((g.count / stats.total) * 100).toFixed(1) : "0.0";
-      console.log(`\n▶ ${gateLabels[gate]}:`);
+      console.log(`\n▶ ${gateLabels[gate] || gate}:`);
       console.log(`  Count: ${g.count} (${pct}%)`);
       if (g.samples.length > 0) {
         console.log(`  Representative Samples:`);
@@ -271,7 +278,7 @@ export async function runScan(options = {}) {
     // Compute aggregate metrics on unique matched jobs
     const uniquePrimary = unique.filter(j => !j.is_stretch).length;
     const uniqueStretch = unique.filter(j => j.is_stretch).length;
-    const freshnessCounts = { hot: 0, fresh: 0, active: 0 };
+    const freshnessCounts = { today: 0, hot: 0, fresh: 0, active: 0, backlog: 0, unstated: 0 };
     const locationCounts = {};
     for (const j of unique) {
       freshnessCounts[j.freshness_tier] = (freshnessCounts[j.freshness_tier] || 0) + 1;
@@ -283,7 +290,7 @@ export async function runScan(options = {}) {
     console.log(`📈 MATCH AGGREGATES BREAKDOWN (Unique Matches)`);
     console.log(`${"─".repeat(65)}`);
     console.log(`• Match Type:     ${uniquePrimary} Primary  |  ${uniqueStretch} Stretch Opportunity`);
-    console.log(`• Freshness:      ${freshnessCounts.hot || 0} Hot (0–7d)  |  ${freshnessCounts.fresh || 0} Fresh (8–14d)  |  ${freshnessCounts.active || 0} Active (15–30d)`);
+    console.log(`• Freshness:      ${freshnessCounts.today || 0} Today (<24h)  |  ${freshnessCounts.hot || 0} Hot (1–3d)  |  ${freshnessCounts.fresh || 0} Fresh (4–7d)  |  ${freshnessCounts.active || 0} Active (8–14d)  |  ${freshnessCounts.backlog || 0} Backlog (15–30d)  |  ${freshnessCounts.unstated || 0} Unstated`);
     console.log(`• Top Locations:  ${Object.entries(locationCounts).sort((a,b)=>b[1]-a[1]).slice(0, 6).map(([k,v]) => `${k} (${v})`).join(", ")}`);
     console.log(`${"═".repeat(65)}\n`);
 
@@ -295,7 +302,15 @@ export async function runScan(options = {}) {
     const tier1 = unique.filter(j => j.tier === "1");
 
     function formatJobBadge(j) {
-      const freshIcon = j.freshness_tier === "hot" ? "🟢 0-7d" : (j.freshness_tier === "fresh" ? "🟡 8-14d" : "⚪ 15-30d");
+      let freshIcon;
+      switch (j.freshness_tier) {
+        case "today": freshIcon = "🔥 <24h"; break;
+        case "hot": freshIcon = "🟢 1-3d"; break;
+        case "fresh": freshIcon = "🟡 4-7d"; break;
+        case "active": freshIcon = "⚪ 8-14d"; break;
+        case "backlog": freshIcon = "⚪ 15-30d"; break;
+        default: freshIcon = "⚪ Unstated"; break;
+      }
       const prioTag = j.priority ? ` [${j.priority}]` : "";
       const stretchTag = j.is_stretch ? " [STRETCH]" : "";
       const fnTag = j.function ? ` [${j.function}]` : "";

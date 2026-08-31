@@ -33,7 +33,7 @@ function parseArg(name, defaultValue) {
   return defaultValue;
 }
 
-const limit = parseInt(parseArg("limit", "30"), 10);
+const limit = parseInt(parseArg("limit", "100"), 10);
 const concurrency = parseInt(parseArg("concurrency", "3"), 10);
 const timeout = parseInt(parseArg("timeout", "60"), 10);
 const force = parseArg("force", false);
