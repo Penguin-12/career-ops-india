@@ -52,6 +52,9 @@ jobs:
           test -f scripts/queue.mjs && echo '✓ scripts/queue.mjs exists'
           test -f scripts/doctor.mjs && echo '✓ scripts/doctor.mjs exists'
           test -f scripts/generate-pdf.mjs && echo '✓ scripts/generate-pdf.mjs exists'
+          test -f scripts/test-runner.mjs && echo '✓ scripts/test-runner.mjs exists'
+          test -f scripts/pipeline-health.mjs && echo '✓ scripts/pipeline-health.mjs exists'
+          test -f scripts/adapters/http.mjs && echo '✓ scripts/adapters/http.mjs exists'
 
       - name: Validate YAML configurations (portals & profiles)
         run: |
@@ -112,3 +115,14 @@ jobs:
 
       - name: Run full automated test suite (npm test)
         run: npm test
+        env:
+          CI: 'true'
+          NODE_ENV: test
+          GEMINI_MODEL: 'gemini-3.5-flash-lite'
+
+      - name: Validate pipeline health telemetry
+        run: npm run health
+        env:
+          CI: 'true'
+          NODE_ENV: test
+          GEMINI_MODEL: 'gemini-3.5-flash-lite'
