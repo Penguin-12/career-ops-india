@@ -257,7 +257,7 @@ console.log("\n[Test 11] Configurable model support via GEMINI_MODEL");
 {
   const customProvider = getAIProvider({ provider: "mock", model: "gemini-2.5-pro" });
   assert.strictEqual(customProvider.name, "mock");
-  assert.strictEqual(DEFAULT_MODEL, process.env.GEMINI_MODEL || "gemini-2.0-flash");
+  assert.strictEqual(DEFAULT_MODEL, process.env.GEMINI_MODEL || "gemini-3.5-flash-lite");
   console.log("  ✅ Passed: Model configuration properly wired");
 }
 
