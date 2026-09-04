@@ -86,12 +86,6 @@ greenhouse:
     domain: fintech/payments
     hq: Bangalore
 
-  - name: PhonePe
-    slug: phonepe
-    tier: "1"
-    domain: fintech/payments
-    hq: Bangalore
-
   # ── Global Tech with Major India R&D / Remote Presence ─────────────────────
   - name: Stripe
     slug: stripe
@@ -585,7 +579,6 @@ oraclecloud:
   - name: JPMorgan Chase
     host: jpmc.fa.oraclecloud.com
     site: CX_1001
-    keyword: India
     tier: "0"
     priority: GO
     domain: banking/fintech/systems
@@ -594,7 +587,6 @@ oraclecloud:
   - name: Goldman Sachs
     host: hdpc.fa.us2.oraclecloud.com
     site: LateralHiring
-    keyword: India
     tier: "0"
     priority: GO
     domain: quant/fintech/systems
@@ -603,7 +595,6 @@ oraclecloud:
   - name: Oracle
     host: eeho.fa.us2.oraclecloud.com
     site: CX_1
-    keyword: India
     tier: "1"
     priority: GO
     domain: enterprise-cloud/database/systems
@@ -738,7 +729,30 @@ rippling:
     domain: enterprise-saas/hris/fintech/ai
     hq: Bengaluru
 
+phonepe:
+  - name: PhonePe
+    tier: "1"
+    priority: GO
+    domain: fintech/payments/distributed-systems
+    hq: Bengaluru
 
+turbohire:
+  - name: Flipkart
+    orgId: "4d757ba0-3d57-448a-b82c-238ed87ac90f"
+    host: "flipkart.turbohire.co"
+    tier: "1"
+    priority: GO
+    domain: ecommerce/marketplace/supply-chain
+    hq: Bengaluru
+
+spire:
+  - name: Myntra
+    domain: "jobs.myntra.com"
+    workspaceId: "MYNTRA-93as3"
+    tier: "1"
+    priority: GO
+    domain_category: ecommerce/fashion-tech/marketplace
+    hq: Bengaluru
 
 # ─────────────────────────────────────────────────────────────────────────────
 # MIGRATED COMPANIES REGISTRY (For Future Keka/Workday/Portal Scrapers)

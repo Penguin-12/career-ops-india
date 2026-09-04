@@ -27,7 +27,10 @@ export const HARD_EXCLUSIONS = {
   management: /\b(manager|director|vp\b|vice president|head of|chief|cto|cpo|coo|scrum master|agile coach)\b/i,
   
   // Non-Technical / Non-Engineering Functions (hard drop)
-  non_tech: /\b(sales|marketing|growth|content|video|finance|accounting|controller|equity research|portfolio specialist|hr\b|human resources|recruiter|talent|facilities|warehouse|fleet|category|cx\b|customer experience|client servicing|account executive|account manager|business development|bd\b|legal|counsel|procurement|strategist|transformation owner|solutions architect|presales|sales engineer|technical writer|package consultant|functional consultant|sap functional|oracle functional|peoplesoft|workday functional|program office|pmo\b)\b/i,
+  non_tech: /\b(sales|marketing|growth|content|video|finance|accounting|controller|equity research|portfolio specialist|hr\b|human resources|recruiter|talent|facilities|warehouse|fleet|category|cx\b|customer experience|client servicing|account executive|account manager|business development|bd\b|legal|counsel|procurement|strategist|transformation owner|solutions architect|presales|sales engineer|technical writer|package consultant|functional consultant|sap functional|oracle functional|peoplesoft|workday functional|program office|pmo\b|designer|designers|ui[\s/-]?ux|ux\b|product\s+design|graphic\s+design|creative\s+lead)\b/i,
+
+  // Mobile / iOS / Android / Cross-platform app dev (hard drop)
+  mobile: /\b(ios|android|flutter|react\s+native|mobile\s+(?:engineer|dev\b|developer|software|application|platform)|swift\b|kotlin\b)\b/i,
 
   // QA / SDET / Support (hard drop)
   qa_support: /\b(qa\b|quality assurance|sdet|test engineer|automation engineer|support engineer|customer support|technical support|it helpdesk|tech support|community engineer|devrel)\b/i,
@@ -59,12 +62,12 @@ export function isHardwareSiliconExclusion(title) {
 
 // ── Technical Functions ───────────────────────────────────────────────────────
 export const FUNCTION_PATTERNS = {
-  ai_ml: /\b(ai\b|ml\b|genai|agentic|machine learning|nlp|llm|deep learning|computer vision|data science|applied ai)\b/i,
+  ai_ml: /\b(ai\b|ml\b|genai|agentic|machine learning|nlp|llm|deep learning|computer vision|data science|applied ai|forward deployed|fdse|fde\b)\b/i,
   platform_infra: /\b(platform|infra|infrastructure|cloud|kubernetes|observability|gateway|iam|security engineer|network)\b/i,
   distributed_systems: /\b(distributed systems?|messaging|event driven|data platform|data pipeline|kafka)\b/i,
   backend: /\b(backend|server|core engineering|api\b|microservices|search)\b/i,
   fullstack: /\b(full[\s-]?stack|frontend and backend|ui\/api)\b/i,
-  general_sde: /\b(software engineer|software dev|sde|systems?\s*engineer|developer|data engineer)\b/i
+  general_sde: /\b(software\s+(?:development\s+)?engineer|software dev|sde\b|systems?\s*engineer|developer|data engineer)\b/i
 };
 
 // ── Seniority Levels ─────────────────────────────────────────────────────────
@@ -150,6 +153,9 @@ export function parseExperienceRequirements(text) {
   for (const m of text.matchAll(/(\d+(?:\.\d+)?)\s*\+\s*(?:years?|yrs?)/gi)) {
     reqs.push({ min: Number(m[1]), max: Infinity });
   }
+  for (const m of text.matchAll(/(?:minimum|min|at\s+least)?\s*(\d+(?:\.\d+)?)\s*(?:years?|yrs?)(?:\s+(?:of\s+)?experience)?/gi)) {
+    reqs.push({ min: Number(m[1]), max: Number(m[1]) });
+  }
   if (!reqs.length) return null;
   return {
     min: Math.min(...reqs.map(r => r.min)),
@@ -179,9 +185,42 @@ export function getFreshnessInfo(postedAt, maxDays = 30, now = Date.now()) {
   }
 }
 
+export const DEFAULT_EXCLUDED_SENIORITY_LEVELS = [
+  "staff",
+  "principal",
+  "architect",
+  "distinguished",
+  "fellow",
+  "lead",
+  "leader",
+  "consultant",
+  "specialist",
+  "expert",
+  "advisory"
+];
+
+export function isSeniorityExcluded(title, excludedLevels = DEFAULT_EXCLUDED_SENIORITY_LEVELS) {
+  if (!Array.isArray(excludedLevels) || !excludedLevels.length) return false;
+  const norm = String(title || "").trim();
+  if (!norm) return false;
+
+  // Protect IC Forward Deployed roles from generic keyword drops (e.g. "expert"),
+  // but still allow people management/leadership exclusions to drop.
+  if (/\b(forward deployed|fdse|fde)\b/i.test(norm) && !/\b(manager|director|vp\b|head of|lead|leader)\b/i.test(norm)) {
+    return false;
+  }
+
+  const escaped = excludedLevels.map(l => String(l).trim().replace(/[^a-z0-9_]/gi, "\\$&")).filter(Boolean);
+  if (!escaped.length) return false;
+  const pattern = new RegExp(`\\b(${escaped.join("|")})\\b`, "i");
+  return pattern.test(norm);
+}
+
 export const GATES = [
   "hard_excluded_mgmt",
+  "hard_excluded_seniority",
   "hard_excluded_nontech",
+  "hard_excluded_mobile",
   "hard_excluded_qa",
   "hard_excluded_devops_sre",
   "hard_excluded_intern",
@@ -195,9 +234,17 @@ export const GATES = [
 ];
 
 export function classifyJob(job, config = {}) {
+  const excludedSeniority = Array.isArray(config.excludedSeniorityLevels)
+    ? config.excludedSeniorityLevels
+    : DEFAULT_EXCLUDED_SENIORITY_LEVELS;
+  const maxExpYears = config.maxExperienceYears != null ? Number(config.maxExperienceYears) : 4;
+  const stretchMinExpYears = config.stretchMinExperienceYears != null ? Number(config.stretchMinExperienceYears) : 4;
+
   // 1. Hard Exclusions Check
   if (HARD_EXCLUSIONS.management.test(job.title)) return { gate: "hard_excluded_mgmt" };
+  if (isSeniorityExcluded(job.title, excludedSeniority)) return { gate: "hard_excluded_seniority" };
   if (HARD_EXCLUSIONS.non_tech.test(job.title)) return { gate: "hard_excluded_nontech" };
+  if (HARD_EXCLUSIONS.mobile.test(job.title)) return { gate: "hard_excluded_mobile" };
   if (HARD_EXCLUSIONS.qa_support.test(job.title)) return { gate: "hard_excluded_qa" };
   if (HARD_EXCLUSIONS.devops_sre.test(job.title)) return { gate: "hard_excluded_devops_sre" };
   if (HARD_EXCLUSIONS.intern_trainee.test(job.title)) return { gate: "hard_excluded_intern" };
@@ -217,17 +264,16 @@ export function classifyJob(job, config = {}) {
 
   let isStretch = false;
 
-  if (["lead", "staff", "principal", "architect"].includes(level)) {
+  if (level === "lead") {
     isStretch = true;
   }
 
   if (statedExp) {
-    if (statedExp.min > targetExp.max) {
-      if (statedExp.min <= 7) {
-        isStretch = true; // Stretch opportunity (e.g. 5-7 yrs)
-      } else {
-        return { gate: "experience_mismatch" }; // Far beyond (e.g. 8-15 yrs)
-      }
+    if (statedExp.min > maxExpYears) {
+      return { gate: "experience_mismatch" }; // Configurable hard drop above maxExpYears (e.g. > 5 YOE)
+    }
+    if (statedExp.min >= stretchMinExpYears) {
+      isStretch = true; // Configurable stretch threshold (e.g. >= 4 YOE)
     }
   }
 

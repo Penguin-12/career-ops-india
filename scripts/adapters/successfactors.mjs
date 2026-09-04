@@ -85,6 +85,8 @@ export function parseSuccessFactorsCards(html, domain) {
   return jobs;
 }
 
+import { fetchWithRetry } from "./http.mjs";
+
 export default {
   id: "successfactors",
   type: "employer_careers",
@@ -93,7 +95,7 @@ export default {
     const company = typeof companyConfig === "object" ? companyConfig : { name: "SAP", host: "jobs.sap.com" };
     const domain = company.host || company.domain_host || (typeof company.domain === "string" && company.domain.includes(".") ? company.domain : "jobs.sap.com");
     const locationQuery = company.locationQuery || "India";
-    const maxPages = company.maxPages || 30;
+    const maxPages = company.maxPages || 10;
     const pageSize = company.pageSize || 25;
     const seenKeys = new Set();
     const allJobs = [];
@@ -104,13 +106,20 @@ export default {
         const searchPath = `/search/?q=&locationsearch=${encodeURIComponent(locationQuery)}&startrow=${startrow}`;
         const url = `https://${domain}${searchPath}`;
 
-        const res = await fetch(url, {
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-          },
-          signal: AbortSignal.timeout(10000)
-        });
+        let res;
+        try {
+          res = await fetchWithRetry(url, {
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            }
+          }, { timeoutMs: 15000, maxRetries: 3 });
+        } catch (fetchErr) {
+          if (page === 0) {
+            return { jobs: [], err: fetchErr.message };
+          }
+          break;
+        }
 
         if (!res.ok) {
           if (page === 0) {
@@ -139,7 +148,7 @@ export default {
 
       return { jobs: allJobs };
     } catch (err) {
-      return { jobs: allJobs, err: err.message };
+      return { jobs: allJobs, err: allJobs.length > 0 ? null : err.message };
     }
   },
 

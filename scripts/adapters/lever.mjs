@@ -1,10 +1,13 @@
+import { fetchWithRetry } from "./http.mjs";
+
 export default {
   id: "lever",
   type: "direct_ats",
   fetchJobs: async (slug) => {
     try {
-      const res = await fetch(`https://api.lever.co/v0/postings/${slug}?mode=json`,
-        { headers: { "User-Agent": "career-ops-india/1.0" }, signal: AbortSignal.timeout(12000) });
+      const res = await fetchWithRetry(`https://api.lever.co/v0/postings/${slug}?mode=json`, {
+        headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" }
+      }, { maxRetries: 5, timeoutMs: 20000 });
       if (!res.ok) return { jobs: [], err: `HTTP ${res.status}` };
       const d = await res.json();
       return { jobs: Array.isArray(d) ? d : [] };

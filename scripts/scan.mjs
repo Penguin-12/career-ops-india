@@ -34,6 +34,9 @@ function readConfig() {
     roles: Array.isArray(candidate.target_roles) ? candidate.target_roles.filter(Boolean) : [],
     locations: Array.isArray(candidate.locations) ? candidate.locations.filter(Boolean) : [],
     experienceFilter: String(search.experience_filter || "").trim(),
+    maxExperienceYears: search.max_experience_years != null ? Number(search.max_experience_years) : 4,
+    stretchMinExperienceYears: search.stretch_min_experience_years != null ? Number(search.stretch_min_experience_years) : 4,
+    excludedSeniorityLevels: Array.isArray(search.excluded_seniority_levels) ? search.excluded_seniority_levels : undefined,
     freshnessDays: Number(search.freshness_days) || 30,
     boards: search.boards || {},
   };
@@ -74,27 +77,102 @@ export async function runScan(options = {}) {
     console.log(`   Companies: ${totalCompanies}\n`);
   }
 
+  const scannerStatus = [];
+  const timeoutMs = Number(options.timeoutMs) || 25000; // Increased to 25s for resilient ATS scanning
+
   async function scanBoard(name, companies, fetcher, normalizer) {
-    if (config.boards[name] === false) return;
+    if (config.boards[name] === false) {
+      companies.forEach(co => {
+        scannerStatus.push({
+          company: typeof co === "string" ? co : (co.name || co.slug),
+          board: name,
+          tier: co.tier || "2",
+          priority: co.priority || "GOOD",
+          status: "skipped",
+          reason: "board disabled in profile.yml",
+          raw_count: 0,
+          matched_count: 0,
+          error: null,
+          elapsed_ms: 0
+        });
+      });
+      return;
+    }
     if (boardFilter && boardFilter !== name) return;
     if (!jsonMode && !debugMode && !silent) process.stdout.write(`Scanning ${companies.length} ${name} companies...`);
     if (debugMode && !silent) console.log(`\n── Scanning ${name.toUpperCase()} (${companies.length} companies) ──`);
     
     stats.bySource[name] = stats.bySource[name] || { total: 0, byGate: Object.fromEntries(GATES.map(g => [g, 0])) };
 
-    const tasks = companies.map(async co => {
+    const tasks = companies.map(async (co, idx) => {
+      if (idx > 0) await new Promise(r => setTimeout(r, Math.min(idx * 80, 500)));
       if (co.note?.includes("current employer")) {
+        scannerStatus.push({
+          company: co.name,
+          board: name,
+          tier: co.tier || "2",
+          priority: co.priority || "GOOD",
+          status: "skipped",
+          reason: "current employer",
+          raw_count: 0,
+          matched_count: 0,
+          error: null,
+          elapsed_ms: 0
+        });
         if (debugMode && !silent) console.log(`  [${name}] ${co.name}: ⏭️  Skipped (current employer note)`);
         return;
       }
-      const { jobs, err } = await fetcher(co.slug || co);
+
+      const startMs = Date.now();
+      async function executeSingleAttempt() {
+        const fetchPromise = Promise.resolve().then(() => fetcher(co.slug || co)).catch(e => ({ jobs: [], err: e.message }));
+        const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ jobs: [], err: `Fetch timeout exceeded (${Math.round(timeoutMs / 1000)}s)` }), timeoutMs));
+        return await Promise.race([fetchPromise, timeoutPromise]);
+      }
+
+      let jobs = [];
+      let err = null;
+      let delay = 1000;
+      const MAX_RETRIES = 5;
+
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        const res = await executeSingleAttempt();
+        if (!res.err && Array.isArray(res.jobs)) {
+          jobs = res.jobs;
+          err = null;
+          break;
+        }
+
+        err = res.err || "Unknown fetch error";
+        if (attempt < MAX_RETRIES) {
+          // Exponential backoff: 1s, 2s, 4s, 8s, 16s with random jitter
+          const jitter = Math.floor(Math.random() * 250);
+          await new Promise(r => setTimeout(r, delay + jitter));
+          delay = Math.min(delay * 2, 16000);
+        }
+      }
+
+      const elapsedMs = Date.now() - startMs;
+
       if (err) {
-        errors.push({ company: co.name, board: name, error: err });
+        errors.push({ company: co.name, board: name, error: err, elapsed_ms: elapsedMs });
+        scannerStatus.push({
+          company: co.name,
+          board: name,
+          tier: co.tier || "2",
+          priority: co.priority || "GOOD",
+          status: "error",
+          raw_count: 0,
+          matched_count: 0,
+          error: err,
+          elapsed_ms: elapsedMs
+        });
         if (debugMode && !silent) console.log(`  [${name}] ${co.name} (${co.slug || co.tenant || ""}): ⚠️  ${err}`);
         return;
       }
-      totalFetchedJobs += jobs.length;
-      const normalizedList = jobs.map(j => normalizer(j, co));
+
+      totalFetchedJobs += (jobs || []).length;
+      const normalizedList = (jobs || []).map(j => normalizer(j, co));
       const matched = [];
 
       for (const j of normalizedList) {
@@ -122,6 +200,18 @@ export async function runScan(options = {}) {
           matched.push(enrichedJob);
         }
       }
+
+      scannerStatus.push({
+        company: co.name,
+        board: name,
+        tier: co.tier || "2",
+        priority: co.priority || "GOOD",
+        status: "ok",
+        raw_count: (jobs || []).length,
+        matched_count: matched.length,
+        error: null,
+        elapsed_ms: elapsedMs
+      });
 
       if (debugMode && !silent) {
         console.log(`  [${name}] ${co.name}: ✅ ${jobs.length} postings found | 🎯 ${matched.length} matched`);
@@ -213,12 +303,105 @@ export async function runScan(options = {}) {
   // Save
   fs.mkdirSync(dataDir, { recursive: true });
   const outputPath = options.outputPath || path.join(dataDir, "scan_results.json");
-  const out = { scanned_at: new Date().toISOString(), total: unique.length,
-                errors: errors.length, jobs: unique };
+
+  // Preserve existing AI evaluations across scans so daily runs only evaluate new jobs
+  if (fs.existsSync(outputPath)) {
+    try {
+      const prevData = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+      const prevJobs = prevData.jobs || [];
+      const prevMap = new Map();
+      for (const pj of prevJobs) {
+        if (pj.ai_evaluation) {
+          if (pj.url) prevMap.set(pj.url, pj.ai_evaluation);
+          if (pj.source_job_id && pj.company) prevMap.set(`${pj.company}::${pj.source_job_id}`, pj.ai_evaluation);
+          prevMap.set(`${pj.company}::${pj.title}`, pj.ai_evaluation);
+        }
+      }
+      for (const j of unique) {
+        if (!j.ai_evaluation) {
+          const existingEval = (j.url && prevMap.get(j.url)) ||
+                               (j.source_job_id && prevMap.get(`${j.company}::${j.source_job_id}`)) ||
+                               prevMap.get(`${j.company}::${j.title}`);
+          if (existingEval) {
+            j.ai_evaluation = existingEval;
+          }
+        }
+      }
+    } catch {}
+  }
+
+  const successfulScanners = scannerStatus.filter(s => s.status === "ok").length;
+  const failedScanners = scannerStatus.filter(s => s.status === "error").length;
+  const skippedScanners = scannerStatus.filter(s => s.status === "skipped").length;
+  const activeScanners = totalCompanies - skippedScanners;
+
+  const scannerSummary = {
+    total_companies: totalCompanies,
+    active_scanned: activeScanners,
+    successful: successfulScanners,
+    failed: failedScanners,
+    skipped: skippedScanners,
+    success_rate_pct: activeScanners > 0 ? Math.round((successfulScanners / activeScanners) * 100) : 0
+  };
+
+  // Ensure target directory exists
+  const targetDir = path.dirname(outputPath);
+  if (!fs.existsSync(targetDir)) {
+    fs.mkdirSync(targetDir, { recursive: true });
+  }
+
+  // Sanitize errors and scanner reports so every Error object is cleanly stringified
+  const sanitizedErrors = errors.map(e => ({
+    company: String(e.company || ""),
+    board: String(e.board || ""),
+    error: typeof e.error === "string" ? e.error : (e.error?.message || String(e.error || "Unknown error")),
+    elapsed_ms: Number(e.elapsed_ms) || 0
+  }));
+
+  const sanitizedReports = scannerStatus.map(s => ({
+    company: String(s.company || ""),
+    board: String(s.board || ""),
+    tier: String(s.tier || "2"),
+    priority: String(s.priority || "GOOD"),
+    status: String(s.status || "error"),
+    raw_count: Number(s.raw_count) || 0,
+    matched_count: Number(s.matched_count) || 0,
+    error: s.error ? (typeof s.error === "string" ? s.error : (s.error?.message || String(s.error))) : null,
+    reason: s.reason ? String(s.reason) : undefined,
+    elapsed_ms: Number(s.elapsed_ms) || 0
+  }));
+
+  const out = {
+    scanned_at: new Date().toISOString(),
+    total: unique.length,
+    errors: sanitizedErrors.length,
+    scanner_summary: scannerSummary,
+    scanner_errors: sanitizedErrors,
+    scanner_reports: sanitizedReports,
+    jobs: unique
+  };
   
-  const tempFile = `${outputPath}.${Date.now()}.tmp`;
-  fs.writeFileSync(tempFile, JSON.stringify(out, null, 2));
-  fs.renameSync(tempFile, outputPath);
+  // Resilient atomic save with fallbacks
+  const content = JSON.stringify(out, null, 2);
+  const tempFile = `${outputPath}.${Date.now()}.${Math.random().toString(36).slice(2, 6)}.tmp`;
+
+  try {
+    fs.writeFileSync(tempFile, content, "utf8");
+    try {
+      fs.renameSync(tempFile, outputPath);
+    } catch {
+      // Fallback if cross-device or file locked
+      fs.copyFileSync(tempFile, outputPath);
+      try { fs.unlinkSync(tempFile); } catch {}
+    }
+  } catch {
+    // Ultimate fallback: direct write to outputPath
+    try {
+      fs.writeFileSync(outputPath, content, "utf8");
+    } catch (finalErr) {
+      console.error(`⚠️ Failed to save scan results to ${outputPath}: ${finalErr.message}`);
+    }
+  }
 
   if (jsonMode && !silent) { console.log(JSON.stringify(out)); }
 
@@ -227,7 +410,6 @@ export async function runScan(options = {}) {
     console.log(`\n${"═".repeat(65)}`);
     console.log(`📊 FILTERING FUNNEL & CLASSIFICATION REPORT`);
     console.log(`${"═".repeat(65)}`);
-    console.log(`Total Postings Evaluated: ${stats.total}\n`);
 
     const gateLabels = {
       hard_excluded_mgmt: "1. Hard Exclusion: People Management (Manager/Dir/VP/Chief)",
@@ -333,6 +515,9 @@ export async function runScan(options = {}) {
     scanned_at: out.scanned_at,
     total: unique.length,
     errors: errors.length,
+    scanner_summary: out.scanner_summary,
+    scanner_errors: out.scanner_errors,
+    scanner_reports: out.scanner_reports,
     jobs: unique,
     totalCompanies
   };

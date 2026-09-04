@@ -12,6 +12,8 @@
  * - Zero LLM tokens. Zero scraping. Clean JSON responses.
  */
 
+import { fetchWithRetry } from "./http.mjs";
+
 function parseWorkdayDate(postedOn, now = Date.now()) {
   if (!postedOn) return null;
   const s = String(postedOn).trim();
@@ -66,16 +68,15 @@ export default {
           searchText: "India"
         };
 
-        const res = await fetch(endpoint, {
+        const res = await fetchWithRetry(endpoint, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "User-Agent": "career-ops-india/1.2"
           },
-          body: JSON.stringify(bodyPayload),
-          signal: AbortSignal.timeout(8000)
-        });
+          body: JSON.stringify(bodyPayload)
+        }, { maxRetries: 5, timeoutMs: 20000 });
 
         if (!res.ok) {
           // If 422 with searchText, fallback to standard pagination without searchText
@@ -99,16 +100,15 @@ export default {
         offset = 0;
         total = Infinity;
         while (offset < total && offset < 100) {
-          const res = await fetch(endpoint, {
+          const res = await fetchWithRetry(endpoint, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json",
               "User-Agent": "career-ops-india/1.2"
             },
-            body: JSON.stringify({ limit: PAGE_SIZE, offset: offset, appliedFacets: {} }),
-            signal: AbortSignal.timeout(8000)
-          });
+            body: JSON.stringify({ limit: PAGE_SIZE, offset: offset, appliedFacets: {} })
+          }, { maxRetries: 5, timeoutMs: 20000 });
 
           if (!res.ok) break;
           const data = await res.json();

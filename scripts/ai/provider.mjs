@@ -1,14 +1,33 @@
-/**
- * scripts/ai/provider.mjs — AI Provider Abstraction & Model Response Parser
- */
-
+import fs from "fs";
+import path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
+import { fileURLToPath } from "url";
 
 const execFileAsync = promisify(execFile);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.join(__dirname, "../..");
 
-export const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+// Load .env automatically if present
+try {
+  const envPath = path.join(ROOT, ".env");
+  if (fs.existsSync(envPath)) {
+    const lines = fs.readFileSync(envPath, "utf8").split("\n");
+    for (const line of lines) {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        const key = match[1];
+        let val = (match[2] || "").trim();
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+          val = val.slice(1, -1);
+        }
+        if (!process.env[key]) process.env[key] = val;
+      }
+    }
+  }
+} catch {}
 
+export const DEFAULT_MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 /**
  * Extracts and validates strict JSON from raw model output
  */
@@ -83,6 +102,39 @@ export function parseModelJsonResponse(rawText) {
 /**
  * Direct Gemini REST API Provider (uses GEMINI_API_KEY or GOOGLE_API_KEY)
  */
+// Rate Limiter for Gemini Free Tier (14 Requests Per Minute = ~4.3s spacing)
+let lastRestRequestTime = 0;
+let restRequestLock = Promise.resolve();
+
+async function scheduleRestRequest(fn) {
+  const previous = restRequestLock;
+  let resolveCurrent;
+  restRequestLock = new Promise(resolve => { resolveCurrent = resolve; });
+
+  await previous;
+  try {
+    const now = Date.now();
+    const elapsed = now - lastRestRequestTime;
+    const MIN_INTERVAL = 4300; // 4.3s = ~13.9 RPM (safely below Google's 15 RPM free limit)
+    if (elapsed < MIN_INTERVAL) {
+      await new Promise(r => setTimeout(r, MIN_INTERVAL - elapsed));
+    }
+    const result = await fn();
+    lastRestRequestTime = Date.now();
+    return result;
+  } finally {
+    resolveCurrent();
+  }
+}
+
+export const GEMINI_MODEL_POOL = [
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+  "gemini-3.6-flash",
+  "gemini-flash-lite-latest",
+  "gemini-flash-latest"
+];
+
 export class GeminiRestProvider {
   constructor(options = {}) {
     this.name = "gemini_rest";
@@ -94,34 +146,89 @@ export class GeminiRestProvider {
   }
 
   async generate(prompt) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`;
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json",
-        temperature: 0.1
+    const candidateModels = [this.model, ...GEMINI_MODEL_POOL.filter(m => m !== this.model)];
+    let lastErr = null;
+
+    for (let i = 0; i < candidateModels.length; i++) {
+      const activeModel = candidateModels[i];
+      try {
+        return await scheduleRestRequest(async () => {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${this.apiKey}`;
+          const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.1
+            }
+          };
+
+          let res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          if (res.status === 429) {
+            let errJson = null;
+            try {
+              errJson = await res.json();
+            } catch {}
+
+            const errStr = JSON.stringify(errJson || "");
+            const isDailyQuota = errStr.includes("GenerateRequestsPerDay") || errStr.includes("daily_quota");
+
+            if (isDailyQuota) {
+              // Daily quota exhausted for this model — don't stall, fail over immediately to next model
+              throw new Error(`Gemini Daily Quota Exceeded (429) on model ${activeModel}`);
+            }
+
+            // Transient RPM rate limit — respect RetryInfo if provided
+            let waitMs = 45000;
+            const retryInfo = errJson?.error?.details?.find(d => d["@type"]?.includes("RetryInfo"));
+            if (retryInfo?.retryDelay) {
+              const parsed = parseInt(retryInfo.retryDelay, 10);
+              if (parsed > 0 && parsed <= 65) waitMs = (parsed + 2) * 1000;
+            }
+            console.log(`\n⏳ Free Tier 15 RPM pacing refresh: waiting ${(waitMs/1000).toFixed(0)}s on ${activeModel}...`);
+            await new Promise(r => setTimeout(r, waitMs));
+            res = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+          }
+
+          if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`Gemini REST API error (${res.status}) on ${activeModel}: ${errText}`);
+          }
+
+          const data = await res.json();
+          const candidate = data?.candidates?.[0];
+          const text = candidate?.content?.parts?.[0]?.text;
+          if (!text) {
+            throw new Error(`Gemini REST API returned no content in candidate response on ${activeModel}`);
+          }
+
+          return parseModelJsonResponse(text);
+        });
+      } catch (err) {
+        lastErr = err;
+        const isQuotaOrTransient = err.message.includes("429") ||
+                                   err.message.includes("RESOURCE_EXHAUSTED") ||
+                                   err.message.includes("503") ||
+                                   err.message.includes("Daily Quota");
+        if (isQuotaOrTransient && i < candidateModels.length - 1) {
+          const nextModel = candidateModels[i + 1];
+          console.log(`\n⚠️ Model ${activeModel} exhausted or unavailable (${err.message.slice(0, 100)}). Automatically failing over to ${nextModel}...`);
+          this.model = nextModel;
+          continue;
+        }
+        throw err;
       }
-    };
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Gemini REST API error (${res.status}): ${errText}`);
     }
 
-    const data = await res.json();
-    const candidate = data?.candidates?.[0];
-    const text = candidate?.content?.parts?.[0]?.text;
-    if (!text) {
-      throw new Error("Gemini REST API returned no content in candidate response");
-    }
-
-    return parseModelJsonResponse(text);
+    throw lastErr || new Error("All Gemini models in fallback pool exhausted");
   }
 }
 

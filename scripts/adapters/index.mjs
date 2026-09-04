@@ -13,6 +13,9 @@ import radancy from "./radancy.mjs";
 import successfactors from "./successfactors.mjs";
 import ibm from "./ibm.mjs";
 import rippling from "./rippling.mjs";
+import phonepe from "./phonepe.mjs";
+import turbohire from "./turbohire.mjs";
+import spire from "./spire.mjs";
 
 export default {
   greenhouse,
@@ -29,5 +32,8 @@ export default {
   radancy,
   successfactors,
   ibm,
-  rippling
+  rippling,
+  phonepe,
+  turbohire,
+  spire
 };

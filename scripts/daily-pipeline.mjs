@@ -17,6 +17,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import yaml from "js-yaml";
 import { runScan } from "./scan.mjs";
 import { evaluateBatch, loadCache } from "./ai/evaluator.mjs";
 import { partitionQueue } from "./queue-core.mjs";
@@ -30,6 +31,7 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const DATA_DIR = path.join(ROOT, "data");
+const PROFILE_PATH = path.join(ROOT, "config/profile.yml");
 
 export const LOCK_FILE = path.join(DATA_DIR, "daily-pipeline.lock");
 export const STATUS_FILE = path.join(DATA_DIR, ".daily-pipeline-status.json");
@@ -158,8 +160,18 @@ export function releaseLock() {
 export async function runDailyPipeline(options = {}) {
   const silent = options.silent ?? false;
   const dryRun = Boolean(options.dryRun || options["dry-run"]);
-  const employerAtsLimit = typeof options.employerAtsLimit === "number" ? options.employerAtsLimit : 120;
-  const aggregatorLimit = typeof options.aggregatorLimit === "number" ? options.aggregatorLimit : 30;
+  let employerAtsLimit = options.employerAtsLimit;
+  let aggregatorLimit = options.aggregatorLimit;
+  if (employerAtsLimit == null) {
+    try {
+      if (fs.existsSync(PROFILE_PATH)) {
+        const profile = yaml.load(fs.readFileSync(PROFILE_PATH, "utf8")) || {};
+        if (profile.evaluator?.max_evals != null) employerAtsLimit = Number(profile.evaluator.max_evals);
+      }
+    } catch {}
+  }
+  employerAtsLimit = Number.isFinite(employerAtsLimit) ? employerAtsLimit : 200;
+  aggregatorLimit = Number.isFinite(aggregatorLimit) ? aggregatorLimit : 50;
   const concurrency = typeof options.concurrency === "number" ? options.concurrency : 3;
   const force = Boolean(options.force);
   const scanResultsPath = options.scanResultsPath || SCAN_RESULTS_FILE;
@@ -250,7 +262,7 @@ export async function runDailyPipeline(options = {}) {
         force,
         dryRun,
         provider: options.provider,
-        json: true,
+        json: silent,
         scanResultsPath,
         cachePath
       });
@@ -280,7 +292,7 @@ export async function runDailyPipeline(options = {}) {
         force,
         dryRun,
         provider: options.provider,
-        json: true,
+        json: silent,
         scanResultsPath,
         cachePath
       });
@@ -382,7 +394,8 @@ if (isDirectCli) {
   const aggLimitArg = args.find(a => a.startsWith("--aggregatorLimit="))?.split("=")[1];
   const concurrencyArg = args.find(a => a.startsWith("--concurrency="))?.split("=")[1];
 
-  const options = { dryRun, force, silent: false };
+  const skipScan = args.includes("--skip-scan") || args.includes("--skipScan");
+  const options = { dryRun, force, skipScan, silent: false };
   if (atsLimitArg && !isNaN(Number(atsLimitArg))) options.employerAtsLimit = Number(atsLimitArg);
   if (aggLimitArg && !isNaN(Number(aggLimitArg))) options.aggregatorLimit = Number(aggLimitArg);
   if (concurrencyArg && !isNaN(Number(concurrencyArg))) options.concurrency = Number(concurrencyArg);

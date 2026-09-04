@@ -28,6 +28,8 @@ export function readConfig() {
     roles: Array.isArray(candidate.target_roles) ? candidate.target_roles.filter(Boolean) : [],
     locations: Array.isArray(candidate.locations) ? candidate.locations.filter(Boolean) : [],
     experienceFilter: String(search.experience_filter || "2-4").trim(),
+    maxExperienceYears: search.max_experience_years != null ? Number(search.max_experience_years) : 4,
+    stretchMinExperienceYears: search.stretch_min_experience_years != null ? Number(search.stretch_min_experience_years) : 4,
     freshnessDays: Number(search.freshness_days) || 30,
   };
 }

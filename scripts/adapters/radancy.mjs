@@ -18,6 +18,8 @@
  * - Zero LLM tokens. Zero browser automation.
  */
 
+import { fetchWithRetry } from "./http.mjs";
+
 function decodeHtml(html) {
   return String(html || "")
     .replace(/&amp;/g, "&")
@@ -119,19 +121,16 @@ export default {
     let hitEmergencyCap = false;
 
     try {
-      for (let page = 1; page <= totalPages && page <= maxPages; page++) {
-        // Standard Radancy facet search path
-        // /search-jobs/India/{orgId}/2/1269750/20/77/50/{page}
-        const searchPath = `/${prefix}search-jobs/India/${orgId}/2/1269750/20/77/50/${page}`;
-        const url = `https://${domain}${searchPath}`;
+      let currentUrl = `https://${domain}/${prefix}search-jobs/India/${orgId}/2/1269750/20/77/50/1`;
+      let page = 1;
 
-        const res = await fetch(url, {
+      while (currentUrl && page <= totalPages && page <= maxPages) {
+        const res = await fetchWithRetry(currentUrl, {
           headers: {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-          },
-          signal: AbortSignal.timeout(10000)
-        });
+          }
+        }, { maxRetries: 5, timeoutMs: 20000 });
 
         if (!res.ok) {
           if (page === 1) {
@@ -168,6 +167,24 @@ export default {
         }
 
         if (newJobsOnPage === 0 && page > 1) break;
+
+        // Determine next URL: check canonical next link, or fallback to ?p=
+        const nextMatch = html.match(/<a[^>]*class="[^"]*next[^"]*"[^>]*href="([^"]*)"/i) || html.match(/<a[^>]*href="([^"]*)"[^>]*class="[^"]*next[^"]*"/i);
+        const isNextDisabled = /<a[^>]*class="[^"]*next[^"]*disabled/i.test(html) || /class="[^"]*disabled[^"]*next/i.test(html);
+
+        if (nextMatch && nextMatch[1] && !isNextDisabled) {
+          let nextHref = nextMatch[1].replace(/&amp;/g, "&");
+          if (nextHref.includes("&p=") && !nextHref.includes("?")) {
+            nextHref = nextHref.replace("&p=", "?p=");
+          }
+          currentUrl = nextHref.startsWith("http") ? nextHref : `https://${domain}${nextHref.startsWith("/") ? "" : "/"}${nextHref}`;
+          page++;
+        } else if (page < totalPages) {
+          page++;
+          currentUrl = `https://${domain}/${prefix}search-jobs/India/${orgId}/2/1269750/20/77/50/1?p=${page}`;
+        } else {
+          break;
+        }
       }
 
       const err = hitEmergencyCap

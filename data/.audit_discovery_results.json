@@ -1,0 +1,1002 @@
+[
+  {
+    "board": "greenhouse",
+    "company": "Postman",
+    "tier": "1",
+    "rawYield": 66,
+    "matchedYield": 0,
+    "elapsedMs": 4509,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Groww",
+    "tier": "1",
+    "rawYield": 5,
+    "matchedYield": 0,
+    "elapsedMs": 360,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "InMobi",
+    "tier": "1",
+    "rawYield": 63,
+    "matchedYield": 0,
+    "elapsedMs": 944,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Slice",
+    "tier": "1",
+    "rawYield": 26,
+    "matchedYield": 0,
+    "elapsedMs": 472,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Zenoti",
+    "tier": "1",
+    "rawYield": 47,
+    "matchedYield": 1,
+    "elapsedMs": 688,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Druva",
+    "tier": "1",
+    "rawYield": 42,
+    "matchedYield": 0,
+    "elapsedMs": 699,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Sigmoid",
+    "tier": "2",
+    "rawYield": 31,
+    "matchedYield": 1,
+    "elapsedMs": 392,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Observe.AI",
+    "tier": "1",
+    "rawYield": 17,
+    "matchedYield": 0,
+    "elapsedMs": 466,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "CloudSEK",
+    "tier": "2",
+    "rawYield": 14,
+    "matchedYield": 1,
+    "elapsedMs": 894,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Digit Insurance",
+    "tier": "1",
+    "rawYield": 0,
+    "matchedYield": 0,
+    "elapsedMs": 342,
+    "error": null,
+    "status": "ZERO_YIELD"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Slintel (6sense India)",
+    "tier": "2",
+    "rawYield": 0,
+    "matchedYield": 0,
+    "elapsedMs": 246,
+    "error": null,
+    "status": "ZERO_YIELD"
+  },
+  {
+    "board": "greenhouse",
+    "company": "HackerRank",
+    "tier": "2",
+    "rawYield": 30,
+    "matchedYield": 2,
+    "elapsedMs": 611,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Razorpay",
+    "tier": "1",
+    "rawYield": 23,
+    "matchedYield": 1,
+    "elapsedMs": 479,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "PhonePe",
+    "tier": "1",
+    "rawYield": 0,
+    "matchedYield": 0,
+    "elapsedMs": 300,
+    "error": "HTTP 404",
+    "status": "FAILED"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Stripe",
+    "tier": "1",
+    "rawYield": 592,
+    "matchedYield": 3,
+    "elapsedMs": 1010,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Databricks",
+    "tier": "1",
+    "rawYield": 859,
+    "matchedYield": 1,
+    "elapsedMs": 1278,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Coinbase",
+    "tier": "1",
+    "rawYield": 188,
+    "matchedYield": 1,
+    "elapsedMs": 1149,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Rubrik",
+    "tier": "1",
+    "rawYield": 133,
+    "matchedYield": 2,
+    "elapsedMs": 1142,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "MongoDB",
+    "tier": "1",
+    "rawYield": 398,
+    "matchedYield": 8,
+    "elapsedMs": 1410,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Elastic",
+    "tier": "1",
+    "rawYield": 344,
+    "matchedYield": 0,
+    "elapsedMs": 2354,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "GitLab",
+    "tier": "1",
+    "rawYield": 220,
+    "matchedYield": 7,
+    "elapsedMs": 1628,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Twilio",
+    "tier": "1",
+    "rawYield": 136,
+    "matchedYield": 4,
+    "elapsedMs": 1166,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Okta",
+    "tier": "1",
+    "rawYield": 338,
+    "matchedYield": 6,
+    "elapsedMs": 11448,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Vercel",
+    "tier": "1",
+    "rawYield": 87,
+    "matchedYield": 0,
+    "elapsedMs": 279,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Cloudflare",
+    "tier": "1",
+    "rawYield": 323,
+    "matchedYield": 0,
+    "elapsedMs": 709,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Zscaler",
+    "tier": "1",
+    "rawYield": 350,
+    "matchedYield": 3,
+    "elapsedMs": 1406,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "CockroachDB",
+    "tier": "1",
+    "rawYield": 26,
+    "matchedYield": 0,
+    "elapsedMs": 393,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Sumo Logic",
+    "tier": "1",
+    "rawYield": 14,
+    "matchedYield": 0,
+    "elapsedMs": 395,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Datadog",
+    "tier": "1",
+    "rawYield": 441,
+    "matchedYield": 0,
+    "elapsedMs": 749,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Agoda",
+    "tier": "1",
+    "rawYield": 287,
+    "matchedYield": 0,
+    "elapsedMs": 795,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Elastic",
+    "tier": "1",
+    "rawYield": 344,
+    "matchedYield": 0,
+    "elapsedMs": 790,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "New Relic",
+    "tier": "1",
+    "rawYield": 53,
+    "matchedYield": 1,
+    "elapsedMs": 283,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Bitwarden",
+    "tier": "1",
+    "rawYield": 37,
+    "matchedYield": 8,
+    "elapsedMs": 281,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "InMobi",
+    "tier": "1",
+    "rawYield": 63,
+    "matchedYield": 0,
+    "elapsedMs": 317,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Groww",
+    "tier": "1",
+    "rawYield": 5,
+    "matchedYield": 0,
+    "elapsedMs": 553,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Airbnb",
+    "tier": "0",
+    "rawYield": 169,
+    "matchedYield": 0,
+    "elapsedMs": 1591,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Tower Research Capital",
+    "tier": "0",
+    "rawYield": 84,
+    "matchedYield": 2,
+    "elapsedMs": 535,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "greenhouse",
+    "company": "Arcesium",
+    "tier": "1",
+    "rawYield": 36,
+    "matchedYield": 0,
+    "elapsedMs": 293,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "lever",
+    "company": "CRED",
+    "tier": "1",
+    "rawYield": 14,
+    "matchedYield": 0,
+    "elapsedMs": 4199,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "lever",
+    "company": "Meesho",
+    "tier": "1",
+    "rawYield": 46,
+    "matchedYield": 0,
+    "elapsedMs": 2363,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "lever",
+    "company": "Zeta Suite",
+    "tier": "1",
+    "rawYield": 21,
+    "matchedYield": 1,
+    "elapsedMs": 1100,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "lever",
+    "company": "Fi Money",
+    "tier": "1",
+    "rawYield": 11,
+    "matchedYield": 0,
+    "elapsedMs": 2570,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "lever",
+    "company": "FamPay",
+    "tier": "2",
+    "rawYield": 12,
+    "matchedYield": 1,
+    "elapsedMs": 1928,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "lever",
+    "company": "Freshworks",
+    "tier": "1",
+    "rawYield": 0,
+    "matchedYield": 0,
+    "elapsedMs": 1758,
+    "error": null,
+    "status": "ZERO_YIELD"
+  },
+  {
+    "board": "lever",
+    "company": "Mindtickle",
+    "tier": "1",
+    "rawYield": 17,
+    "matchedYield": 0,
+    "elapsedMs": 3698,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "lever",
+    "company": "Porter",
+    "tier": "2",
+    "rawYield": 28,
+    "matchedYield": 0,
+    "elapsedMs": 737,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "lever",
+    "company": "Pocket FM",
+    "tier": "2",
+    "rawYield": 2,
+    "matchedYield": 0,
+    "elapsedMs": 290,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "ashby",
+    "company": "Sarvam AI",
+    "tier": "1",
+    "rawYield": 62,
+    "matchedYield": 6,
+    "elapsedMs": 8446,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "ashby",
+    "company": "Bounce",
+    "tier": "2",
+    "rawYield": 7,
+    "matchedYield": 0,
+    "elapsedMs": 323,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "ashby",
+    "company": "Scaler",
+    "tier": "2",
+    "rawYield": 0,
+    "matchedYield": 0,
+    "elapsedMs": 312,
+    "error": null,
+    "status": "ZERO_YIELD"
+  },
+  {
+    "board": "ashby",
+    "company": "Navi Technologies",
+    "tier": "1",
+    "rawYield": 9,
+    "matchedYield": 0,
+    "elapsedMs": 280,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "ashby",
+    "company": "Confluent",
+    "tier": "0",
+    "rawYield": 23,
+    "matchedYield": 0,
+    "elapsedMs": 258,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "mynexthire",
+    "company": "Swiggy",
+    "tier": "1",
+    "rawYield": 75,
+    "matchedYield": 0,
+    "elapsedMs": 3467,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "smartrecruiters",
+    "company": "Bosch",
+    "tier": "1",
+    "rawYield": 100,
+    "matchedYield": 17,
+    "elapsedMs": 328,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "smartrecruiters",
+    "company": "Continental",
+    "tier": "1",
+    "rawYield": 99,
+    "matchedYield": 0,
+    "elapsedMs": 266,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "smartrecruiters",
+    "company": "Sandisk",
+    "tier": "1",
+    "rawYield": 68,
+    "matchedYield": 3,
+    "elapsedMs": 268,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "smartrecruiters",
+    "company": "ServiceNow",
+    "tier": "1",
+    "rawYield": 37,
+    "matchedYield": 4,
+    "elapsedMs": 231,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "smartrecruiters",
+    "company": "Grab",
+    "tier": "1",
+    "rawYield": 12,
+    "matchedYield": 4,
+    "elapsedMs": 213,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "smartrecruiters",
+    "company": "Experian",
+    "tier": "1",
+    "rawYield": 57,
+    "matchedYield": 9,
+    "elapsedMs": 217,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Nvidia",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 4,
+    "elapsedMs": 4968,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Adobe",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 1,
+    "elapsedMs": 2414,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Salesforce",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 3,
+    "elapsedMs": 2754,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Autodesk",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 7,
+    "elapsedMs": 4428,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "CrowdStrike",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 9,
+    "elapsedMs": 4221,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Fractal",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 0,
+    "elapsedMs": 6249,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "workday",
+    "company": "Quantiphi",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 1,
+    "elapsedMs": 5796,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Target",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 4,
+    "elapsedMs": 3392,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Citi",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 1,
+    "elapsedMs": 5298,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Northern Trust",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 2,
+    "elapsedMs": 2252,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "LSEG (London Stock Exchange Group)",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 3,
+    "elapsedMs": 6678,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Boeing",
+    "tier": "1",
+    "rawYield": 12,
+    "matchedYield": 0,
+    "elapsedMs": 3929,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "workday",
+    "company": "BP",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 1,
+    "elapsedMs": 4446,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Mastercard",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 14,
+    "elapsedMs": 3232,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Visa",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 4,
+    "elapsedMs": 6493,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Broadcom",
+    "tier": "1",
+    "rawYield": 3,
+    "matchedYield": 0,
+    "elapsedMs": 1124,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Cadence",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 0,
+    "elapsedMs": 2222,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "workday",
+    "company": "Micron",
+    "tier": "1",
+    "rawYield": 288,
+    "matchedYield": 4,
+    "elapsedMs": 11773,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "Deutsche Bank",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 0,
+    "elapsedMs": 2083,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "workday",
+    "company": "BlackRock",
+    "tier": "0",
+    "rawYield": 53,
+    "matchedYield": 2,
+    "elapsedMs": 2205,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "workday",
+    "company": "State Street",
+    "tier": "1",
+    "rawYield": 40,
+    "matchedYield": 5,
+    "elapsedMs": 2251,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "amazon",
+    "company": "Amazon",
+    "tier": "1",
+    "rawYield": 423,
+    "matchedYield": 124,
+    "elapsedMs": 6725,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "oraclecloud",
+    "company": "JPMorgan Chase",
+    "tier": "0",
+    "rawYield": 66,
+    "matchedYield": 0,
+    "elapsedMs": 3563,
+    "error": null,
+    "status": "LOCATION_OR_FUNCTION_SKEW"
+  },
+  {
+    "board": "oraclecloud",
+    "company": "Goldman Sachs",
+    "tier": "0",
+    "rawYield": 160,
+    "matchedYield": 5,
+    "elapsedMs": 5541,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "oraclecloud",
+    "company": "Oracle",
+    "tier": "1",
+    "rawYield": 9,
+    "matchedYield": 0,
+    "elapsedMs": 3132,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "google",
+    "company": "Google",
+    "tier": "0",
+    "rawYield": 60,
+    "matchedYield": 8,
+    "elapsedMs": 8829,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "deshaw",
+    "company": "D.E. Shaw",
+    "tier": "0",
+    "rawYield": 87,
+    "matchedYield": 4,
+    "elapsedMs": 5202,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "pcsx",
+    "company": "Microsoft",
+    "tier": "0",
+    "rawYield": 50,
+    "matchedYield": 10,
+    "elapsedMs": 5219,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "pcsx",
+    "company": "Qualcomm",
+    "tier": "0",
+    "rawYield": 551,
+    "matchedYield": 26,
+    "elapsedMs": 46234,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "pcsx",
+    "company": "Micron",
+    "tier": "1",
+    "rawYield": 269,
+    "matchedYield": 4,
+    "elapsedMs": 25368,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "pcsx",
+    "company": "Morgan Stanley",
+    "tier": "1",
+    "rawYield": 106,
+    "matchedYield": 1,
+    "elapsedMs": 10222,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "radancy",
+    "company": "Barclays",
+    "tier": "1",
+    "rawYield": 557,
+    "matchedYield": 206,
+    "elapsedMs": 3806,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "radancy",
+    "company": "Capital One",
+    "tier": "1",
+    "rawYield": 8,
+    "matchedYield": 4,
+    "elapsedMs": 186,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "radancy",
+    "company": "Intuit",
+    "tier": "1",
+    "rawYield": 33,
+    "matchedYield": 1,
+    "elapsedMs": 356,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "radancy",
+    "company": "Arm",
+    "tier": "1",
+    "rawYield": 92,
+    "matchedYield": 3,
+    "elapsedMs": 516,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "radancy",
+    "company": "Palo Alto Networks",
+    "tier": "1",
+    "rawYield": 135,
+    "matchedYield": 3,
+    "elapsedMs": 23904,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "radancy",
+    "company": "Charles Schwab",
+    "tier": "1",
+    "rawYield": 52,
+    "matchedYield": 3,
+    "elapsedMs": 5613,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "radancy",
+    "company": "Optum",
+    "tier": "1",
+    "rawYield": 282,
+    "matchedYield": 97,
+    "elapsedMs": 6419,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "successfactors",
+    "company": "SAP",
+    "tier": "1",
+    "rawYield": 52,
+    "matchedYield": 10,
+    "elapsedMs": 2319,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "ibm",
+    "company": "IBM",
+    "tier": "1",
+    "rawYield": 675,
+    "matchedYield": 174,
+    "elapsedMs": 11236,
+    "error": null,
+    "status": "HEALTHY"
+  },
+  {
+    "board": "rippling",
+    "company": "Rippling",
+    "tier": "0",
+    "rawYield": 85,
+    "matchedYield": 21,
+    "elapsedMs": 5485,
+    "error": null,
+    "status": "HEALTHY"
+  }
+]

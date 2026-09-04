@@ -28,6 +28,7 @@ candidate:
     - Analytics Engineer
     - Business Analyst
     - Product Analyst
+    - Forward Deployed Engineer
 
   target_salary_lpa:
     min: 10           # Hard floor — never apply below this
@@ -47,8 +48,22 @@ candidate:
     Be specific. Generic narratives produce generic outputs.
 
 search:
-  experience_filter: "0-2"    # Experience filter range (years)
-  freshness_days: 30           # Look back up to 30 days (0-7d hot, 8-14d fresh, 15-30d active)
+  experience_filter: "0-2"          # Experience filter range (years)
+  max_experience_years: 5           # Hard drop any job requiring > 5 YOE
+  stretch_min_experience_years: 4    # Mark jobs requiring 4-5 YOE as stretch
+  excluded_seniority_levels:        # Hard drop titles containing these seniority levels
+    - staff
+    - principal
+    - architect
+    - distinguished
+    - fellow
+    - lead
+    - leader
+    - consultant
+    - specialist
+    - expert
+    - advisory
+  freshness_days: 30                # Look back up to 30 days (0-7d hot, 8-14d fresh, 15-30d active)
   boards:
     greenhouse: true
     lever: true

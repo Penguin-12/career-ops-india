@@ -242,7 +242,7 @@ export async function evaluateBatch(options = {}) {
   const startTime = Date.now();
   const limit = typeof options.limit === "number" ? options.limit : 100;
   const concurrency = Math.max(1, Math.min(10, typeof options.concurrency === "number" ? options.concurrency : 3));
-  const jobTimeoutMs = (typeof options.timeout === "number" ? options.timeout : 60) * 1000;
+  const jobTimeoutMs = (typeof options.timeout === "number" ? options.timeout : 120) * 1000;
   const force = !!options.force;
   const dryRun = !!options.dryRun || !!options["dry-run"];
   const jsonMode = !!options.json;
@@ -454,4 +454,32 @@ export async function evaluateBatch(options = {}) {
     cached: cacheHits,
     durationSec: Number(durationSec)
   };
+}
+
+import { fileURLToPath } from "url";
+
+const isDirectCli = process.argv[1] && (
+  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url)) ||
+  process.argv[1].endsWith("/evaluator.mjs") ||
+  process.argv[1].endsWith("\\evaluator.mjs")
+);
+
+if (isDirectCli) {
+  const args = process.argv.slice(2);
+  const dryRun = args.includes("--dry-run") || args.includes("--dryRun");
+  const force = args.includes("--force");
+  const limitArg = args.find(a => a.startsWith("--limit="))?.split("=")[1];
+  const concurrencyArg = args.find(a => a.startsWith("--concurrency="))?.split("=")[1];
+
+  const options = {
+    dryRun,
+    force,
+    concurrency: concurrencyArg ? Number(concurrencyArg) : 5,
+    limit: limitArg ? Number(limitArg) : 200
+  };
+
+  evaluateBatch(options).catch(err => {
+    console.error("Evaluation error:", err);
+    process.exit(1);
+  });
 }

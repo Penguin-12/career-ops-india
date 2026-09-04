@@ -16,6 +16,8 @@
  * - Source Type: employer_careers / direct_ats
  */
 
+import { fetchWithRetry } from "./http.mjs";
+
 function parsePcsxDate(raw) {
   const ts = raw.postedTs || raw.creationTs;
   if (!ts) return null;
@@ -75,7 +77,7 @@ export default {
     const locationQuery = company.locationQuery || "India";
     const allJobs = [];
     const seenIds = new Set();
-    const maxPages = company.maxPages || 100; // Safety cap (up to ~1,000+ postings)
+    const maxPages = company.maxPages || 8; // Safety cap (up to 80 postings, runs in ~2.5s)
 
     let start = 0;
     let total = Infinity;
@@ -84,14 +86,13 @@ export default {
       for (let page = 0; page < maxPages; page++) {
         const url = `https://${host}/api/pcsx/search?domain=${encodeURIComponent(domain)}&location=${encodeURIComponent(locationQuery)}&start=${start}`;
 
-        const res = await fetch(url, {
+        const res = await fetchWithRetry(url, {
           headers: {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
             "Accept": "application/json",
             "Referer": `https://${host}/careers?location=${encodeURIComponent(locationQuery)}&hl=en`
-          },
-          signal: AbortSignal.timeout(15000)
-        });
+          }
+        }, { maxRetries: 5, timeoutMs: 20000 });
 
         if (!res.ok) {
           if (page === 0) {

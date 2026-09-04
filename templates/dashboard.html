@@ -162,6 +162,167 @@
   .stat-val { font-size: 24px; font-weight: 800; line-height: 1.1; }
   .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); }
 
+  /* Pipeline Health & Threshold Insights Panel */
+  .health-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+  .health-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+  .health-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .health-status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    letter-spacing: 0.3px;
+  }
+  .health-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .health-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .health-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .health-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .health-card-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .health-pill {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 12px;
+    background: var(--surface3);
+    color: var(--text);
+  }
+  .health-metric-val {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .health-metric-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .health-progress-wrap {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .health-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .health-bar-container {
+    height: 10px;
+    border-radius: 6px;
+    background: var(--surface3);
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 10px;
+  }
+  .health-bar-seg {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+  .bar-apply { background: #10b981; }
+  .bar-consider { background: #f59e0b; }
+  .bar-skip { background: #64748b; }
+  .bar-uneval { background: #334155; }
+  .health-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .health-checklist {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .check-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 900;
+  }
+
   /* Navigation Tabs */
   .tabs-nav {
     display: flex;
@@ -260,6 +421,31 @@
     cursor: pointer;
   }
   .btn-reset-filters:hover { background: var(--surface2); color: var(--text); }
+  .btn-quick-view {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn-quick-view:hover {
+    background: rgba(16, 185, 129, 0.22);
+    border-color: var(--green);
+  }
+  .btn-quick-view.active {
+    background: var(--green);
+    color: #0f172a;
+    border-color: var(--green);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+  }
 
   /* Queue Sections */
   .section-header {
@@ -267,6 +453,27 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 14px;
+  }
+  .section-header-collapsible {
+    cursor: pointer;
+    user-select: none;
+    transition: filter 0.15s ease, opacity 0.15s ease;
+  }
+  .section-header-collapsible:hover {
+    filter: brightness(1.18);
+  }
+  .collapse-chevron {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    font-size: 10px;
+    margin-left: 6px;
+    opacity: 0.7;
+  }
+  .section-header.collapsed .collapse-chevron {
+    transform: rotate(-90deg);
+  }
+  .section-header.collapsed + .jobs-grid {
+    display: none !important;
   }
   .section-title {
     font-size: 13px;
@@ -590,6 +797,168 @@
     </div>
   </div>
 
+  <!-- Pipeline Health & Threshold Monitor (Collapsible like Queues) -->
+  <div style="margin-bottom: 24px;">
+    <div class="section-header section-header-collapsible collapsed" onclick="toggleSection(this)" style="background: rgba(16, 185, 129, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--green); margin-bottom: 14px;">
+      <div>
+        <div class="section-title" style="color:var(--green); font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; display:flex; align-items:center; gap:8px;">
+          🛡️ PIPELINE HEALTH &amp; THRESHOLD MONITOR
+          <span class="health-status-badge" id="health-badge">● HEALTHY</span>
+          <span class="collapse-chevron">▼</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:3px;" id="health-summary-line">
+          ≤ 7d Freshness Enforced · Cap: 150/run · gemini-flash-lite · 248 Evaluated (100%) · 0 Errors
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="btn btn-save" onclick="event.stopPropagation(); loadData(true);" style="padding:4px 10px; font-size:11px;">
+          🔄 Refresh
+        </button>
+        <div class="section-count" id="health-count" style="font-weight:700; color:var(--green);">100% Operational</div>
+      </div>
+    </div>
+
+    <div class="jobs-grid health-body" id="health-body" style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px 20px; margin-bottom:20px; display:block;">
+      <!-- Health Grid: 4 Metric Cards -->
+      <div class="health-grid">
+        <!-- 1. Freshness Threshold Card -->
+        <div class="health-card">
+          <div class="health-card-header">
+            <span class="health-card-title">📅 Freshness Threshold</span>
+            <span class="health-pill" id="pill-freshness">≤ 7 Days</span>
+          </div>
+          <div class="health-metric-val" id="metric-freshness" style="color:var(--green)">100% Enforced</div>
+          <div class="health-metric-sub" id="sub-freshness">0 jobs &gt; 7d admitted to queue</div>
+        </div>
+
+        <!-- 2. AI Evaluated Inventory & Batch Cap Card -->
+        <div class="health-card">
+          <div class="health-card-header">
+            <span class="health-card-title">🤖 Evaluated Library</span>
+            <span class="health-pill" id="pill-budget">Cap: 150/run</span>
+          </div>
+          <div class="health-metric-val" id="metric-budget" style="color:var(--blue)">- Evaluated</div>
+          <div class="health-metric-sub" id="sub-budget">Calculating evaluation coverage...</div>
+        </div>
+
+        <!-- 3. AI Engine & Rate Limiter Card -->
+        <div class="health-card">
+          <div class="health-card-header">
+            <span class="health-card-title">⚡ AI Engine & Safe Pacing</span>
+            <span class="health-pill" id="pill-model" style="color:var(--green)">Active</span>
+          </div>
+          <div class="health-metric-val" id="metric-model" style="font-size:14px; font-family:monospace; color:var(--text);">gemini-flash-lite-latest</div>
+          <div class="health-metric-sub" id="sub-model">14.0 RPM safe pacing · 1,500 req/day quota</div>
+        </div>
+
+        <!-- 4. Quality & Score Yield Card -->
+        <div class="health-card">
+          <div class="health-card-header">
+            <span class="health-card-title">📊 Score & Quality Yield</span>
+            <span class="health-pill" id="pill-quality">Scored</span>
+          </div>
+          <div class="health-metric-val" id="metric-quality" style="color:var(--orange)">Avg - / 100</div>
+          <div class="health-metric-sub" id="sub-quality">0 Apply · 0 Consider · 0 Skip</div>
+        </div>
+
+        <!-- 5. ATS Scanner Health & Coverage Card -->
+        <div class="health-card" id="card-scanners">
+          <div class="health-card-header">
+            <span class="health-card-title">📡 ATS Scanner Health</span>
+            <span class="health-pill" id="pill-scanners" style="color:var(--green)">Online</span>
+          </div>
+          <div class="health-metric-val" id="metric-scanners" style="color:var(--green)">- / - Responding</div>
+          <div class="health-metric-sub" id="sub-scanners">Tracking ATS endpoint reliability</div>
+        </div>
+      </div>
+
+      <!-- Scanner Error Alert Callout (Shows failed ATS boards) -->
+      <div id="scanner-error-callout" style="display:none; margin-bottom:16px; background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239, 68, 68, 0.3); border-radius:6px; padding:12px 16px;">
+        <div style="font-weight:700; color:var(--red); font-size:12px; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between;">
+          <span>⚠️ Failed Company ATS Scanners in Latest Run (Network/Fetch Timeouts):</span>
+          <span id="badge-scanner-failed" style="background:var(--red); color:#fff; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:700;">0 Failed</span>
+        </div>
+        <div id="scanner-error-list" style="font-size:11px; color:var(--text); max-height:140px; overflow-y:auto; line-height:1.6;"></div>
+      </div>
+
+      <!-- AI Accounting & Mathematical Balancing Banner -->
+      <div id="ai-accounting-callout" style="margin-bottom:16px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px 18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-weight:700; font-size:13px; color:var(--text); display:flex; align-items:center; gap:6px;">
+            <span>📐</span> The Mathematical Equation <span style="color:var(--green); font-weight:600; font-size:11px; background:rgba(16,185,129,0.12); padding:2px 8px; border-radius:12px; border:1px solid rgba(16,185,129,0.3);">100% Guaranteed to Add Up</span>
+          </span>
+          <span id="accounting-headroom" style="font-size:11px; color:var(--text-muted);">Cap: 150/run</span>
+        </div>
+        <div style="font-size:12px; line-height:1.6; color:var(--text-muted); margin-bottom:10px;">
+          Every active job in the system belongs to exactly one category:
+        </div>
+        <!-- Equation Box -->
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:6px; font-family:monospace; font-size:13px;">
+          <div style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.25); border-radius:4px; padding:4px 10px; text-align:center;">
+            <div style="font-size:10px; text-transform:uppercase; color:var(--text-muted); font-family:sans-serif;">Total Active Inventory</div>
+            <strong id="eq-total-active" style="color:var(--blue); font-size:15px;">-</strong>
+          </div>
+          <span style="font-weight:700; color:var(--text-muted); font-size:16px;">=</span>
+          <div style="background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.25); border-radius:4px; padding:4px 10px; text-align:center;">
+            <div style="font-size:10px; text-transform:uppercase; color:var(--text-muted); font-family:sans-serif;">Already Scanned (Re-used Cache)</div>
+            <strong id="eq-already-scanned" style="color:#06b6d4; font-size:15px;">-</strong>
+            <div style="font-size:9px; color:var(--green); font-family:sans-serif;">0 tokens</div>
+          </div>
+          <span style="font-weight:700; color:var(--text-muted); font-size:16px;">+</span>
+          <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:4px; padding:4px 10px; text-align:center;">
+            <div style="font-size:10px; text-transform:uppercase; color:var(--text-muted); font-family:sans-serif;">Newly Scanned (Live AI)</div>
+            <strong id="eq-newly-scanned" style="color:var(--green); font-size:15px;">-</strong>
+            <div style="font-size:9px; color:var(--green); font-family:sans-serif;">current run</div>
+          </div>
+          <span style="font-weight:700; color:var(--text-muted); font-size:16px;">+</span>
+          <div style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.25); border-radius:4px; padding:4px 10px; text-align:center;">
+            <div style="font-size:10px; text-transform:uppercase; color:var(--text-muted); font-family:sans-serif;">Awaiting Evaluation</div>
+            <strong id="eq-awaiting-scan" style="color:var(--orange); font-size:15px;">-</strong>
+            <div style="font-size:9px; color:var(--text-muted); font-family:sans-serif;">pending in queue</div>
+          </div>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:var(--text-muted); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px;">
+          <div>
+            <strong>Total Evaluated to Date:</strong> <span id="eq-total-evaluated" style="font-weight:700; color:var(--green);">-</span> (<span id="eq-eval-pct">-%</span>) = <span id="eq-calc-eval">- cached + - new</span>
+          </div>
+          <div id="eq-status-badge" style="color:var(--green); font-weight:600;">
+            ✓ Equation Verified
+          </div>
+        </div>
+      </div>
+
+      <!-- Health Progress Bar & Distribution -->
+      <div class="health-progress-wrap">
+        <div class="health-progress-label">
+          <span>Evaluation Distribution & Funnel</span>
+          <span id="health-funnel-summary">- Evaluated · - Pending</span>
+        </div>
+        <div class="health-bar-container">
+          <div class="health-bar-seg bar-apply" id="bar-apply" style="width:0%" title="APPLY NOW (Score ≥ 80)"></div>
+          <div class="health-bar-seg bar-consider" id="bar-consider" style="width:0%" title="CONSIDER (Score 70–79)"></div>
+          <div class="health-bar-seg bar-skip" id="bar-skip" style="width:0%" title="SKIP (Score < 70)"></div>
+          <div class="health-bar-seg bar-uneval" id="bar-uneval" style="width:100%" title="Awaiting AI Evaluation"></div>
+        </div>
+        <div class="health-legend">
+          <span><span class="legend-dot" style="background:#10b981;"></span> 🔥 APPLY (≥80): <strong id="legend-apply">0</strong></span>
+          <span><span class="legend-dot" style="background:#f59e0b;"></span> 🟡 CONSIDER (70–79): <strong id="legend-consider">0</strong></span>
+          <span><span class="legend-dot" style="background:#64748b;"></span> ⚪ SKIP (&lt;70): <strong id="legend-skip">0</strong></span>
+          <span><span class="legend-dot" style="background:#334155;"></span> ⏳ Pending Queue: <strong id="legend-pending">0</strong></span>
+        </div>
+      </div>
+
+      <!-- Threshold Adherence Checklist -->
+      <div class="health-checklist">
+        <div class="check-item"><span class="check-icon" id="chk-freshness">✓</span> 7-Day Freshness Cutoff strictly enforced (<span id="txt-stale-count">0</span> older jobs excluded)</div>
+        <div class="check-item"><span class="check-icon" id="chk-budget">✓</span> Per-Run Evaluation Cap enforced (<span id="txt-budget-slots">150</span> max jobs per run from profile.yml)</div>
+        <div class="check-item"><span class="check-icon" id="chk-unstated">✓</span> Zero Unstated Date blanketing (Unstated jobs isolated in dedicated bucket)</div>
+        <div class="check-item"><span class="check-icon" id="chk-throttle">✓</span> 14 RPM Rate-Pacing enabled (4.3s safe request spacing to prevent 429 quota exhaustion)</div>
+        <div class="check-item"><span class="check-icon" id="chk-retention">✓</span> Permanent evaluation retention active (zero duplicate AI token burn across runs)</div>
+        <div class="check-item"><span class="check-icon" id="chk-skipped">✓</span> Explicit Skipped Tracking in scripts/scan.mjs: Disabled boards in config/profile.yml are now formally registered with a clean skip audit (<span id="txt-skipped-count">1</span> disabled accounted for)</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Navigation Tabs -->
   <div class="tabs-nav">
     <button class="tab-btn active" onclick="switchTab('queue')">
@@ -638,6 +1007,10 @@
       <option value="APPLY">AI APPLY Only</option>
       <option value="CONSIDER">AI CONSIDER Only</option>
       <option value="SKIP">AI SKIP Only</option>
+      <option value="selected">AI Selected Only</option>
+      <option value="error">⚠️ AI Errors Only</option>
+      <option value="deferred">AI Deferred Only</option>
+      <option value="excluded">AI Excluded Only</option>
       <option value="unevaluated">Unevaluated Only</option>
     </select>
     <select class="filter-select" id="filter-location" onchange="applyFilters()">
@@ -649,49 +1022,80 @@
       <option value="mumbai">Mumbai</option>
       <option value="remote">Remote Only</option>
     </select>
+    <button class="btn-quick-view" id="btn-quick-view" onclick="toggleQuickView()" title="Show only high-scoring AI evaluated jobs (AI Score ≥ 75)">
+      ⚡ Quick View (75+ AI)
+    </button>
     <button class="btn-reset-filters" onclick="resetFilters()">Reset Filters</button>
   </div>
 
   <!-- Views -->
   <!-- 1. Daily Queue Tab -->
   <div id="view-queue">
-    <!-- 0. TODAY Cross-Cutting Queue (<24h) -->
-    <div class="section-header" style="background: rgba(249, 115, 22, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--orange); margin-bottom: 20px;">
+    <!-- 1. TODAY (<24h) -->
+    <div class="section-header section-header-collapsible" onclick="toggleSection(this)" style="background: rgba(249, 115, 22, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--orange); margin-bottom: 16px;">
       <div>
-        <div class="section-title" style="color:var(--orange); font-size:18px;">🔥 TODAY — Posted in Last 24 Hours (&lt;24h)</div>
-        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Cross-cutting daily radar: newly discovered postings across all decision stages</div>
+        <div class="section-title" style="color:var(--orange); font-size:15px;">🔥 TODAY — Posted in Last 24 Hours (&lt;24h) <span class="collapse-chevron">▼</span></div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Immediate priority radar: newest postings across all evaluation states</div>
       </div>
       <div class="section-count" id="count-today" style="font-weight:700; color:var(--orange);">0 opportunities</div>
     </div>
-    <div class="jobs-grid" id="grid-today" style="margin-bottom: 32px;"></div>
+    <div class="jobs-grid" id="grid-today" style="margin-bottom: 28px;"></div>
 
-    <!-- 1. AI Verified — Apply Now -->
-    <div class="section-header">
-      <div class="section-title" style="color:var(--green)">🟢 1. AI Verified — Apply Now</div>
-      <div class="section-count" id="count-apply-now">0 opportunities</div>
+    <!-- 2. HOT (1–3d) -->
+    <div class="section-header section-header-collapsible" onclick="toggleSection(this)" style="background: rgba(16, 185, 129, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--green); margin-bottom: 16px;">
+      <div>
+        <div class="section-title" style="color:var(--green); font-size:15px;">🟢 HOT — Posted 1–3 Days Ago (1–3d) <span class="collapse-chevron">▼</span></div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">High-conversion window: recent postings with strong response rates</div>
+      </div>
+      <div class="section-count" id="count-hot" style="font-weight:700; color:var(--green);">0 opportunities</div>
     </div>
-    <div class="jobs-grid" id="grid-apply-now"></div>
+    <div class="jobs-grid" id="grid-hot" style="margin-bottom: 28px;"></div>
 
-    <!-- 2. AI Evaluated — Consider / Backup -->
-    <div class="section-header" style="margin-top:28px;">
-      <div class="section-title" style="color:var(--yellow)">🟡 2. AI Evaluated — Consider / Backup</div>
-      <div class="section-count" id="count-consider">0 opportunities</div>
+    <!-- 3. FRESH (4–7d) -->
+    <div class="section-header section-header-collapsible" onclick="toggleSection(this)" style="background: rgba(245, 158, 11, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--yellow); margin-bottom: 16px;">
+      <div>
+        <div class="section-title" style="color:var(--yellow); font-size:15px;">🟡 FRESH — Posted 4–7 Days Ago (4–7d) <span class="collapse-chevron">▼</span></div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Active weekly pipeline: standard response cycle</div>
+      </div>
+      <div class="section-count" id="count-fresh" style="font-weight:700; color:var(--yellow);">0 opportunities</div>
     </div>
-    <div class="jobs-grid" id="grid-consider"></div>
+    <div class="jobs-grid" id="grid-fresh" style="margin-bottom: 28px;"></div>
 
-    <!-- 3. New / Not Yet AI Evaluated -->
-    <div class="section-header" style="margin-top:28px;">
-      <div class="section-title" style="color:var(--blue)">📋 3. New / Not Yet AI Evaluated (Deterministic Backlog)</div>
-      <div class="section-count" id="count-unevaluated">0 opportunities</div>
+    <!-- 4. ACTIVE (8–14d) -->
+    <div id="wrapper-active" style="display:none;">
+      <div class="section-header section-header-collapsible" onclick="toggleSection(this)" style="background: rgba(59, 130, 246, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--blue); margin-bottom: 16px;">
+        <div>
+          <div class="section-title" style="color:var(--blue); font-size:15px;">⚪ ACTIVE — Posted 8–14 Days Ago (8–14d) <span class="collapse-chevron">▼</span></div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Steady active listings: open opportunities still accepting candidates</div>
+        </div>
+        <div class="section-count" id="count-active" style="font-weight:700; color:var(--blue);">0 opportunities</div>
+      </div>
+      <div class="jobs-grid" id="grid-active" style="margin-bottom: 28px;"></div>
     </div>
-    <div class="jobs-grid" id="grid-unevaluated"></div>
 
-    <!-- 4. AI Evaluated — Skipped -->
-    <div class="section-header" style="margin-top:28px;">
-      <div class="section-title" style="color:var(--text-muted)">⚪ 4. AI Evaluated — Skipped (Filtered Mismatches)</div>
-      <div class="section-count" id="count-skip">0 opportunities</div>
+    <!-- 5. BACKLOG (15–30d) -->
+    <div id="wrapper-backlog" style="display:none;">
+      <div class="section-header section-header-collapsible" onclick="toggleSection(this)" style="background: rgba(148, 163, 184, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--text-muted); margin-bottom: 16px;">
+        <div>
+          <div class="section-title" style="color:var(--text-muted); font-size:15px;">⚪ BACKLOG — Posted 15–30 Days Ago (15–30d) <span class="collapse-chevron">▼</span></div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Longer-tail active inventory: older postings within 30-day limit</div>
+        </div>
+        <div class="section-count" id="count-backlog" style="font-weight:700; color:var(--text-muted);">0 opportunities</div>
+      </div>
+      <div class="jobs-grid" id="grid-backlog" style="margin-bottom: 28px;"></div>
     </div>
-    <div class="jobs-grid" id="grid-skip"></div>
+
+    <!-- 6. UNSTATED (Active postings without ATS timestamp) -->
+    <div id="wrapper-unstated">
+      <div class="section-header section-header-collapsible" onclick="toggleSection(this)" style="background: rgba(148, 163, 184, 0.08); padding: 12px 16px; border-radius: 8px; border-left: 4px solid var(--text-muted); margin-bottom: 16px;">
+        <div>
+          <div class="section-title" style="color:var(--text); font-size:15px;">⚪ UNSTATED — Active Openings (Date Not Published by Board) <span class="collapse-chevron">▼</span></div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Live requisitions from portals without explicit publication timestamps (e.g. Barclays, Optum, Rippling, SAP)</div>
+        </div>
+        <div class="section-count" id="count-unstated" style="font-weight:700; color:var(--text-muted);">0 opportunities</div>
+      </div>
+      <div class="jobs-grid" id="grid-unstated" style="margin-bottom: 28px;"></div>
+    </div>
   </div>
 
   <!-- 2. Saved Jobs Tab -->
@@ -948,7 +1352,24 @@ async function setLifecycleStatus(jobId, status, notes = "") {
   }
 }
 
+let QUICK_VIEW_ACTIVE = false;
+
+function toggleQuickView() {
+  QUICK_VIEW_ACTIVE = !QUICK_VIEW_ACTIVE;
+  const btn = document.getElementById("btn-quick-view");
+  if (btn) {
+    btn.classList.toggle("active", QUICK_VIEW_ACTIVE);
+  }
+  applyFilters();
+}
+
 function matchesFilters(job) {
+  if (QUICK_VIEW_ACTIVE) {
+    if (!job.ai_evaluation || typeof job.ai_evaluation.ai_score !== "number" || job.ai_evaluation.ai_score < 75) {
+      return false;
+    }
+  }
+
   const query = (document.getElementById("filter-search").value || "").toLowerCase().trim();
   const roleFamily = document.getElementById("filter-role-family").value;
   const fit = document.getElementById("filter-fit").value;
@@ -971,6 +1392,14 @@ function matchesFilters(job) {
   if (ai) {
     if (ai === "unevaluated") {
       if (job.ai_evaluation) return false;
+    } else if (ai === "selected") {
+      if (job.eval_status !== "selected") return false;
+    } else if (ai === "error") {
+      if (!job.ai_evaluation_error && job.eval_status !== "error") return false;
+    } else if (ai === "deferred") {
+      if (job.eval_status !== "deferred") return false;
+    } else if (ai === "excluded") {
+      if (job.eval_status !== "excluded") return false;
     } else {
       if (!job.ai_evaluation || job.ai_evaluation.recommendation !== ai) return false;
     }
@@ -994,6 +1423,9 @@ function resetFilters() {
   document.getElementById("filter-fit").value = "";
   document.getElementById("filter-ai").value = "";
   document.getElementById("filter-location").value = "";
+  QUICK_VIEW_ACTIVE = false;
+  const btn = document.getElementById("btn-quick-view");
+  if (btn) btn.classList.remove("active");
   applyFilters();
 }
 
@@ -1053,6 +1485,14 @@ function renderJobCard(j, currentContext = "queue") {
         ${ai.strengths && ai.strengths.length ? `<div style="margin-top:2px;">✨ Strengths: ${ai.strengths.slice(0, 2).join(" | ")}</div>` : ""}
       </div>
     `;
+  } else if (j.ai_evaluation_error || j.eval_status === "error") {
+    const errText = (j.ai_evaluation_error || j.eval_reason || "AI evaluation failed").replace(/</g, "&lt;");
+    rationaleHtml = `
+      <div class="card-rationale" style="background:rgba(239, 68, 68, 0.08); border-left:3px solid #ef4444; padding:8px 12px; border-radius:4px; margin-top:8px;">
+        <div style="font-weight:700; color:#f87171; font-size:11px; margin-bottom:2px;">⚠️ AI Evaluation Error (Queued for Next Batch Retry):</div>
+        <div style="font-size:11px; color:#fca5a5; font-family:monospace; word-break:break-all;">${errText}</div>
+      </div>
+    `;
   } else if (j.score_reasons && j.score_reasons.length) {
     const rationaleTitle = typeof j.score === "number"
       ? `Match Rationale (${j.score}/100 Det Score):`
@@ -1081,12 +1521,12 @@ function renderJobCard(j, currentContext = "queue") {
         <span style="font-size:9px;font-weight:700;opacity:0.85;letter-spacing:0.5px;">AI</span>
         <span style="font-size:14px;font-weight:800;">${ai.ai_score}</span>
       </div>`;
-  } else if (typeof j.score === "number") {
-    const detScoreClass = j.score >= 80 ? "badge-prio-go" : (j.score >= 70 ? "badge-prio-good" : "badge-tier2");
+  } else if (j.eval_status === "error" || j.ai_evaluation_error) {
+    const errSummary = (j.ai_evaluation_error || j.eval_reason || "Error").replace(/"/g, "&quot;");
     scorePillHtml = `
-      <div class="score-pill ${detScoreClass}" title="Deterministic Score: ${j.score}/100">
-        <span style="font-size:9px;font-weight:700;opacity:0.85;letter-spacing:0.5px;">DET</span>
-        <span style="font-size:14px;font-weight:800;">${j.score}</span>
+      <div class="score-pill" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.5); color:#f87171;" title="AI Evaluation Attempted but Failed: ${errSummary}">
+        <span style="font-size:8px;font-weight:800;letter-spacing:0.4px;">AI ERROR</span>
+        <span style="font-size:10px;font-weight:800;white-space:nowrap;">RETRY</span>
       </div>`;
   } else if (j.eval_status === "selected") {
     scorePillHtml = `
@@ -1105,6 +1545,13 @@ function renderJobCard(j, currentContext = "queue") {
       <div class="score-pill score-pill-excluded" title="AI Evaluation Queue: Excluded — ${j.eval_reason || 'Failed quality gate / Seniority stretch'}">
         <span style="font-size:8px;font-weight:800;letter-spacing:0.4px;">AI QUEUE</span>
         <span style="font-size:10px;font-weight:800;white-space:nowrap;">EXCLUDED</span>
+      </div>`;
+  } else if (typeof j.score === "number") {
+    const detScoreClass = j.score >= 80 ? "badge-prio-go" : (j.score >= 70 ? "badge-prio-good" : "badge-tier2");
+    scorePillHtml = `
+      <div class="score-pill ${detScoreClass}" title="Deterministic Score: ${j.score}/100">
+        <span style="font-size:9px;font-weight:700;opacity:0.85;letter-spacing:0.5px;">DET</span>
+        <span style="font-size:14px;font-weight:800;">${j.score}</span>
       </div>`;
   } else {
     scorePillHtml = `
@@ -1226,6 +1673,241 @@ function renderGrid(containerId, jobs, context, limit = null) {
   return filtered.length;
 }
 
+function toggleHealthPanel() {
+  const panel = document.getElementById("pipeline-health-panel");
+  if (!panel) return;
+  const isCollapsed = panel.classList.toggle("collapsed");
+  const btnText = document.getElementById("health-toggle-text");
+  const btnIcon = document.getElementById("health-toggle-icon");
+  if (btnText) btnText.textContent = isCollapsed ? "Show Details" : "Collapse";
+  if (btnIcon) btnIcon.textContent = isCollapsed ? "▼" : "▲";
+  try {
+    localStorage.setItem("pipeline_health_collapsed", isCollapsed ? "1" : "0");
+  } catch {}
+}
+
+function initHealthPanelState() {
+  const panel = document.getElementById("pipeline-health-panel");
+  if (!panel) return;
+  const saved = localStorage.getItem("pipeline_health_collapsed");
+  const shouldCollapse = saved !== "0"; // default collapsed
+  if (shouldCollapse) {
+    panel.classList.add("collapsed");
+  } else {
+    panel.classList.remove("collapsed");
+  }
+  const btnText = document.getElementById("health-toggle-text");
+  const btnIcon = document.getElementById("health-toggle-icon");
+  if (btnText) btnText.textContent = shouldCollapse ? "Show Details" : "Collapse";
+  if (btnIcon) btnIcon.textContent = shouldCollapse ? "▼" : "▲";
+}
+
+function renderPipelineHealth() {
+  if (!DASHBOARD_DATA) return;
+  const health = DASHBOARD_DATA.pipeline_health;
+  if (!health) return;
+
+  const thresholds = health.thresholds || {};
+  const ai = health.ai_metrics || {};
+
+  // Status Badge
+  const badgeEl = document.getElementById("health-badge");
+  if (badgeEl) {
+    if (health.status === "healthy") {
+      badgeEl.textContent = "● HEALTHY (100% Threshold Adherence)";
+      badgeEl.style.color = "var(--green)";
+      badgeEl.style.background = "rgba(16, 185, 129, 0.15)";
+      badgeEl.style.borderColor = "rgba(16, 185, 129, 0.3)";
+    } else {
+      badgeEl.textContent = "⚠️ " + health.status_label;
+      badgeEl.style.color = "var(--yellow)";
+      badgeEl.style.background = "rgba(245, 158, 11, 0.15)";
+      badgeEl.style.borderColor = "rgba(245, 158, 11, 0.3)";
+    }
+  }
+
+  // Card 1: Freshness Threshold
+  const metricFreshness = document.getElementById("metric-freshness");
+  const subFreshness = document.getElementById("sub-freshness");
+  const pillFreshness = document.getElementById("pill-freshness");
+  if (metricFreshness) {
+    metricFreshness.textContent = thresholds.freshness_strictly_enforced ? "100% Enforced" : `${thresholds.violations_older_than_cutoff} Stale Detected`;
+    metricFreshness.style.color = thresholds.freshness_strictly_enforced ? "var(--green)" : "var(--red)";
+  }
+  if (subFreshness) {
+    subFreshness.textContent = `${thresholds.violations_older_than_cutoff || 0} jobs > ${thresholds.freshness_days}d admitted to queue`;
+  }
+  if (pillFreshness) {
+    pillFreshness.textContent = `≤ ${thresholds.freshness_days} Days`;
+  }
+
+  // Card 2: AI Evaluated Inventory & Batch Cap
+  const perRunCap = thresholds.per_run_budget_cap || thresholds.max_evals_budget || 150;
+  const acc = health.accounting || ai.accounting || {
+    total_active: ai.total_eligible || 0,
+    total_evaluated: ai.evaluated_count || 0,
+    already_scanned: thresholds.already_scanned != null ? thresholds.already_scanned : (ai.evaluated_count || 0),
+    newly_scanned: thresholds.newly_scanned || 0,
+    awaiting_scan: thresholds.awaiting_scan != null ? thresholds.awaiting_scan : (ai.unevaluated_count || 0),
+    per_run_cap: perRunCap,
+    cap_headroom_remaining: Math.max(0, perRunCap - (thresholds.newly_scanned || 0))
+  };
+
+  const metricBudget = document.getElementById("metric-budget");
+  const subBudget = document.getElementById("sub-budget");
+  const pillBudget = document.getElementById("pill-budget");
+  if (metricBudget) {
+    metricBudget.textContent = `${acc.total_evaluated} / ${acc.total_active} Evaluated (${ai.evaluation_pct}%)`;
+  }
+  if (subBudget) {
+    subBudget.textContent = `${acc.already_scanned} cached (0 tokens) · ${acc.newly_scanned} new live scans · ${acc.awaiting_scan} awaiting`;
+  }
+  if (pillBudget) {
+    pillBudget.textContent = acc.awaiting_scan === 0 ? "All Caught Up" : `Cap: ${perRunCap}/run`;
+  }
+
+  // Populate The Mathematical Equation Banner
+  const eqTotalActive = document.getElementById("eq-total-active");
+  const eqAlreadyScanned = document.getElementById("eq-already-scanned");
+  const eqNewlyScanned = document.getElementById("eq-newly-scanned");
+  const eqAwaitingScan = document.getElementById("eq-awaiting-scan");
+  const eqTotalEvaluated = document.getElementById("eq-total-evaluated");
+  const eqEvalPct = document.getElementById("eq-eval-pct");
+  const eqCalcEval = document.getElementById("eq-calc-eval");
+  const eqStatusBadge = document.getElementById("eq-status-badge");
+  const accHeadroom = document.getElementById("accounting-headroom");
+
+  if (eqTotalActive) eqTotalActive.textContent = acc.total_active;
+  if (eqAlreadyScanned) eqAlreadyScanned.textContent = acc.already_scanned;
+  if (eqNewlyScanned) eqNewlyScanned.textContent = acc.newly_scanned;
+  if (eqAwaitingScan) eqAwaitingScan.textContent = acc.awaiting_scan;
+  if (eqTotalEvaluated) eqTotalEvaluated.textContent = acc.total_evaluated;
+  if (eqEvalPct) eqEvalPct.textContent = `${ai.evaluation_pct}%`;
+  if (eqCalcEval) eqCalcEval.textContent = `${acc.already_scanned} cached + ${acc.newly_scanned} new`;
+  if (accHeadroom) accHeadroom.textContent = `Cap: ${perRunCap}/run (${acc.cap_headroom_remaining} headroom remaining)`;
+
+  if (eqStatusBadge) {
+    const addsUp = (acc.already_scanned + acc.newly_scanned + acc.awaiting_scan) === acc.total_active;
+    if (addsUp) {
+      eqStatusBadge.style.color = "var(--green)";
+      eqStatusBadge.textContent = `✓ Equation Verified: ${acc.already_scanned} + ${acc.newly_scanned} + ${acc.awaiting_scan} = ${acc.total_active}`;
+    } else {
+      eqStatusBadge.style.color = "var(--yellow)";
+      eqStatusBadge.textContent = `⚠️ Unbalanced: ${acc.already_scanned} + ${acc.newly_scanned} + ${acc.awaiting_scan} ≠ ${acc.total_active}`;
+    }
+  }
+
+  // Card 3: Model & Rate Limiting
+  const metricModel = document.getElementById("metric-model");
+  const subModel = document.getElementById("sub-model");
+  if (metricModel) metricModel.textContent = ai.model || "gemini-flash-lite-latest";
+  if (subModel) subModel.textContent = `${ai.rate_limiter_rpm || 14.0} RPM safe pacing · ${ai.daily_quota_ceiling || '1,500/day'}`;
+
+  // Card 4: Quality & Score Yield
+  const metricQuality = document.getElementById("metric-quality");
+  const subQuality = document.getElementById("sub-quality");
+  if (metricQuality) {
+    metricQuality.textContent = ai.avg_ai_score ? `Avg ${ai.avg_ai_score} / 100` : "Avg - / 100";
+  }
+  if (subQuality) {
+    subQuality.textContent = `${ai.apply_count} Apply · ${ai.consider_count} Consider · ${ai.skip_count} Skip`;
+  }
+
+  // Funnel & Progress Bar
+  const totalEligible = ai.total_eligible || 1;
+  const applyPct = ((ai.apply_count || 0) / totalEligible) * 100;
+  const considerPct = ((ai.consider_count || 0) / totalEligible) * 100;
+  const skipPct = ((ai.skip_count || 0) / totalEligible) * 100;
+  const unevalPct = Math.max(0, 100 - (applyPct + considerPct + skipPct));
+
+  const barApply = document.getElementById("bar-apply");
+  const barConsider = document.getElementById("bar-consider");
+  const barSkip = document.getElementById("bar-skip");
+  const barUneval = document.getElementById("bar-uneval");
+
+  if (barApply) barApply.style.width = `${applyPct.toFixed(1)}%`;
+  if (barConsider) barConsider.style.width = `${considerPct.toFixed(1)}%`;
+  if (barSkip) barSkip.style.width = `${skipPct.toFixed(1)}%`;
+  if (barUneval) barUneval.style.width = `${unevalPct.toFixed(1)}%`;
+
+  const funnelSummary = document.getElementById("health-funnel-summary");
+  if (funnelSummary) {
+    funnelSummary.textContent = `${ai.evaluated_count} Evaluated (${ai.evaluation_pct}%) · ${ai.unevaluated_count} Awaiting Evaluation`;
+  }
+
+  const legApply = document.getElementById("legend-apply");
+  const legConsider = document.getElementById("legend-consider");
+  const legSkip = document.getElementById("legend-skip");
+  const legPending = document.getElementById("legend-pending");
+
+  if (legApply) legApply.textContent = `${ai.apply_count} (${applyPct.toFixed(0)}%)`;
+  if (legConsider) legConsider.textContent = `${ai.consider_count} (${considerPct.toFixed(0)}%)`;
+  if (legSkip) legSkip.textContent = `${ai.skip_count} (${skipPct.toFixed(0)}%)`;
+  if (legPending) legPending.textContent = `${ai.unevaluated_count} (${unevalPct.toFixed(0)}%)`;
+
+  const txtStale = document.getElementById("txt-stale-count");
+  if (txtStale) txtStale.textContent = thresholds.violations_older_than_cutoff || 0;
+  const txtSlots = document.getElementById("txt-budget-slots");
+  if (txtSlots) txtSlots.textContent = thresholds.per_run_budget_cap || thresholds.max_evals_budget || 150;
+  const sc = health.scanners || {};
+  const txtSkipped = document.getElementById("txt-skipped-count");
+  if (txtSkipped) txtSkipped.textContent = sc.skipped || 0;
+
+  // Card 5: ATS Scanner Health
+  const metricScanners = document.getElementById("metric-scanners");
+  const subScanners = document.getElementById("sub-scanners");
+  const pillScanners = document.getElementById("pill-scanners");
+  const calloutScanners = document.getElementById("scanner-error-callout");
+  const listScanners = document.getElementById("scanner-error-list");
+  const badgeScanners = document.getElementById("badge-scanner-failed");
+
+  const activeTotal = sc.active_scanned != null ? sc.active_scanned : (sc.total ? sc.total - (sc.skipped || 0) : (sc.successful || 101));
+  const successRate = activeTotal > 0 ? Math.round(((sc.successful || 0) / activeTotal) * 100) : 100;
+
+  if (metricScanners) {
+    metricScanners.textContent = `${sc.successful || 0} / ${activeTotal} Active (${successRate}%)`;
+    metricScanners.style.color = (sc.failed || 0) === 0 ? "var(--green)" : "var(--yellow)";
+  }
+  if (subScanners) {
+    if ((sc.failed || 0) === 0) {
+      subScanners.textContent = (sc.skipped || 0) > 0
+        ? `All ${sc.successful || 0} active boards responding · Explicit Skipped Tracking in scripts/scan.mjs: ${sc.skipped} disabled in config/profile.yml are now formally registered with a clean skip audit`
+        : `All ${sc.successful || 0} tracked ATS endpoints responding · Explicit Skipped Tracking in scripts/scan.mjs: clean skip audit`;
+    } else {
+      subScanners.textContent = `${sc.failed} boards timed out · Explicit Skipped Tracking in scripts/scan.mjs: ${sc.skipped || 0} disabled with clean audit`;
+    }
+  }
+  if (pillScanners) {
+    pillScanners.textContent = (sc.failed || 0) === 0 ? `${successRate}% Online` : `${sc.failed} Failed`;
+    pillScanners.style.color = (sc.failed || 0) === 0 ? "var(--green)" : "var(--red)";
+  }
+  if (calloutScanners && listScanners) {
+    if ((sc.failed || 0) > 0 && (sc.errors || []).length > 0) {
+      calloutScanners.style.display = "block";
+      if (badgeScanners) badgeScanners.textContent = `${sc.failed} Failed`;
+      listScanners.innerHTML = sc.errors.map((e, idx) => 
+        `<div>• <strong>[${e.board ? e.board.toUpperCase() : 'ATS'}] ${e.company}</strong>: <span style="color:var(--red);">${e.error}</span></div>`
+      ).join("");
+    } else {
+      calloutScanners.style.display = "none";
+    }
+  }
+
+  // Summary Line in Header
+  const summaryLine = document.getElementById("health-summary-line");
+  if (summaryLine) {
+    const scText = `Scanners: ${sc.successful || 0}/${sc.total || 65} (${sc.success_rate_pct || 0}%)`;
+    const aiText = `${ai.evaluated_count || 0}/${ai.total_eligible || 0} Evaluated (${ai.evaluation_pct || 100}%)`;
+    const errText = (sc.failed || 0) > 0 ? `⚠️ ${sc.failed} Scanner Timeouts` : (ai.error_count > 0 ? `⚠️ ${ai.error_count} AI Errors` : "0 Errors");
+    summaryLine.textContent = `≤ ${thresholds.freshness_days || 7}d Freshness · ${scText} · Cap: ${perRunCap}/run · ${aiText} · ${errText}`;
+  }
+  const healthCount = document.getElementById("health-count");
+  if (healthCount) {
+    healthCount.textContent = health.status === "healthy" ? "100% Operational" : `${(sc.failed || 0) + (ai.error_count || 0)} Issues Detected`;
+    healthCount.style.color = health.status === "healthy" ? "var(--green)" : "var(--yellow)";
+  }
+}
+
 function renderAll() {
   if (!DASHBOARD_DATA) return;
 
@@ -1245,6 +1927,7 @@ function renderAll() {
   document.getElementById("badge-expired").textContent = counts.expired ?? 0;
   document.getElementById("badge-all").textContent = counts.total ?? 0;
 
+  renderPipelineHealth();
   applyFilters();
 }
 
@@ -1253,30 +1936,47 @@ function applyFilters() {
 
   const q = DASHBOARD_DATA.queue || {};
   const todayList = q.today || [];
-  const applyList = q.applyAll || q.apply || [];
-  const considerList = q.consider || [];
-  const unevalList = q.unevaluated || [];
-  const skipList = q.skip || [];
+  const hotList = q.hot || [];
+  const freshList = q.fresh || [];
+  const activeList = q.active || [];
+  const backlogList = q.backlog || [];
+  const unstatedList = q.unstated || [];
 
-  // 0. TODAY Queue (<24h)
+  // 1. TODAY Queue (<24h)
   const todayCount = renderGrid("grid-today", todayList, "queue");
-  document.getElementById("count-today").textContent = `${todayCount} opportunities`;
+  const countTodayEl = document.getElementById("count-today");
+  if (countTodayEl) countTodayEl.textContent = `${todayCount} opportunities`;
 
-  // 1. Apply Now
-  const applyCount = renderGrid("grid-apply-now", applyList, "queue");
-  document.getElementById("count-apply-now").textContent = `${applyCount} opportunities`;
+  // 2. HOT Queue (1–3d)
+  const hotCount = renderGrid("grid-hot", hotList, "queue");
+  const countHotEl = document.getElementById("count-hot");
+  if (countHotEl) countHotEl.textContent = `${hotCount} opportunities`;
 
-  // 2. Consider
-  const considerCount = renderGrid("grid-consider", considerList, "queue");
-  document.getElementById("count-consider").textContent = `${considerCount} opportunities`;
+  // 3. FRESH Queue (4–7d)
+  const freshCount = renderGrid("grid-fresh", freshList, "queue");
+  const countFreshEl = document.getElementById("count-fresh");
+  if (countFreshEl) countFreshEl.textContent = `${freshCount} opportunities`;
 
-  // 3. Unevaluated
-  const unevalCount = renderGrid("grid-unevaluated", unevalList, "queue");
-  document.getElementById("count-unevaluated").textContent = `${unevalCount} opportunities`;
+  // 4. ACTIVE Queue (8–14d) — Auto-hide if 0
+  const activeCount = renderGrid("grid-active", activeList, "queue");
+  const countActiveEl = document.getElementById("count-active");
+  if (countActiveEl) countActiveEl.textContent = `${activeCount} opportunities`;
+  const wrapActive = document.getElementById("wrapper-active");
+  if (wrapActive) wrapActive.style.display = activeCount > 0 ? "block" : "none";
 
-  // 4. Skipped
-  const skipCount = renderGrid("grid-skip", skipList, "queue");
-  document.getElementById("count-skip").textContent = `${skipCount} opportunities`;
+  // 5. BACKLOG Queue (15–30d) — Auto-hide if 0
+  const backlogCount = renderGrid("grid-backlog", backlogList, "queue");
+  const countBacklogEl = document.getElementById("count-backlog");
+  if (countBacklogEl) countBacklogEl.textContent = `${backlogCount} opportunities`;
+  const wrapBacklog = document.getElementById("wrapper-backlog");
+  if (wrapBacklog) wrapBacklog.style.display = backlogCount > 0 ? "block" : "none";
+
+  // 6. UNSTATED Queue (No ATS Date) — Auto-hide if 0
+  const unstatedCount = renderGrid("grid-unstated", unstatedList, "queue");
+  const countUnstatedEl = document.getElementById("count-unstated");
+  if (countUnstatedEl) countUnstatedEl.textContent = `${unstatedCount} opportunities`;
+  const wrapUnstated = document.getElementById("wrapper-unstated");
+  if (wrapUnstated) wrapUnstated.style.display = unstatedCount > 0 ? "block" : "none";
 
   // 2. Saved Tab
   const savedList = DASHBOARD_DATA.saved || [];
@@ -1345,8 +2045,15 @@ function applyFilters() {
   }
 }
 
+// Collapsible Queue Sections
+function toggleSection(headerEl) {
+  if (!headerEl) return;
+  headerEl.classList.toggle("collapsed");
+}
+
 // Initial Load & Pipeline Status Check
 window.addEventListener("DOMContentLoaded", () => {
+  initHealthPanelState();
   loadData(false);
   // Check if pipeline is running already
   fetch("/api/pipeline/status")

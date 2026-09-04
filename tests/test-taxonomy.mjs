@@ -238,21 +238,37 @@ for (const tc of hardwareTestCases) {
 
 console.log("\n=== Running DevOps, SRE & Intern/Trainee Exclusion Regression Suite ===");
 const devopsAndInternTestCases = [
-  // ── DevOps / SRE Exclusions (Must be rejected by hard_excluded_devops_sre) ──
+  // ── DevOps / SRE Exclusions (Must be rejected by hard_excluded_devops_sre or hard_excluded_seniority) ──
   { title: "DevOps Engineer", expGate: "hard_excluded_devops_sre" },
   { title: "Senior DevOps Engineer", expGate: "hard_excluded_devops_sre" },
-  { title: "Staff DevOps Engineer", expGate: "hard_excluded_devops_sre" },
-  { title: "Principal DevOps Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Staff DevOps Engineer", expGate: "hard_excluded_seniority" },
+  { title: "Principal DevOps Engineer", expGate: "hard_excluded_seniority" },
   { title: "Site Reliability Engineer", expGate: "hard_excluded_devops_sre" },
   { title: "Senior Site Reliability Engineer", expGate: "hard_excluded_devops_sre" },
-  { title: "Staff Site Reliability Engineer", expGate: "hard_excluded_devops_sre" },
+  { title: "Staff Site Reliability Engineer", expGate: "hard_excluded_seniority" },
   { title: "SRE", expGate: "hard_excluded_devops_sre" },
-  { title: "Lead SRE", expGate: "hard_excluded_devops_sre" },
-  { title: "Staff SRE for Cloud Network Infrastructure Team", expGate: "hard_excluded_devops_sre" },
-  { title: "Staff Site Reliability Engineer - Ecosystem", expGate: "hard_excluded_devops_sre" },
-  { title: "Staff SRE for K8s Platform Team", expGate: "hard_excluded_devops_sre" },
+  { title: "Lead SRE", expGate: "hard_excluded_seniority" },
+  { title: "Staff SRE for Cloud Network Infrastructure Team", expGate: "hard_excluded_seniority" },
+  { title: "Staff Site Reliability Engineer - Ecosystem", expGate: "hard_excluded_seniority" },
+  { title: "Staff SRE for K8s Platform Team", expGate: "hard_excluded_seniority" },
   { title: "DevSecOps Engineer", expGate: "hard_excluded_devops_sre" },
   { title: "Senior DevSecOps Engineer", expGate: "hard_excluded_devops_sre" },
+
+  // ── Seniority Overlevel Exclusions (Staff, Principal, Architect, Fellow, Lead, Consultant, Specialist, Expert, Advisory) ──
+  { title: "Staff Software Engineer", expGate: "hard_excluded_seniority" },
+  { title: "Principal Software Engineer", expGate: "hard_excluded_seniority" },
+  { title: "Enterprise Architect", expGate: "hard_excluded_seniority" },
+  { title: "AI/ML Solutions Architect", expGate: "hard_excluded_seniority" },
+  { title: "AI/ML ASIC Architect", expGate: "hard_excluded_seniority" },
+  { title: "Distinguished Engineer", expGate: "hard_excluded_seniority" },
+  { title: "Engineering Fellow", expGate: "hard_excluded_seniority" },
+  { title: "Lead Software Engineer", expGate: "hard_excluded_seniority" },
+  { title: "Tech Lead - Backend", expGate: "hard_excluded_seniority" },
+  { title: "Data Science Leader, Domain Models", expGate: "hard_excluded_seniority" },
+  { title: "Application Consultant - Cloud", expGate: "hard_excluded_seniority" },
+  { title: "AI Specialist - Cloud FullStack", expGate: "hard_excluded_seniority" },
+  { title: "Machine Learning Engineer Expert", expGate: "hard_excluded_seniority" },
+  { title: "Advisory Software Engineer", expGate: "hard_excluded_seniority" },
 
   // ── Intern / Trainee Exclusions (Must be rejected by hard_excluded_intern) ──
   { title: "Intern", expGate: "hard_excluded_intern" },
@@ -273,7 +289,7 @@ const devopsAndInternTestCases = [
   // ── Platform, Cloud & Infrastructure Roles (Must be RETAINED / Eligible) ──
   { title: "Platform Engineer", expGate: "passed_primary" },
   { title: "Senior Platform Engineer", expGate: "passed_primary" },
-  { title: "Staff Platform Engineer", expGate: "passed_stretch" },
+  { title: "Staff Platform Engineer", expGate: "hard_excluded_seniority" },
   { title: "Cloud Engineer", expGate: "passed_primary" },
   { title: "Cloud Software Engineer", expGate: "passed_primary" },
   { title: "Infrastructure Engineer", expGate: "passed_primary" },
@@ -281,9 +297,29 @@ const devopsAndInternTestCases = [
   { title: "Software Engineer, Platform", expGate: "passed_primary" },
   { title: "Backend Engineer - Infrastructure", expGate: "passed_primary" },
   { title: "Senior Software Development Engineer, Core Infrastructure", expGate: "passed_primary" },
-  { title: "Staff Design System Engineer (UI Foundation)", expGate: "passed_stretch" },
+  { title: "Staff Design System Engineer (UI Foundation)", expGate: "hard_excluded_seniority" },
   { title: "Software Engineer - Internal Tools", expGate: "passed_primary" },
-  { title: "Intermediate Software Engineer", expGate: "passed_primary" }
+  { title: "Intermediate Software Engineer", expGate: "passed_primary" },
+
+  // ── Forward Deployed Engineering Roles (Must be RETAINED as Primary) ──
+  { title: "Forward Deployed Engineer", expGate: "passed_primary" },
+  { title: "Forward Deployed Software Engineer", expGate: "passed_primary" },
+  { title: "Forward Deployed AI Engineer", expGate: "passed_primary" },
+  { title: "Forward Deployed Engineer - AI/ML", expGate: "passed_primary" },
+  { title: "Forward Deployed Application/ML Engineering Expert", expGate: "passed_primary" },
+  { title: "Lead Forward Deployed Engineer", expGate: "hard_excluded_seniority" },
+  { title: "Forward Deployed Engineering Manager", expGate: "hard_excluded_mgmt" },
+
+  // ── Mobile & UX / Design Exclusions (Must be dropped) ──
+  { title: "Software Engineer III - Mobile Developer", expGate: "hard_excluded_mobile" },
+  { title: "Senior Software Engineer (Android)", expGate: "hard_excluded_mobile" },
+  { title: "iOS Developer", expGate: "hard_excluded_mobile" },
+  { title: "React Native Developer", expGate: "hard_excluded_mobile" },
+  { title: "Flutter Engineer", expGate: "hard_excluded_mobile" },
+  { title: "Sr UX Designer - Advanced AI", expGate: "hard_excluded_nontech" },
+  { title: "Product Design Lead, Platform Tools", expGate: "hard_excluded_seniority" },
+  { title: "Designer, Web, Presence & Platform", expGate: "hard_excluded_nontech" },
+  { title: "UI/UX Designer", expGate: "hard_excluded_nontech" }
 ];
 
 const mockConfig = {
@@ -312,6 +348,109 @@ for (const tc of devopsAndInternTestCases) {
 
 const totalTests = auditTestCases.length + hardwareTestCases.length + devopsAndInternTestCases.length;
 console.log(`\n🎉 All ${passedCount + hwPassed + devopsInternPassed} / ${totalTests} regression tests passed successfully!\n`);
+
+// ── Experience Threshold & Stretch Regression Suite ──────────────────────────
+console.log("=== Running Experience Threshold & Stretch Regression Suite ===");
+const expThresholdTestCases = [
+  // Primary (<= 3 YOE or 2-4 target window)
+  { expText: "2-3 years of experience in backend development", expGate: "passed_primary", isStretch: false },
+  { expText: "3+ years of experience in distributed systems", expGate: "passed_primary", isStretch: false },
+  { expText: "1 to 3 yrs of experience in fullstack", expGate: "passed_primary", isStretch: false },
+
+  // Stretch (4 YOE)
+  { expText: "4-5 years of experience in software engineering", expGate: "passed_stretch", isStretch: true },
+  { expText: "4+ years of relevant experience", expGate: "passed_stretch", isStretch: true },
+  { expText: "4 to 6 years of experience", expGate: "passed_stretch", isStretch: true }, // min is 4 -> stretch
+
+  // Hard Excluded (> 4 YOE)
+  { expText: "5+ years of software development experience", expGate: "experience_mismatch", isStretch: false },
+  { expText: "6+ years of experience", expGate: "experience_mismatch", isStretch: false },
+  { expText: "7-10 years of experience in Java", expGate: "experience_mismatch", isStretch: false },
+  { expText: "8+ years of experience building platforms", expGate: "experience_mismatch", isStretch: false },
+  { expText: "10-15 years of industry experience", expGate: "experience_mismatch", isStretch: false },
+  { expText: "12+ yrs experience", expGate: "experience_mismatch", isStretch: false }
+];
+
+let expThresholdPassed = 0;
+for (const tc of expThresholdTestCases) {
+  const job = {
+    title: "Software Development Engineer",
+    location: "Bangalore, India",
+    posted_at: new Date().toISOString(),
+    _experienceText: tc.expText
+  };
+  const result = classifyJob(job, mockConfig);
+  assert.strictEqual(
+    result.gate,
+    tc.expGate,
+    `Experience gate mismatch for "${tc.expText}" (got ${result.gate}, expected ${tc.expGate})`
+  );
+  if (result.gate.startsWith("passed_")) {
+    assert.strictEqual(
+      result.is_stretch,
+      tc.isStretch,
+      `is_stretch mismatch for "${tc.expText}" (got ${result.is_stretch}, expected ${tc.isStretch})`
+    );
+  }
+  console.log(`✅ Passed: [${tc.expText}] -> ${result.gate} (is_stretch: ${result.is_stretch ?? false})`);
+  expThresholdPassed++;
+}
+
+console.log(`\n🎉 All ${expThresholdPassed} Experience Threshold regression tests passed successfully!\n`);
+
+// ── Configurable Overrides Regression Suite ──────────────────────────────────
+console.log("=== Running Configurable Overrides Regression Suite ===");
+{
+  const customConfig = {
+    locations: ["Bangalore"],
+    maxExperienceYears: 8,
+    stretchMinExperienceYears: 5,
+    excludedSeniorityLevels: ["principal", "director"]
+  };
+
+  // 1. Staff is NOT excluded when excludedSeniorityLevels does not include "staff"
+  const staffJob = {
+    title: "Staff Software Engineer",
+    location: "Bangalore",
+    posted_at: new Date().toISOString(),
+    _experienceText: "4 years experience"
+  };
+  const staffRes = classifyJob(staffJob, customConfig);
+  assert.strictEqual(staffRes.gate, "passed_primary", "Staff passes as primary when not excluded in custom config and < 5 YOE");
+
+  // 2. Principal IS excluded when excludedSeniorityLevels includes "principal"
+  const princJob = {
+    title: "Principal Software Engineer",
+    location: "Bangalore",
+    posted_at: new Date().toISOString(),
+    _experienceText: "4 years experience"
+  };
+  const princRes = classifyJob(princJob, customConfig);
+  assert.strictEqual(princRes.gate, "hard_excluded_seniority", "Principal is hard excluded by custom config");
+
+  // 3. 6 YOE passes as stretch when maxExperienceYears is 8 and stretchMinExperienceYears is 5
+  const exp6Job = {
+    title: "Senior Backend Engineer",
+    location: "Bangalore",
+    posted_at: new Date().toISOString(),
+    _experienceText: "6 years experience"
+  };
+  const exp6Res = classifyJob(exp6Job, customConfig);
+  assert.strictEqual(exp6Res.gate, "passed_stretch", "6 YOE passes as stretch when maxExp is 8 and stretchMin is 5");
+  assert.strictEqual(exp6Res.is_stretch, true);
+
+  // 4. 9 YOE is hard excluded when maxExperienceYears is 8
+  const exp9Job = {
+    title: "Senior Backend Engineer",
+    location: "Bangalore",
+    posted_at: new Date().toISOString(),
+    _experienceText: "9 years experience"
+  };
+  const exp9Res = classifyJob(exp9Job, customConfig);
+  assert.strictEqual(exp9Res.gate, "experience_mismatch", "9 YOE is hard excluded when maxExp is 8");
+
+  console.log("  ✅ Passed: Dynamic config overrides for seniority levels and experience boundaries verified");
+}
 
 // ── Freshness & Age Taxonomy Regression Suite ────────────────────────────────
 import { getFreshnessInfo } from "../scripts/taxonomy.mjs";

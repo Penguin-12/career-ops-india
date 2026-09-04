@@ -10,6 +10,8 @@
  * - Source Type: employer_careers
  */
 
+import { fetchWithRetry } from "./http.mjs";
+
 export default {
   id: "deshaw",
   type: "direct_careers",
@@ -19,13 +21,12 @@ export default {
     const url = company.careers_url || "https://www.deshawindia.com/careers";
 
     try {
-      const res = await fetch(url, {
+      const res = await fetchWithRetry(url, {
         headers: {
           "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
           "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-        },
-        signal: AbortSignal.timeout(10000)
-      });
+        }
+      }, { maxRetries: 5, timeoutMs: 20000 });
 
       if (!res.ok) {
         return { jobs: [], err: `HTTP ${res.status} ${res.statusText} from D.E. Shaw` };
